@@ -7,23 +7,31 @@ using Microsoft.Xna.Framework.Input;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using Riptide;
 
 namespace Block2D
 {
     public class Main : Game
     {
+        public static Client.Client Client
+        {
+            get => _client;
+        }
+
         public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private readonly AssetManager _assetManager;
         private readonly InternalServer _internalServer;
-        private World _currentWorld;
+        private static Client.Client _client;
 
         public Main()
         {
             _graphics = new GraphicsDeviceManager(this);
             _assetManager = new(Content);
             _internalServer = new();
+            _client = new();
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -50,6 +58,23 @@ namespace Block2D
                 || Keyboard.GetState().IsKeyDown(Keys.Escape)
             )
                 Exit();
+
+            if (Keyboard.GetState().IsKeyDown(Keys.G))
+            {
+                _internalServer.Start(20);
+            }
+
+            if (Keyboard.GetState().IsKeyDown(Keys.H))
+            {
+                _client.LocalConnect();
+            }
+
+            _client.Tick();
+
+            if (_internalServer.IsRunning)
+            {
+                _internalServer.Tick();
+            }
 
             // TODO: Add your update logic here
 

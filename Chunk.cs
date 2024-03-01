@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Block2D
 {
-    public class Chunk : ITickable
+    public struct Chunk : ITickable
     {
         public const int CHUNK_SIZE = 64;
 
@@ -15,16 +15,19 @@ namespace Block2D
 
         public Vector2 Position
         {
-            get => _position;
+            readonly get => _position;
+            set => _position = value;
         }
 
         private Tile[,] _tiles;
         private ChunkLoadAmount _loadAmount;
         private Vector2 _position;
 
-        public Chunk()
+        public Chunk(Vector2 position)
         {
             _tiles = new Tile[CHUNK_SIZE, CHUNK_SIZE];
+            _loadAmount = ChunkLoadAmount.Unloaded;
+            _position = position;
         }
 
         public void Tick()
