@@ -7,34 +7,35 @@ namespace Block2D.Server
     public class InternalServer : ITickable
     {
         public static InternalServer Instance;
-        
+
         public bool IsRunning
         {
             get => _server == null ? false : _server.IsRunning;
         }
 
-        public World World
+        public ServerWorld World
         {
             get => _world;
         }
 
         private Riptide.Server _server;
-        private World _world;
+        private readonly ServerWorld _world;
 
         public InternalServer()
         {
             Instance = this;
+            _world = new();
         }
 
         public void Start(ushort maxClientCount)
         {
-            if(IsRunning)
+            if (IsRunning)
             {
                 return;
             }
 
             _server = new Riptide.Server();
-            
+
             RiptideLogger.Initialize(Main.Logger.Info, false);
 
             _server.Start(7777, maxClientCount);
@@ -43,7 +44,7 @@ namespace Block2D.Server
 
         public void OnClientConnected(object sender, ServerConnectedEventArgs args)
         {
-            
+
         }
 
         public void OnClientDisconnected(object sender, ServerDisconnectedEventArgs args)
@@ -54,6 +55,11 @@ namespace Block2D.Server
         public void Tick()
         {
             _server.Update();
+        }
+
+        public void Send(Message message, ushort toClientId)
+        {
+            _server.Send(message, toClientId);
         }
 
         public void Stop()

@@ -6,8 +6,8 @@ namespace Block2D
 {
     public class AssetManager
     {
-        private ContentManager _contentManager;
-        private Dictionary<string, Texture2D> _blockTextures;
+        private readonly ContentManager _contentManager;
+        private readonly Dictionary<string, Texture2D> _blockTextures;
 
         public AssetManager(ContentManager contentManager)
         {

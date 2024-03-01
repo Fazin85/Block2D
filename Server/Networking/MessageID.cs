@@ -2,6 +2,8 @@
 {
     public enum MessageID : ushort
     {
-        HandlePlayerJoin
+        HandlePlayerJoin,
+        HandleChunkRequest,
+        SendChunk
     }
 }

@@ -2,6 +2,8 @@
 {
     public enum MessageID : ushort
     {
-        PlayerJoin
+        PlayerJoin,
+        SendChunkRequest,
+        ReceiveChunk
     }
 }

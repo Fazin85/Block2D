@@ -20,7 +20,7 @@ namespace Block2D
 
         public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
-        private GraphicsDeviceManager _graphics;
+        private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private readonly AssetManager _assetManager;
         private readonly InternalServer _internalServer;
@@ -71,6 +71,7 @@ namespace Block2D
 
             _client.Tick();
 
+
             if (_internalServer.IsRunning)
             {
                 _internalServer.Tick();
@@ -84,14 +85,19 @@ namespace Block2D
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            
+            _spriteBatch.Begin();
 
-            // TODO: Add your drawing code here
-
+            _client.Draw(_spriteBatch, _assetManager);
+            
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
 
         protected override void OnExiting(object sender, EventArgs args)
         {
+            _client.Disconnect();
+
             if (_internalServer.IsRunning)
             {
                 _internalServer.Stop();

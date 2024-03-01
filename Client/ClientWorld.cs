@@ -1,41 +1,48 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Block2D.Server;
 using Microsoft.Xna.Framework;
 
-namespace Block2D
+namespace Block2D.Client
 {
-    public class World : ITickable
+    public class ClientWorld : ITickable
     {
-        public bool IsLoaded { get; }
-
         public Chunk[] Chunks
         {
             get => _chunks.Values.ToArray();
         }
 
-        private Dictionary<Vector2, Chunk> _chunks;
-        private List<ServerPlayer> _players;
-        private int _tickCounter;
+        private readonly Dictionary<Vector2, Chunk> _chunks;
+        private readonly List<ClientPlayer> _players;
+        private Client _localPlayerClient;
 
-        public void Tick()
+        public ClientWorld(Client localClient)
         {
-            _tickCounter++;
+            _chunks = new();
+            _players = new();
+            _localPlayerClient = localClient;
         }
 
-        public void AddPlayer(ServerPlayer player)
+        public void Tick() { }
+
+        public void AddPlayer(ClientPlayer player)
         {
             _players.Add(player);
         }
 
         public bool RemovePlayer(ushort id)
         {
+            if (id == _localPlayerClient.ID)
+            {
+                Main.Logger.Warn("Tried To Remove Local Player");
+                return false;
+            }
+
             try
             {
                 for (int i = 0; i < _players.Count; i++)
                 {
-                    ServerPlayer player = _players[i];
+                    ClientPlayer player = _players[i];
                     if (player.ID == id)
                     {
                         _players.RemoveAt(i);
@@ -62,8 +69,7 @@ namespace Block2D
 
         public bool IsChunkLoaded(Vector2 position)
         {
-            return _chunks.TryGetValue(position, out Chunk chunk)
-                && chunk.LoadAmount != ChunkLoadAmount.Unloaded;
+            return _chunks.ContainsKey(position);
         }
     }
 }

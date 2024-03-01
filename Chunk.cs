@@ -1,6 +1,6 @@
-﻿using System;
-using Block2D.Server;
+﻿using Block2D.Server;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace Block2D
 {
@@ -8,7 +8,7 @@ namespace Block2D
     {
         public const int CHUNK_SIZE = 64;
 
-        public ChunkLoadAmount LoadAmount
+        public readonly ChunkLoadAmount LoadAmount
         {
             get => _loadAmount;
         }
@@ -19,8 +19,13 @@ namespace Block2D
             set => _position = value;
         }
 
-        private Tile[,] _tiles;
-        private ChunkLoadAmount _loadAmount;
+        public readonly Tile[,] Tiles
+        {
+            get => _tiles;
+        }
+
+        private readonly Tile[,] _tiles;
+        private readonly ChunkLoadAmount _loadAmount;
         private Vector2 _position;
 
         public Chunk(Vector2 position)
@@ -30,7 +35,7 @@ namespace Block2D
             _position = position;
         }
 
-        public void Tick()
+        public readonly void Tick()
         {
             for (int x = 0; x < CHUNK_SIZE; x++)
             {
@@ -41,7 +46,7 @@ namespace Block2D
             }
         }
 
-        public void SetTile(Vector2 position, ushort id)
+        public readonly void SetTile(Vector2 position, ushort id)
         {
             if (position.X >= CHUNK_SIZE || position.X < 0)
             {
@@ -58,24 +63,7 @@ namespace Block2D
             _tiles[(int)position.X, (int)position.Y].Set(id);
         }
 
-        public void SetTile(Vector2 position, int microTilePosition, ushort microTileId)
-        {
-            if (position.X >= CHUNK_SIZE || position.X < 0)
-            {
-                Console.WriteLine("Position X is out of bounds");
-                return;
-            }
-
-            if (position.Y >= CHUNK_SIZE || position.Y < 0)
-            {
-                Console.WriteLine("Position Y is out of bounds");
-                return;
-            }
-
-            _tiles[(int)position.X, (int)position.Y].Set(microTilePosition, microTileId);
-        }
-
-        public Tile GetTile(Vector2 position)
+        public readonly Tile GetTile(Vector2 position)
         {
             if (position.X >= CHUNK_SIZE || position.X < 0)
             {
