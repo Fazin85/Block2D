@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 
-namespace Block2D
+namespace Block2D.Common
 {
     public struct Chunk : ITickable
     {

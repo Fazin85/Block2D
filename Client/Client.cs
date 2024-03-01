@@ -1,4 +1,5 @@
 ﻿using Block2D.Client.Networking;
+using Block2D.Common;
 using Microsoft.Xna.Framework.Graphics;
 using Riptide;
 using System;
@@ -7,14 +8,14 @@ namespace Block2D.Client
 {
     public class Client : ITickable
     {
-        public ushort ID
-        {
-            get => _client.Id;
-        }
-
         public ClientWorld World
         {
             get => _currentWorld == null ? null : _currentWorld;
+        }
+
+        public ClientPlayer LocalPlayer
+        {
+            get => World.GetPlayerFromId(_client.Id);
         }
 
         private Riptide.Client _client;
@@ -35,7 +36,9 @@ namespace Block2D.Client
         private void OnConnect(object sender, EventArgs e)
         {
             _inWorld = true;
-            _currentWorld = new(this);
+            _currentWorld = new();
+            ClientPlayer lp = new(_client.Id);
+            _currentWorld.AddPlayer(lp);
             _messageHandler.PlayerJoin();
         }
 

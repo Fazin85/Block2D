@@ -1,4 +1,6 @@
-﻿using Block2D.Server.WorldGen;
+﻿using Block2D.Common;
+using Block2D.Common.ID;
+using Block2D.Server.WorldGen;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -10,28 +12,25 @@ namespace Block2D.Server
     {
         public bool IsLoaded { get; }
 
-        public Chunk[] Chunks
-        {
-            get => _chunks.Values.ToArray();
-        }
+        public Dictionary<string, ServerDimension> Dimensions { get; private set; }
 
-        public TerrainGenerator TerrainGenerator
-        {
-            get => _terrainGenerator;
-        }
-
-        private readonly Dictionary<Vector2, Chunk> _chunks;
         private readonly List<ServerPlayer> _players;
-        private readonly TerrainGenerator _terrainGenerator;
         private int _tickCounter;
         private int _seed;
 
         public ServerWorld()
         {
-            _chunks = new();
+            Dimensions = new();
             _players = new();
-            _terrainGenerator = new(_seed);
             _tickCounter = 0;
+
+            CreateDimensions();
+        }
+
+        public void CreateDimensions()
+        {
+            ServerDimension overworld = new(DimensionID.OVERWORLD, _seed, 781250, 781250, 400, 500);
+            Dimensions.Add(DimensionID.OVERWORLD, overworld);
         }
 
         public void Tick()
@@ -64,22 +63,6 @@ namespace Block2D.Server
                 Main.Logger.Warn(e);
             }
             return false;
-        }
-
-        public bool TryAddChunk(Chunk chunk)
-        {
-            if (_chunks.TryAdd(chunk.Position, chunk))
-            {
-                _chunks[chunk.Position] = chunk;
-                return true;
-            }
-            return false;
-        }
-
-        public bool IsChunkLoaded(Vector2 position)
-        {
-            return _chunks.TryGetValue(position, out Chunk chunk)
-                && chunk.LoadAmount != ChunkLoadAmount.Unloaded;
         }
     }
 }

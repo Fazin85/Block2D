@@ -1,13 +1,15 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Block2D.Common;
+using Block2D.Common.ID;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 
 namespace Block2D.Client
 {
     public class ClientPlayer : ITickable
     {
-        public bool IsLocal
+        private bool IsLocal
         {
-            get => _id == Main.Client.ID;
+            get => _id == Main.Client.LocalPlayer.ID;
         }
 
         public ushort ID
@@ -15,14 +17,21 @@ namespace Block2D.Client
             get => _id;
         }
 
+        public string Dimension
+        {
+            get => _dimension;
+        }
+
         private Vector2 _position;
         private Vector2 _velocity;
         private readonly int _health;
         private readonly ushort _id;
+        private readonly string _dimension = DimensionID.OVERWORLD;
 
         public ClientPlayer(ushort id)
         {
             _id = id;
+            _dimension = DimensionID.OVERWORLD;
         }
 
         public void Tick()

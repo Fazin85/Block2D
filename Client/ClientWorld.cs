@@ -1,7 +1,8 @@
-﻿using System;
+﻿using Block2D.Common;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Microsoft.Xna.Framework;
 
 namespace Block2D.Client
 {
@@ -12,27 +13,26 @@ namespace Block2D.Client
             get => _chunks.Values.ToArray();
         }
 
-        private readonly Dictionary<Vector2, Chunk> _chunks;
-        private readonly List<ClientPlayer> _players;
-        private Client _localPlayerClient;
+        public List<ClientPlayer> Players { get; private set; }
 
-        public ClientWorld(Client localClient)
+        private readonly Dictionary<Vector2, Chunk> _chunks;
+
+        public ClientWorld()
         {
             _chunks = new();
-            _players = new();
-            _localPlayerClient = localClient;
+            Players = new();
         }
 
         public void Tick() { }
 
         public void AddPlayer(ClientPlayer player)
         {
-            _players.Add(player);
+            Players.Add(player);
         }
 
         public bool RemovePlayer(ushort id)
         {
-            if (id == _localPlayerClient.ID)
+            if (id == Main.Client.LocalPlayer.ID)
             {
                 Main.Logger.Warn("Tried To Remove Local Player");
                 return false;
@@ -40,12 +40,12 @@ namespace Block2D.Client
 
             try
             {
-                for (int i = 0; i < _players.Count; i++)
+                for (int i = 0; i < Players.Count; i++)
                 {
-                    ClientPlayer player = _players[i];
+                    ClientPlayer player = Players[i];
                     if (player.ID == id)
                     {
-                        _players.RemoveAt(i);
+                        Players.RemoveAt(i);
                         return true;
                     }
                 }
@@ -55,6 +55,20 @@ namespace Block2D.Client
                 Main.Logger.Warn(e);
             }
             return false;
+        }
+
+        public ClientPlayer GetPlayerFromId(ushort id)
+        {
+            for (int i = 0; i < Players.Count; i++)
+            {
+                ClientPlayer player = Players[i];
+                if (player.ID == id)
+                {
+                    return Players[i];
+                }
+            }
+            Main.Logger.Warn("Could Not Find Player With ID: " + id);
+            return null;
         }
 
         public bool TryAddChunk(Chunk chunk)

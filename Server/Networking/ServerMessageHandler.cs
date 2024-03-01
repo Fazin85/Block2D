@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework;
-using Riptide;
-using System;
+﻿using System;
 using System.IO;
 using System.IO.Compression;
+using Block2D.Common;
+using Microsoft.Xna.Framework;
+using Riptide;
 
 namespace Block2D.Server.Networking
 {
@@ -22,13 +23,16 @@ namespace Block2D.Server.Networking
         public static void HandleChunkRequest(ushort fromClientId, Message message)
         {
             Vector2 position = message.GetVector2();
+            string playerDimension = message.GetString();
 
-            Chunk newChunk = new(position);
             Message newMessage = Message.Create(MessageSendMode.Unreliable, MessageID.SendChunk);
             newMessage.AddVector2(position);
-            InternalServer.Instance.World.TerrainGenerator.GenerateChunkTerrain(newChunk);
-
-            if (InternalServer.Instance.World.TryAddChunk(newChunk))
+            newMessage.AddString(playerDimension);
+            if (
+                InternalServer
+                    .Instance.World.Dimensions[playerDimension]
+                    .ChunkProvider.TryAddNewChunk(position, out Chunk newChunk)
+            )
             {
                 ushort[] tileIds = new ushort[Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE];
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Block2D.Common;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Block2D.Client

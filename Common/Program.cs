@@ -1,4 +1,4 @@
-﻿namespace Block2D
+﻿namespace Block2D.Common
 {
     public class Program
     {

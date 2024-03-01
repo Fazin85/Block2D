@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Block2D.Common;
+using Microsoft.Xna.Framework;
 
 namespace Block2D.Server
 {

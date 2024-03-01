@@ -1,14 +1,14 @@
 using Microsoft.Xna.Framework;
 using Riptide;
 
-namespace Block2D
+namespace Block2D.Common
 {
     public static class MessageExtensions
     {
         #region Vector2
         /// <inheritdoc cref="Add(Message, Vector2)"/>
         /// <remarks>Relying on the correct Add overload being chosen based on the parameter type can increase the odds of accidental type mismatches when retrieving data from a message. This method calls <see cref="Add(Message, Vector2)"/> and simply provides an alternative type-explicit way to add a <see cref="Vector2"/> to the message.</remarks>
-        public static Message AddVector2(this Message message, Vector2 value) => Add(message, value);
+        public static Message AddVector2(this Message message, Vector2 value) => message.Add(value);
 
         /// <summary>Adds a <see cref="Vector2"/> to the message.</summary>
         /// <param name="value">The <see cref="Vector2"/> to add.</param>
@@ -31,7 +31,7 @@ namespace Block2D
         #region Vector3
         /// <inheritdoc cref="Add(Message, Vector3)"/>
         /// <remarks>Relying on the correct Add overload being chosen based on the parameter type can increase the odds of accidental type mismatches when retrieving data from a message. This method calls <see cref="Add(Message, Vector3)"/> and simply provides an alternative type-explicit way to add a <see cref="Vector3"/> to the message.</remarks>
-        public static Message AddVector3(this Message message, Vector3 value) => Add(message, value);
+        public static Message AddVector3(this Message message, Vector3 value) => message.Add(value);
 
         /// <summary>Adds a <see cref="Vector3"/> to the message.</summary>
         /// <param name="value">The <see cref="Vector3"/> to add.</param>

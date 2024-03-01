@@ -9,7 +9,7 @@ using NLog.Config;
 using NLog.Targets;
 using Riptide;
 
-namespace Block2D
+namespace Block2D.Common
 {
     public class Main : Game
     {
@@ -71,7 +71,6 @@ namespace Block2D
 
             _client.Tick();
 
-
             if (_internalServer.IsRunning)
             {
                 _internalServer.Tick();
@@ -85,11 +84,11 @@ namespace Block2D
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-            
+
             _spriteBatch.Begin();
 
             _client.Draw(_spriteBatch, _assetManager);
-            
+
             _spriteBatch.End();
             base.Draw(gameTime);
         }

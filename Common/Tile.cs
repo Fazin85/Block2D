@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 
-namespace Block2D
+namespace Block2D.Common
 {
     public struct Tile : ITickable
     {
