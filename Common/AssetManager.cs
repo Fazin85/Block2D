@@ -8,6 +8,7 @@ namespace Block2D.Common
     {
         private readonly ContentManager _contentManager;
         private readonly Dictionary<string, Texture2D> _blockTextures;
+        private Texture2D _playerTexture;
 
         public AssetManager(ContentManager contentManager)
         {
@@ -27,6 +28,18 @@ namespace Block2D.Common
             //_blockTextures.Add("Water_Block", water);
             Texture2D sand = _contentManager.Load<Texture2D>("Sand_Block");
             _blockTextures.Add("Sand_Block", sand);
+
+            LoadPlayerTextures();
+        }
+
+        public void LoadPlayerTextures()
+        {
+            _playerTexture = _contentManager.Load<Texture2D>("Player_Texture");
+        }
+
+        public Texture2D GetPlayerTexture()
+        {
+            return _playerTexture;
         }
 
         public Texture2D GetBlockTexture(string blockId)

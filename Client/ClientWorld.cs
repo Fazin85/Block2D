@@ -2,24 +2,18 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Block2D.Client
 {
     public class ClientWorld : ITickable
     {
-        public Chunk[] Chunks
-        {
-            get => _chunks.Values.ToArray();
-        }
-
         public List<ClientPlayer> Players { get; private set; }
 
-        private readonly Dictionary<Vector2, Chunk> _chunks;
+        public Dictionary<Vector2, Chunk> Chunks { get; private set; }
 
         public ClientWorld()
         {
-            _chunks = new();
+            Chunks = new();
             Players = new();
         }
 
@@ -73,9 +67,9 @@ namespace Block2D.Client
 
         public bool TryAddChunk(Chunk chunk)
         {
-            if (_chunks.TryAdd(chunk.Position, chunk))
+            if (Chunks.TryAdd(chunk.Position, chunk))
             {
-                _chunks[chunk.Position] = chunk;
+                Chunks[chunk.Position] = chunk;
                 return true;
             }
             return false;
@@ -83,7 +77,13 @@ namespace Block2D.Client
 
         public bool IsChunkLoaded(Vector2 position)
         {
-            return _chunks.ContainsKey(position);
+            return Chunks.ContainsKey(position);
+        }
+
+        public bool GetChunkLoaded(Vector2 position, out Chunk chunk)
+        {
+            chunk = new(position);
+            return Chunks.TryGetValue(chunk.Position, out chunk);
         }
     }
 }

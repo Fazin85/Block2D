@@ -7,16 +7,12 @@ using Microsoft.Xna.Framework.Input;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using Riptide;
 
 namespace Block2D.Common
 {
     public class Main : Game
     {
-        public static Client.Client Client
-        {
-            get => _client;
-        }
+        public static Client.Client Client { get; private set; }
 
         public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
@@ -24,14 +20,13 @@ namespace Block2D.Common
         private SpriteBatch _spriteBatch;
         private readonly AssetManager _assetManager;
         private readonly InternalServer _internalServer;
-        private static Client.Client _client;
 
         public Main()
         {
             _graphics = new GraphicsDeviceManager(this);
             _assetManager = new(Content);
             _internalServer = new();
-            _client = new();
+            Client = new();
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -39,6 +34,7 @@ namespace Block2D.Common
         protected override void Initialize()
         {
             InitializeLogger();
+            Client.InitializeCamera(Window, GraphicsDevice);
             // TODO: Add your initialization logic here
             base.Initialize();
         }
@@ -66,10 +62,10 @@ namespace Block2D.Common
 
             if (Keyboard.GetState().IsKeyDown(Keys.H))
             {
-                _client.LocalConnect();
+                Client.LocalConnect();
             }
 
-            _client.Tick();
+            Client.Tick();
 
             if (_internalServer.IsRunning)
             {
@@ -85,9 +81,9 @@ namespace Block2D.Common
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin();
+            _spriteBatch.Begin(transformMatrix: Client.Camera.GetViewMatrix());
 
-            _client.Draw(_spriteBatch, _assetManager);
+            Client.Draw(_spriteBatch, _assetManager);
 
             _spriteBatch.End();
             base.Draw(gameTime);
@@ -95,7 +91,7 @@ namespace Block2D.Common
 
         protected override void OnExiting(object sender, EventArgs args)
         {
-            _client.Disconnect();
+            Client.Disconnect();
 
             if (_internalServer.IsRunning)
             {

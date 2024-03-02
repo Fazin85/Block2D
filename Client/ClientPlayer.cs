@@ -22,8 +22,20 @@ namespace Block2D.Client
             get => _dimension;
         }
 
-        private Vector2 _position;
+        public Rectangle Hitbox
+        {
+            get => _hitbox;
+        }
+
+        public Vector2 Position { get; set; }
+
+        public Vector2 Velocity
+        {
+            get => _velocity;
+        }
+
         private Vector2 _velocity;
+        private Rectangle _hitbox;
         private readonly int _health;
         private readonly ushort _id;
         private readonly string _dimension = DimensionID.OVERWORLD;
@@ -32,12 +44,15 @@ namespace Block2D.Client
         {
             _id = id;
             _dimension = DimensionID.OVERWORLD;
+            _hitbox = new(Position.ToPoint(), new(16, 16));
         }
 
         public void Tick()
         {
             if (IsLocal)
             {
+                _velocity = Vector2.Zero;
+
                 KeyboardState keyboard = Keyboard.GetState();
 
                 if (keyboard.IsKeyDown(Keys.W))
@@ -68,6 +83,15 @@ namespace Block2D.Client
                 if (keyboard.IsKeyDown(Keys.A) && keyboard.IsKeyDown(Keys.D))
                 {
                     _velocity.X = 0f;
+                }
+
+                Rectangle nextHitbox = Hitbox;
+                nextHitbox.Location += _velocity.ToPoint();
+
+                if (!Collision.CollidingWithTiles(nextHitbox))
+                {
+                    Position += _velocity;
+                    _hitbox.Location = Position.ToPoint();
                 }
             }
         }

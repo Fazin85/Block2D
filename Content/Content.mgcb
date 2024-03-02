@@ -37,6 +37,18 @@
 /processorParam:TextureFormat=Color
 /build:Grass_Block.png
 
+#begin Player_Texture.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Player_Texture.png
+
 #begin Sand_Block.png
 /importer:TextureImporter
 /processor:TextureProcessor

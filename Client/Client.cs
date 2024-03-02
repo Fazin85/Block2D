@@ -1,8 +1,12 @@
 ﻿using Block2D.Client.Networking;
 using Block2D.Common;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGame.Extended;
+using MonoGame.Extended.ViewportAdapters;
 using Riptide;
 using System;
+using System.Linq;
 
 namespace Block2D.Client
 {
@@ -17,6 +21,8 @@ namespace Block2D.Client
         {
             get => World.GetPlayerFromId(_client.Id);
         }
+
+        public OrthographicCamera Camera { get; private set; }
 
         private Riptide.Client _client;
         private ClientWorld _currentWorld;
@@ -33,11 +39,18 @@ namespace Block2D.Client
             _client.Disconnected += OnDisconnect;
         }
 
+        public void InitializeCamera(GameWindow window, GraphicsDevice graphicsDevice)
+        {
+            BoxingViewportAdapter viewportAdapter = new(window, graphicsDevice, 800, 480);
+            Camera = new OrthographicCamera(viewportAdapter);
+        }
+
         private void OnConnect(object sender, EventArgs e)
         {
             _inWorld = true;
             _currentWorld = new();
             ClientPlayer lp = new(_client.Id);
+            lp.Position = -Vector2.UnitY * 16;
             _currentWorld.AddPlayer(lp);
             _messageHandler.PlayerJoin();
         }
@@ -51,13 +64,32 @@ namespace Block2D.Client
         public void Tick()
         {
             _client.Update();
+
+            if (_inWorld)
+            {
+                for (int i = 0; i < _currentWorld.Players.Count; i++)
+                {
+                    ClientPlayer currentPlayer = _currentWorld.Players[i];
+                    currentPlayer.Tick();
+                }
+
+                Camera.LookAt(LocalPlayer.Position);
+
+                //Camera.Position = LocalPlayer.Position;
+            }
         }
 
         public void Draw(SpriteBatch spriteBatch, AssetManager assets)
         {
             if (_inWorld)
             {
-                Renderer.DrawChunks(_currentWorld.Chunks, spriteBatch, assets);
+                Renderer.DrawChunks_ShowHitboxes(_currentWorld.Chunks.Values.ToArray(), spriteBatch, assets);
+
+                for (int i = 0; i < _currentWorld.Players.Count; i++)
+                {
+                    ClientPlayer currentPlayer = _currentWorld.Players[i];
+                    Renderer.DrawPlayer(currentPlayer, spriteBatch, assets);
+                }
             }
         }
 

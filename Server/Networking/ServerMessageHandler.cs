@@ -47,31 +47,12 @@ namespace Block2D.Server.Networking
                 }
                 byte[] target = new byte[tileIds.Length * 2];
                 Buffer.BlockCopy(tileIds, 0, target, 0, tileIds.Length * 2);
-                byte[] bytesToSend = Compress(target);
+                byte[] bytesToSend = Helper.Compress(target);
                 newMessage.AddBytes(bytesToSend);
                 InternalServer.Instance.Send(newMessage, fromClientId);
             }
         }
 
-        public static byte[] Compress(byte[] data)
-        {
-            MemoryStream output = new();
-            using (DeflateStream dstream = new(output, CompressionLevel.Optimal))
-            {
-                dstream.Write(data, 0, data.Length);
-            }
-            return output.ToArray();
-        }
-
-        public static byte[] Decompress(byte[] data)
-        {
-            MemoryStream input = new(data);
-            MemoryStream output = new();
-            using (DeflateStream dstream = new(input, CompressionMode.Decompress))
-            {
-                dstream.CopyTo(output);
-            }
-            return output.ToArray();
-        }
+        
     }
 }
