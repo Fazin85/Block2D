@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.Xna.Framework;
-
-namespace Block2D.Common
+﻿namespace Block2D.Common
 {
     public struct Tile : ITickable
     {
@@ -10,11 +7,9 @@ namespace Block2D.Common
             get => _id;
         }
         private ushort _id;
-        private bool _hasMicroTile;
 
         public Tile()
         {
-            _hasMicroTile = false;
             _id = 0;
         }
 
@@ -22,13 +17,7 @@ namespace Block2D.Common
 
         public void Set(ushort id)
         {
-            if (_hasMicroTile)
-            {
-                return;
-            }
-
             _id = id;
-            _hasMicroTile = false;
         }
     }
 }

@@ -1,9 +1,7 @@
-﻿using System;
-using System.IO;
-using System.IO.Compression;
-using Block2D.Common;
+﻿using Block2D.Common;
 using Microsoft.Xna.Framework;
 using Riptide;
+using System;
 
 namespace Block2D.Server.Networking
 {
@@ -22,11 +20,11 @@ namespace Block2D.Server.Networking
         [MessageHandler((ushort)MessageID.HandleChunkRequest)]
         public static void HandleChunkRequest(ushort fromClientId, Message message)
         {
-            Vector2 position = message.GetVector2();
+            Point position = message.GetPoint();
             string playerDimension = message.GetString();
 
             Message newMessage = Message.Create(MessageSendMode.Unreliable, MessageID.SendChunk);
-            newMessage.AddVector2(position);
+            newMessage.AddPoint(position);
             newMessage.AddString(playerDimension);
             if (
                 InternalServer
@@ -53,6 +51,6 @@ namespace Block2D.Server.Networking
             }
         }
 
-        
+
     }
 }

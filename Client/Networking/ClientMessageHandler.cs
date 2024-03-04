@@ -1,8 +1,8 @@
-﻿using Block2D.Common;
+﻿using System;
+using Block2D.Common;
 using Block2D.Common.ID;
 using Microsoft.Xna.Framework;
 using Riptide;
-using System;
 
 namespace Block2D.Client.Networking
 {
@@ -13,16 +13,16 @@ namespace Block2D.Client.Networking
             Message message = Message.Create(MessageSendMode.Reliable, MessageID.PlayerJoin);
             message.AddString("Hello World");
             Main.Client.Send(message);
-            RequestChunk(new(1, 0));
+            RequestChunk(new(64, 0));
         }
 
-        public void RequestChunk(Vector2 position)
+        public void RequestChunk(Point position)
         {
             Message message = Message.Create(
                 MessageSendMode.Unreliable,
                 MessageID.SendChunkRequest
             );
-            message.AddVector2(position);
+            message.AddPoint(position);
             message.AddString(Main.Client.LocalPlayer.Dimension);
             Main.Client.Send(message);
         }
@@ -30,7 +30,7 @@ namespace Block2D.Client.Networking
         [MessageHandler((ushort)MessageID.ReceiveChunk)]
         public static void ReceiveChunk(Message message)
         {
-            Vector2 position = message.GetVector2();
+            Point position = message.GetPoint();
             string dimension = message.GetString();
             byte[] compressedTiles = message.GetBytes();
 

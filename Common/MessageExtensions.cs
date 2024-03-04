@@ -51,5 +51,28 @@ namespace Block2D.Common
             return new Vector3(message.GetFloat(), message.GetFloat(), message.GetFloat());
         }
         #endregion
+
+        #region Point
+        /// <inheritdoc cref="Add(Message, Point)"/>
+        /// <remarks>Relying on the correct Add overload being chosen based on the parameter type can increase the odds of accidental type mismatches when retrieving data from a message. This method calls <see cref="Add(Message, Point)"/> and simply provides an alternative type-explicit way to add a <see cref="Point"/> to the message.</remarks>
+        public static Message AddPoint(this Message message, Point value) => message.Add(value);
+
+        /// <summary>Adds a <see cref="Point"/> to the message.</summary>
+        /// <param name="value">The <see cref="Point"/> to add.</param>
+        /// <returns>The message that the <see cref="Point"/> was added to.</returns>
+        public static Message Add(this Message message, Point value)
+        {
+            message.AddInt(value.X);
+            message.AddInt(value.Y);
+            return message;
+        }
+
+        /// <summary>Retrieves a <see cref="Point"/> from the message.</summary>
+        /// <returns>The <see cref="Point"/> that was retrieved.</returns>
+        public static Point GetPoint(this Message message)
+        {
+            return new Point(message.GetInt(), message.GetInt());
+        }
+        #endregion
     }
 }

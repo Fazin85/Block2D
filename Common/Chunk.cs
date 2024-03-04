@@ -13,7 +13,7 @@ namespace Block2D.Common
             get => _loadAmount;
         }
 
-        public Vector2 Position
+        public Point Position
         {
             readonly get => _position;
             set => _position = value;
@@ -26,9 +26,9 @@ namespace Block2D.Common
 
         private readonly Tile[,] _tiles;
         private readonly ChunkLoadAmount _loadAmount;
-        private Vector2 _position;
+        private Point _position;
 
-        public Chunk(Vector2 position)
+        public Chunk(Point position)
         {
             _tiles = new Tile[CHUNK_SIZE, CHUNK_SIZE];
             _loadAmount = ChunkLoadAmount.Unloaded;

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Block2D.Client
 {
@@ -9,7 +10,7 @@ namespace Block2D.Client
     {
         public List<ClientPlayer> Players { get; private set; }
 
-        public Dictionary<Vector2, Chunk> Chunks { get; private set; }
+        public Dictionary<Point, Chunk> Chunks { get; private set; }
 
         public ClientWorld()
         {
@@ -67,23 +68,40 @@ namespace Block2D.Client
 
         public bool TryAddChunk(Chunk chunk)
         {
-            if (Chunks.TryAdd(chunk.Position, chunk))
-            {
-                Chunks[chunk.Position] = chunk;
-                return true;
-            }
-            return false;
+            return Chunks.TryAdd(chunk.Position, chunk);
         }
 
-        public bool IsChunkLoaded(Vector2 position)
+        public bool IsChunkLoaded(Point position)
         {
             return Chunks.ContainsKey(position);
         }
 
-        public bool GetChunkLoaded(Vector2 position, out Chunk chunk)
+        public bool GetChunkLoaded(Point chunkPosition, out Chunk chunk)
         {
-            chunk = new(position);
-            return Chunks.TryGetValue(chunk.Position, out chunk);
+            return Chunks.TryGetValue(chunkPosition, out chunk);
+        }
+
+        public object TrySetTile(Vector2 position, out Tile tile)
+        {
+            tile = new Tile();
+            return new NotImplementedException();
+        }
+
+        public bool TryGetTile(Point worldPosition, out Tile tile)
+        {
+            Point chunkPosition = worldPosition.ToChunkCoords();
+            Debug.WriteLineIf(Random.Shared.Next(120) == 0, chunkPosition);
+            if (GetChunkLoaded(chunkPosition, out Chunk chunk))
+            {
+                Debug.WriteLineIf(Random.Shared.Next(120) == 0, chunk.Position);
+                int x = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.X - worldPosition.X);
+                int y = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.Y - worldPosition.Y);
+
+                tile = chunk.GetTile(new(x, y));
+                return true;
+            }
+            tile = new();
+            return false;
         }
     }
 }

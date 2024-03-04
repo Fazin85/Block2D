@@ -28,13 +28,26 @@ namespace Block2D.Common
             return output.ToArray();
         }
 
-        public static Vector2 ToChunkCoords(this Vector2 pos)
+        public static Point ToChunkCoords(this Point point)
         {
-            return new Vector2
+            return new Point
             {
-                X = (int)pos.X >> 7,
-                Y = (int)pos.Y >> 7,
+                X = (point.X >> 10) * 64,
+                Y = (point.Y >> 10) * 64
             };
+        }
+        public static Point Abs(this Point point)
+        {
+            return new()
+            {
+                X = Math.Abs(point.X),
+                Y = Math.Abs(point.Y)
+            };
+        }
+
+        public static bool Collidable(this Tile tile)
+        {
+            return tile.ID == 0;
         }
     }
 }

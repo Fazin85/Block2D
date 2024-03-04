@@ -1,5 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 
 namespace Block2D.Common
 {
@@ -16,56 +15,28 @@ namespace Block2D.Common
             Rectangle tileHitbox = new((int)position.X, (int)position.Y, 16, 16);
             return playerHitbox.Intersects(tileHitbox);
         }
-        //TODO: ADD RENDERING FOR POSITIONS WHERE TILE COLLISION IS BEING CHECKED
-        public static bool CollidingWithTiles(Rectangle hitbox)
+
+        public static bool CollidingWithTiles(Point position, Point velocity, Point size)
         {
-            int left = hitbox.Left;
-            int right = hitbox.Right;
-            int top = hitbox.Top;
-            int bottom = hitbox.Bottom;
-
-            List<bool> collidingTilePositions = new();
-
-            for (int x = left; x <= right; x++)
+            Rectangle hitbox = new(position + velocity, size);
+            for (int x = hitbox.Left; x <= hitbox.Right; x++)
             {
-                for (int y = top; y <= bottom; y++)
+                for (int y = hitbox.Top; y <= hitbox.Bottom; y++)
                 {
-                    Vector2 hitBoxPosition = new(x, y);
-                    if (
-                        Main.Client.World.GetChunkLoaded(
-                            hitBoxPosition.ToChunkCoords(),
-                            out Chunk chunk
-                        )
-                    )
+                    Point currentPosition = new(x, y);
+                    if (Main.Client.World.TryGetTile(currentPosition, out Tile tile))
                     {
-                        for (int x2 = 0; x2 < Chunk.CHUNK_SIZE; x2++)
+                        if (tile.Collidable())
                         {
-                            for (int y2 = 0; y2 < Chunk.CHUNK_SIZE; y2++)
+                            Rectangle currentTileRect = new(currentPosition, new(16, 16));
+                            if (hitbox.Intersects(currentTileRect))
                             {
-                                Tile currentTile = chunk.GetTile(new(x2, y2));
-
-                                if (currentTile.ID == 0)
-                                {
-                                    collidingTilePositions.Add(false);
-                                    break;
-                                }
-
-                                Point p =
-                                    new(
-                                        (int)chunk.Position.X + x2 * 16,
-                                        (int)chunk.Position.Y + y2 * 16
-                                    );
-
-                                Rectangle tileHitbox = new(p, new(16, 16));
-
-                                collidingTilePositions.Add(hitbox.Intersects(tileHitbox));
+                                return true;
                             }
                         }
-                        return collidingTilePositions.Contains(true);
                     }
                 }
             }
-
             return false;
         }
     }

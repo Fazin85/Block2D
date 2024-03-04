@@ -2,6 +2,7 @@
 using Block2D.Common.ID;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System.Diagnostics;
 
 namespace Block2D.Client
 {
@@ -85,10 +86,7 @@ namespace Block2D.Client
                     _velocity.X = 0f;
                 }
 
-                Rectangle nextHitbox = Hitbox;
-                nextHitbox.Location += _velocity.ToPoint();
-
-                if (!Collision.CollidingWithTiles(nextHitbox))
+                if (!Collision.CollidingWithTiles(Position.ToPoint(), _velocity.ToPoint(), _hitbox.Size))
                 {
                     Position += _velocity;
                     _hitbox.Location = Position.ToPoint();

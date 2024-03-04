@@ -7,7 +7,7 @@ namespace Block2D.Server
 {
     public class ServerChunkProvider
     {
-        private Dictionary<Vector2, Chunk> _chunks;
+        private Dictionary<Point, Chunk> _chunks;
 
         private TerrainGenerator _generator;
 
@@ -18,7 +18,7 @@ namespace Block2D.Server
         }
 
         /// <summary>Creates a <see cref="Chunk"/>, generates the chunk's terrain, and tries to add it to chunk dictionary.</summary>
-        public bool TryAddNewChunk(Vector2 position, out Chunk addedChunk)
+        public bool TryAddNewChunk(Point position, out Chunk addedChunk)
         {
             addedChunk = new();
             if (_chunks.ContainsKey(position))
@@ -42,7 +42,7 @@ namespace Block2D.Server
             return false;
         }
         /// <summary>Checks if the chunk dictionary contains the key <see cref="Vector2"/>, and that the chunk tied to the <see cref="Vector2"/> position isn't unloaded</summary>
-        public bool IsChunkLoaded(Vector2 position)
+        public bool IsChunkLoaded(Point position)
         {
             return _chunks.TryGetValue(position, out Chunk chunk)
                 && chunk.LoadAmount != ChunkLoadAmount.Unloaded;

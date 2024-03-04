@@ -14,7 +14,7 @@ namespace Block2D.Client
     {
         public ClientWorld World
         {
-            get => _currentWorld == null ? null : _currentWorld;
+            get => _currentWorld ?? null;
         }
 
         public ClientPlayer LocalPlayer
