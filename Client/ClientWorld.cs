@@ -90,10 +90,8 @@ namespace Block2D.Client
         public bool TryGetTile(Point worldPosition, out Tile tile)
         {
             Point chunkPosition = worldPosition.ToChunkCoords();
-            Debug.WriteLineIf(Random.Shared.Next(120) == 0, chunkPosition);
             if (GetChunkLoaded(chunkPosition, out Chunk chunk))
             {
-                Debug.WriteLineIf(Random.Shared.Next(120) == 0, chunk.Position);
                 int x = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.X - worldPosition.X);
                 int y = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.Y - worldPosition.Y);
 

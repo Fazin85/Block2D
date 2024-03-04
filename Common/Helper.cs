@@ -47,7 +47,7 @@ namespace Block2D.Common
 
         public static bool Collidable(this Tile tile)
         {
-            return tile.ID == 0;
+            return tile.ID == 0;//am I stupid or does this not make sense?
         }
     }
 }
