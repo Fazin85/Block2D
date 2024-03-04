@@ -16,6 +16,13 @@ namespace Block2D.Common
 
         public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
+        public static string AppDataDirectory
+        {
+            get => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+        }
+
+        public const string GameName = "Block2D";
+
         private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private readonly AssetManager _assetManager;
