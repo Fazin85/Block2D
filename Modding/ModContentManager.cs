@@ -6,7 +6,7 @@ namespace Block2D.Modding
     /// <summary>
     /// A class that stores the content of a mod
     /// </summary>
-    public class ModContentManager : IModContentLoader
+    public class ModContentManager
     {
         private readonly TileLoader _tileLoader;
         public Dictionary<string, ModTile> ModTiles { get; set; }
@@ -29,11 +29,6 @@ namespace Block2D.Modding
                     ModTiles.Add(tile.Name, tile);
                 }
             }
-        }
-
-        public void UnloadContent()
-        {
-            ModTiles.Clear();
         }
     }
 }

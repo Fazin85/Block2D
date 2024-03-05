@@ -2,17 +2,19 @@
 
 namespace Block2D.Modding
 {
-    public class Mod : IModContentLoader
+    public class Mod
     {
-        public string Name { get; private set; }
+        public string DisplayName { get; private set; }
+        public string InternalName { get; private set; }
         public string Version { get; private set; }
         public bool Loaded { get; set; }
         public Version GameVersion { get; private set; }
         public ModContentManager ContentManager { get; private set; }
 
-        public Mod(string name, string version)
+        public Mod(string displayName, string internalName, string version)
         {
-            Name = name;
+            DisplayName = displayName;
+            InternalName = internalName;
             Version = version;
             ContentManager = new(this);
             GameVersion = new();

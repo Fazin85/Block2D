@@ -21,20 +21,23 @@ namespace Block2D.Modding
                 Main.Logger.Info("No Mods Detected, Skipping Mod Loading Process.");
                 return;
             }
-            foreach (string modFile in modDirectories)
+
+            DirectoryInfo[] directoryInfo = new DirectoryInfo[modDirectories.Length];
+            for (int i = 0; i < directoryInfo.Length; i++)
             {
-                LoadMod(modFile);
+                directoryInfo[i] = new(modDirectories[i]);
+                LoadMod(directoryInfo[i]);
             }
         }
 
-        public void LoadMod(string modDirectory)
+        public void LoadMod(DirectoryInfo modDirectory)
         {
-            if (!File.Exists(modDirectory + "/ModInfo.txt"))
+            if (!File.Exists(modDirectory.FullName + "/ModInfo.txt"))
             {
                 return;
             }
 
-            FileInfo fileInfo = new(modDirectory + "/ModInfo.txt");
+            FileInfo fileInfo = new(modDirectory.FullName + "/ModInfo.txt");
             StreamReader reader = fileInfo.OpenText();
             string modNameFromFile = reader.ReadLine();
             string modVersion = reader.ReadLine();
@@ -45,11 +48,11 @@ namespace Block2D.Modding
                 return;
             }
 
-            Mod mod = new(modNameFromFile, modVersion);
+            Mod mod = new(modNameFromFile, modDirectory.Name, modVersion);
             mod.LoadContent();
             _modManager.AddMod(mod);
             reader.Dispose();
-            Main.Logger.Info("Loaded Mod: " + mod.Name);
+            Main.Logger.Info("Loaded Mod: " + mod.DisplayName);
         }
 
         public void UnloadMod(string modName)

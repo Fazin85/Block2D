@@ -35,7 +35,7 @@ namespace Block2D.Modding
                 Main.Logger.Warn("Tried To Add An Unloaded Mod!");
                 return;
             }
-            _mods.Add(mod.Name, mod);
+            _mods.Add(mod.DisplayName, mod);
         }
 
         public void UnloadAndRemoveMod(string modName)
