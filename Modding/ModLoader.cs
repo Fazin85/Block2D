@@ -12,8 +12,20 @@ namespace Block2D.Modding
             _modManager = new();
         }
 
-        public static string[] GetModNames() =>
-            Directory.GetFiles(Main.ModsDirectory);
+        public void LoadAllMods()
+        {
+            string[] modDirectories = Directory.GetDirectories(Main.ModsDirectory);
+
+            if (modDirectories.Length == 0)
+            {
+                Main.Logger.Info("No Mods Detected, Skipping Mod Loading Process.");
+                return;
+            }
+            foreach (string modFile in modDirectories)
+            {
+                LoadMod(modFile);
+            }
+        }
 
         public void LoadMod(string modDirectory)
         {
@@ -37,11 +49,17 @@ namespace Block2D.Modding
             mod.LoadContent();
             _modManager.AddMod(mod);
             reader.Dispose();
+            Main.Logger.Info("Loaded Mod: " + mod.Name);
         }
 
         public void UnloadMod(string modName)
         {
             _modManager.UnloadAndRemoveMod(modName);
+        }
+
+        public void UnloadAllMods()
+        {
+            _modManager.UnloadAndRemoveAllMods();
         }
     }
 }

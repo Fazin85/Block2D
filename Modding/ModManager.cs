@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-using Block2D.Common;
+﻿using Block2D.Common;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Block2D.Modding
 {
@@ -47,6 +48,22 @@ namespace Block2D.Modding
 
             _mods[modName].UnloadContent();
             _mods.Remove(modName);
+            Main.Logger.Info("Removed Mod: " + modName);
+        }
+
+        public void UnloadAndRemoveAllMods()
+        {
+            if (_mods.Count == 0)
+            {
+                Main.Logger.Warn("Tried To Unload Mods, But None Are Loaded!");
+                return;
+            }
+
+            string[] modNames = _mods.Keys.ToArray();
+            foreach (string modName in modNames)
+            {
+                UnloadAndRemoveMod(modName);
+            }
         }
     }
 }

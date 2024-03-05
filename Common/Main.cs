@@ -1,4 +1,5 @@
-﻿using Block2D.Server;
+﻿using Block2D.Modding;
+using Block2D.Server;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -34,12 +35,14 @@ namespace Block2D.Common
         private SpriteBatch _spriteBatch;
         private readonly AssetManager _assetManager;
         private readonly InternalServer _internalServer;
+        private ModLoader _modLoader;
 
         public Main()
         {
             Version = new();
             _graphics = new GraphicsDeviceManager(this);
             _assetManager = new(Content);
+            _modLoader = new();
             _internalServer = new();
             Client = new();
             Content.RootDirectory = "Content";
@@ -59,6 +62,7 @@ namespace Block2D.Common
             _spriteBatch = new SpriteBatch(GraphicsDevice);
             _assetManager.LoadBlockTextures();
 
+            _modLoader.LoadAllMods();
             // TODO: use this.Content to load your game content here
         }
 

@@ -36,22 +36,22 @@ namespace Block2D.Modding.ContentLoaders
             return files;
         }
 
-        public ModTile[] LoadTiles()
+        public bool TryLoadTiles(out ModTile[] tiles)
         {
+            tiles = null;
             if (!DoesModHaveTiles())
             {
-                Main.Logger.Fatal("Tried To Load Tiles From A Mod That Doesn't Have Any!");
-                return null;
+                return false;
             }
 
             string[] tileFileInfo = GetTileFilePaths();
-            ModTile[] tiles = new ModTile[tileFileInfo.Length];
+            tiles = new ModTile[tileFileInfo.Length];
 
             for (int i = 0; i < tileFileInfo.Length; i++)
             {
                 tiles[i] = (ModTile)JsonConvert.DeserializeObject(tileFileInfo[i]);
             }
-            return tiles;
+            return true;
         }
     }
 }

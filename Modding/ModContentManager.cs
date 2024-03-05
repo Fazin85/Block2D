@@ -22,10 +22,12 @@ namespace Block2D.Modding
 
         public void LoadContent()
         {
-            ModTile[] tiles = _tileLoader.LoadTiles();
-            foreach (var tile in tiles)
+            if (_tileLoader.TryLoadTiles(out ModTile[] tiles))
             {
-                ModTiles.Add(tile.Name, tile);
+                foreach (var tile in tiles)
+                {
+                    ModTiles.Add(tile.Name, tile);
+                }
             }
         }
 

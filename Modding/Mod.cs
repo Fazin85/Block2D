@@ -21,6 +21,7 @@ namespace Block2D.Modding
         public void LoadContent()
         {
             ContentManager.LoadContent();
+            Loaded = true;
         }
 
         public void UnloadContent() { }
