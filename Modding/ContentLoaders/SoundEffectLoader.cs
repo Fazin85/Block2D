@@ -1,5 +1,5 @@
-﻿using Block2D.Common;
-using System.IO;
+﻿using System.IO;
+using Block2D.Common;
 
 namespace Block2D.Modding.ContentLoaders
 {
@@ -54,6 +54,10 @@ namespace Block2D.Modding.ContentLoaders
                 if (float.TryParse(sr.ReadLine(), out float result))
                 {
                     soundEffects[i].Volume = result;
+                }
+                else
+                {
+                    Main.Logger.Warn("Tried To Load Sound Effect With Invalid Volume!");
                 }
             }
             return true;
