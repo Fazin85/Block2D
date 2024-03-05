@@ -29,7 +29,7 @@ namespace Block2D.Server.Networking
             if (
                 InternalServer
                     .Instance.World.Dimensions[playerDimension]
-                    .ChunkProvider.TryAddNewChunk(position, out Chunk newChunk)
+                    .ChunkManager.TryAddNewChunk(position, out Chunk newChunk)
             )
             {
                 ushort[] tileIds = new ushort[Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE];

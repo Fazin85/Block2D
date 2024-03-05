@@ -35,7 +35,7 @@ namespace Block2D.Common
         private SpriteBatch _spriteBatch;
         private readonly AssetManager _assetManager;
         private readonly InternalServer _internalServer;
-        private ModLoader _modLoader;
+        private readonly ModLoader _modLoader;
 
         public Main()
         {

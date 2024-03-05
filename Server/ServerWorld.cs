@@ -16,7 +16,7 @@ namespace Block2D.Server
 
         private readonly List<ServerPlayer> _players;
         private int _tickCounter;
-        private int _seed;
+        private readonly int _seed;
 
         public ServerWorld()
         {

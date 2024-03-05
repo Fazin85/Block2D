@@ -24,9 +24,9 @@ namespace Block2D.Client
 
         public OrthographicCamera Camera { get; private set; }
 
-        private Riptide.Client _client;
+        private readonly Riptide.Client _client;
         private ClientWorld _currentWorld;
-        private ClientMessageHandler _messageHandler;
+        private readonly ClientMessageHandler _messageHandler;
         private bool _inWorld;
         private const string ip = "127.0.0.1";
         private const ushort port = 7777;

@@ -4,8 +4,8 @@ namespace Block2D.Server.WorldGen
 {
     public class TerrainGenerator
     {
-        private string _dimensionToGenerate;
-        private int _seed;
+        private readonly string _dimensionToGenerate;
+        private readonly int _seed;
         
         public TerrainGenerator(string dimensionToGenerate, int seed)
         {

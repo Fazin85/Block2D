@@ -5,13 +5,13 @@ using System.Collections.Generic;
 
 namespace Block2D.Server
 {
-    public class ServerChunkProvider
+    public class ServerChunkManager
     {
-        private Dictionary<Point, Chunk> _chunks;
+        private readonly Dictionary<Point, Chunk> _chunks;
 
-        private TerrainGenerator _generator;
+        private readonly TerrainGenerator _generator;
 
-        public ServerChunkProvider(string dimensionName, int seed)
+        public ServerChunkManager(string dimensionName, int seed)
         {
             _chunks = new();
             _generator = new(dimensionName, seed);
