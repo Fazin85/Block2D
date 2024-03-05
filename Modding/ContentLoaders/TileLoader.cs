@@ -4,30 +4,30 @@ using System.IO;
 
 namespace Block2D.Modding.ContentLoaders
 {
-    public class TileLoader
+    public class TileLoader : IContentLoader
     {
-        private readonly Mod _mod;
-        private readonly string _tileFilesPath;
+        public Mod Mod { get; set; }
+        public string FilesPath { get; set; }
 
         public TileLoader(Mod mod)
         {
-            _mod = mod;
-            _tileFilesPath = Main.ModsDirectory + _mod.DisplayName + "Tiles";
+            Mod = mod;
+            FilesPath = Main.ModsDirectory + Mod.DisplayName + "Tiles";
         }
 
-        private bool DoesModHaveTiles()
+        public bool ModContains()
         {
-            if (Directory.Exists(_tileFilesPath))
+            if (Directory.Exists(FilesPath))
             {
-                string[] tileFiles = Directory.GetFiles(_tileFilesPath);
+                string[] tileFiles = Directory.GetFiles(FilesPath);
                 return tileFiles.Length > 0;
             }
             return false;
         }
 
-        private string[] GetTileFilePaths()
+        public string[] GetFilePaths()
         {
-            string[] files = Directory.GetFiles(_tileFilesPath);
+            string[] files = Directory.GetFiles(FilesPath);
             if (files.Length == 0)
             {
                 Main.Logger.Warn("There Are No Files To Get!");
@@ -39,12 +39,12 @@ namespace Block2D.Modding.ContentLoaders
         public bool TryLoadTiles(out ModTile[] tiles)
         {
             tiles = null;
-            if (!DoesModHaveTiles())
+            if (!ModContains())
             {
                 return false;
             }
 
-            string[] tileFileInfo = GetTileFilePaths();
+            string[] tileFileInfo = GetFilePaths();
             tiles = new ModTile[tileFileInfo.Length];
 
             for (int i = 0; i < tileFileInfo.Length; i++)

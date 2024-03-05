@@ -7,7 +7,9 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 namespace Block2D.Common
 {
@@ -54,6 +56,7 @@ namespace Block2D.Common
             InitializeLogger();
             Client.InitializeCamera(Window, GraphicsDevice);
             // TODO: Add your initialization logic here
+            
             base.Initialize();
         }
 

@@ -22,16 +22,16 @@ namespace Block2D.Modding
                 return;
             }
 
-            DirectoryInfo[] directoryInfo = new DirectoryInfo[modDirectories.Length];
-            for (int i = 0; i < directoryInfo.Length; i++)
+            for (int i = 0; i < modDirectories.Length; i++)
             {
-                directoryInfo[i] = new(modDirectories[i]);
-                LoadMod(directoryInfo[i]);
+                LoadMod(modDirectories[i]);
             }
         }
 
-        public void LoadMod(DirectoryInfo modDirectory)
+        public void LoadMod(string modDirectoryPath)
         {
+            DirectoryInfo modDirectory = new(modDirectoryPath);
+
             if (!File.Exists(modDirectory.FullName + "/ModInfo.txt"))
             {
                 return;
