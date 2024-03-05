@@ -13,16 +13,16 @@ namespace Block2D.Modding
         }
 
         public static string[] GetModNames() =>
-            Directory.GetFiles(Main.AppDataDirectory + Main.GameName);
+            Directory.GetFiles(Main.ModsDirectory);
 
         public void LoadMod(string modDirectory)
         {
-            if (!File.Exists(modDirectory + "/Mod.txt"))
+            if (!File.Exists(modDirectory + "/ModInfo.txt"))
             {
                 return;
             }
 
-            FileInfo fileInfo = new(modDirectory + "/Mod.txt");
+            FileInfo fileInfo = new(modDirectory + "/ModInfo.txt");
             StreamReader reader = fileInfo.OpenText();
             string modNameFromFile = reader.ReadLine();
             string modVersion = reader.ReadLine();

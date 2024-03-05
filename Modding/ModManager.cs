@@ -3,6 +3,9 @@ using Block2D.Common;
 
 namespace Block2D.Modding
 {
+    /// <summary>
+    /// A class that stores all loaded mods
+    /// </summary>
     public class ModManager
     {
         private readonly Dictionary<string, Mod> _mods;

@@ -1,12 +1,12 @@
-﻿using System;
-using System.IO;
-using Block2D.Server;
+﻿using Block2D.Server;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using System;
+using System.IO;
 
 namespace Block2D.Common
 {
@@ -21,6 +21,13 @@ namespace Block2D.Common
             get => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         }
 
+        public static string ModsDirectory
+        {
+            get => AppDataDirectory + "/" + GameName + "/Mods";
+        }
+
+        public static Version Version { get; private set; }
+
         public const string GameName = "Block2D";
 
         private readonly GraphicsDeviceManager _graphics;
@@ -30,6 +37,7 @@ namespace Block2D.Common
 
         public Main()
         {
+            Version = new();
             _graphics = new GraphicsDeviceManager(this);
             _assetManager = new(Content);
             _internalServer = new();
