@@ -7,15 +7,20 @@ namespace Block2D.Client
 {
     public class Renderer
     {
-        public static void DrawChunks_ShowHitboxes(
-            Chunk[] chunksToDraw,
+        public static void DrawChunks(
+            ClientChunk[] chunksToDraw,
             SpriteBatch spriteBatch,
             AssetManager assets
         )
         {
             for (int i = 0; i < chunksToDraw.Length; i++)
             {
-                Chunk currentChunk = chunksToDraw[i];
+                ClientChunk currentChunk = chunksToDraw[i];
+                
+                if(currentChunk.ReceivedSections != 3)
+                {
+                    continue;
+                }
 
                 for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
                 {

@@ -1,52 +1,19 @@
-﻿using Block2D.Server;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using System;
 
 namespace Block2D.Common
 {
-    public struct Chunk : ITickable
+    public abstract class Chunk
     {
         public const int CHUNK_SIZE = 64;
-
-        public readonly ChunkLoadAmount LoadAmount
-        {
-            get => _loadAmount;
-        }
-
-        public Point Position
-        {
-            readonly get => _position;
-            set => _position = value;
-        }
-
-        public readonly Tile[,] Tiles
+        public Point Position { get; set; }
+        public Tile[,] Tiles
         {
             get => _tiles;
         }
+        private readonly Tile[,] _tiles = new Tile[CHUNK_SIZE, CHUNK_SIZE];
 
-        private readonly Tile[,] _tiles;
-        private readonly ChunkLoadAmount _loadAmount;
-        private Point _position;
-
-        public Chunk(Point position)
-        {
-            _tiles = new Tile[CHUNK_SIZE, CHUNK_SIZE];
-            _loadAmount = ChunkLoadAmount.Unloaded;
-            _position = position;
-        }
-
-        public readonly void Tick()
-        {
-            for (int x = 0; x < CHUNK_SIZE; x++)
-            {
-                for (int y = 0; y < CHUNK_SIZE; y++)
-                {
-                    _tiles[x, y].Tick();
-                }
-            }
-        }
-
-        public readonly void SetTile(Vector2 position, ushort id)
+        public void SetTile(Vector2 position, ushort id)
         {
             if (position.X >= CHUNK_SIZE || position.X < 0)
             {
@@ -63,7 +30,7 @@ namespace Block2D.Common
             _tiles[(int)position.X, (int)position.Y].Set(id);
         }
 
-        public readonly Tile GetTile(Vector2 position)
+        public Tile GetTile(Vector2 position)
         {
             if (position.X >= CHUNK_SIZE || position.X < 0)
             {

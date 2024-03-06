@@ -5,9 +5,9 @@ using System.IO;
 
 namespace Block2D.Server.IO
 {
-    public class ChunkSaver
+    public static class ChunkSaver
     {
-        public static void SaveChunk(Chunk chunk)
+        public static void SaveChunk(ServerChunk chunk)
         {
             Point regionPos = chunk.GetRegionPos();
 

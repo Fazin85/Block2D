@@ -1,4 +1,5 @@
 ﻿using Block2D.Common;
+using System;
 
 namespace Block2D.Server.WorldGen
 {
@@ -13,13 +14,26 @@ namespace Block2D.Server.WorldGen
             _seed = seed;
         }
 
-        public void GenerateChunkTerrain(Chunk chunk)
+        public void GenerateChunkTerrain(ServerChunk chunk)
         {
+            //int i = 0;
             for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
             {
                 for (int y = 0; y < Chunk.CHUNK_SIZE; y++)
                 {
-                    chunk.SetTile(new(x, y), 1);
+                    //i++;
+                    if(Random.Shared.Next(2) == 0)
+                    {
+                        chunk.SetTile(new(x, y), 1);
+                    }
+                    else if(Random.Shared.Next(2) == 0)
+                    {
+                        chunk.SetTile(new(x, y), 3);
+                    }
+                    else
+                    {
+                        chunk.SetTile(new(x, y), 2);
+                    }
                 }
             }
         }

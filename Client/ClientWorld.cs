@@ -10,7 +10,7 @@ namespace Block2D.Client
     {
         public List<ClientPlayer> Players { get; private set; }
 
-        public Dictionary<Point, Chunk> Chunks { get; private set; }
+        public Dictionary<Point, ClientChunk> Chunks { get; private set; }
 
         public ClientWorld()
         {
@@ -66,7 +66,7 @@ namespace Block2D.Client
             return null;
         }
 
-        public bool TryAddChunk(Chunk chunk)
+        public bool TryAddChunk(ClientChunk chunk)
         {
             return Chunks.TryAdd(chunk.Position, chunk);
         }
@@ -76,7 +76,7 @@ namespace Block2D.Client
             return Chunks.ContainsKey(position);
         }
 
-        public bool GetChunkLoaded(Point chunkPosition, out Chunk chunk)
+        public bool GetChunkLoaded(Point chunkPosition, out ClientChunk chunk)
         {
             return Chunks.TryGetValue(chunkPosition, out chunk);
         }
@@ -90,7 +90,7 @@ namespace Block2D.Client
         public bool TryGetTile(Point worldPosition, out Tile tile)
         {
             Point chunkPosition = worldPosition.ToChunkCoords();
-            if (GetChunkLoaded(chunkPosition, out Chunk chunk))
+            if (GetChunkLoaded(chunkPosition, out ClientChunk chunk))
             {
                 int x = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.X - worldPosition.X);
                 int y = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.Y - worldPosition.Y);

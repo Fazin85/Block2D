@@ -1,6 +1,7 @@
 ﻿using Block2D.Common;
 using Microsoft.Xna.Framework;
 using Riptide;
+using System.Diagnostics;
 
 namespace Block2D.Client.Networking
 {
@@ -30,6 +31,7 @@ namespace Block2D.Client.Networking
         {
             Point position = message.GetPoint();
             string dimension = message.GetString();
+            byte offset = message.GetByte();
             byte[] compressedTiles = message.GetBytes();
 
             if (dimension != Main.Client.LocalPlayer.Dimension)
@@ -37,21 +39,29 @@ namespace Block2D.Client.Networking
                 return;
             }
 
-            byte[] decompressedTiles = compressedTiles.Decompress();
+            byte[] decompressedTileBytes = compressedTiles.Decompress();
 
-            ushort[] target = decompressedTiles.ToUShortArray();
+            ushort[] decompressedTiles = decompressedTileBytes.ToUShortArray();
+            Debug.WriteLine(compressedTiles.Length);
 
-            Chunk newChunk = new(position);
-
-            for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
+            if (offset == 0)
             {
-                for (int y = 0; y < Chunk.CHUNK_SIZE; y++)
+                ClientChunk newChunk = new(position);
+
+                newChunk.SetSection(decompressedTiles, offset);
+                Main.Client.World.TryAddChunk(newChunk);
+            }
+            else
+            {
+                if (Main.Client.World.GetChunkLoaded(position, out ClientChunk chunk))
                 {
-                    newChunk.SetTile(new Vector2(x, y), target[Chunk.CHUNK_SIZE * x + y]);
+                    if (offset == chunk.ReceivedSections + 1 && offset < 4)
+                    {
+                        chunk.SetSection(decompressedTiles, offset);
+                        chunk.ReceivedSections = offset;
+                    }
                 }
             }
-
-            Main.Client.World.TryAddChunk(newChunk);
         }
     }
 }

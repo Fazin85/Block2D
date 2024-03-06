@@ -83,7 +83,7 @@ namespace Block2D.Client
         {
             if (_inWorld)
             {
-                Renderer.DrawChunks_ShowHitboxes(_currentWorld.Chunks.Values.ToArray(), spriteBatch, assets);
+                Renderer.DrawChunks(_currentWorld.Chunks.Values.ToArray(), spriteBatch, assets);
 
                 for (int i = 0; i < _currentWorld.Players.Count; i++)
                 {

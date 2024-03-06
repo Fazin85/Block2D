@@ -8,7 +8,7 @@ namespace Block2D.Server
 {
     public class ServerChunkManager
     {
-        private readonly Dictionary<Point, Chunk> _chunks;
+        private readonly Dictionary<Point, ServerChunk> _chunks;
 
         private readonly TerrainGenerator _generator;
 
@@ -18,16 +18,16 @@ namespace Block2D.Server
             _generator = new(dimensionName, seed);
         }
 
-        /// <summary>Creates a <see cref="Chunk"/>, generates the chunk's terrain, and tries to add it to chunk dictionary.</summary>
-        public bool TryAddNewChunk(Point position, out Chunk addedChunk)
+        /// <summary>Creates a <see cref="ServerChunk"/>, generates the chunk's terrain, and tries to add it to chunk dictionary.</summary>
+        public bool TryAddNewChunk(Point position, out ServerChunk addedChunk)
         {
-            addedChunk = new();
+            addedChunk = new(position);
             if (_chunks.ContainsKey(position))
             {
                 return false;
             }
 
-            Chunk newChunk = new(position);
+            ServerChunk newChunk = new(position);
             _generator.GenerateChunkTerrain(newChunk);
             addedChunk = newChunk;
             if (TryAddChunk(newChunk))
@@ -38,7 +38,7 @@ namespace Block2D.Server
             return false;
         }
 
-        private bool TryAddChunk(Chunk chunk)
+        private bool TryAddChunk(ServerChunk chunk)
         {
             if (_chunks.TryAdd(chunk.Position, chunk))
             {
@@ -50,7 +50,7 @@ namespace Block2D.Server
         /// <summary>Checks if the chunk dictionary contains the key <see cref="Vector2"/>, and that the chunk tied to the <see cref="Vector2"/> position isn't unloaded</summary>
         public bool IsChunkLoaded(Point position)
         {
-            return _chunks.TryGetValue(position, out Chunk chunk)
+            return _chunks.TryGetValue(position, out ServerChunk chunk)
                 && chunk.LoadAmount != ChunkLoadAmount.Unloaded;
         }
     }

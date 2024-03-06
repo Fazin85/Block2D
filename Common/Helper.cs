@@ -1,8 +1,9 @@
-﻿using System;
+﻿using Block2D.Server;
+using Microsoft.Xna.Framework;
+using System;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using Microsoft.Xna.Framework;
 
 namespace Block2D.Common
 {
@@ -50,13 +51,24 @@ namespace Block2D.Common
             return tile.ID == 0; //am I stupid or does this not make sense?
         }
 
+        public static int GetIndexFromPosition(this Point p)
+        {
+            return Chunk.CHUNK_SIZE * p.X + p.Y;
+        }
+
+        public static int GetIndexFromPosition(this Vector2 p)
+        {
+            return (int)(Chunk.CHUNK_SIZE * p.X + p.Y);
+        }
+
+        public static int GetIndexFromPosition(int x, int y)
+        {
+            return (Chunk.CHUNK_SIZE * x + y);
+        }
+
         public static Point GetRegionPos(this Chunk chunk)
         {
-            return new()
-            {
-                X = chunk.Position.X >> 11,
-                Y = chunk.Position.Y >> 11,
-            };
+            return new() { X = chunk.Position.X >> 11, Y = chunk.Position.Y >> 11, };
         }
 
         public static byte[] ToByteArray(this ushort[] array)
@@ -71,6 +83,30 @@ namespace Block2D.Common
             ushort[] target = new ushort[array.Length / 2];
             Buffer.BlockCopy(array, 0, target, 0, array.Length);
             return target;
+        }
+
+        public static void Split<T>(T[] array, int index, out T[] first, out T[] second)
+        {
+            first = array.Take(index).ToArray();
+            second = array.Skip(index).ToArray();
+        }
+
+        public static void SplitMidPoint<T>(T[] array, out T[] first, out T[] second)
+        {
+            Split(array, array.Length / 2, out first, out second);
+        }
+
+        public static ushort[] GetChunkTileIds(this ServerChunk chunk)
+        {
+            ushort[] result = new ushort[Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE];
+            for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
+            {
+                for (int y = 0; y < Chunk.CHUNK_SIZE; y++)
+                {
+                    result[new Point(x, y).GetIndexFromPosition()] = chunk.Tiles[x, y].ID;
+                }
+            }
+            return result;
         }
     }
 }

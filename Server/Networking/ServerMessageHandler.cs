@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Riptide;
 using System;
+using System.Diagnostics;
 
 namespace Block2D.Server.Networking
 {
@@ -23,30 +24,27 @@ namespace Block2D.Server.Networking
             Point position = message.GetPoint();
             string playerDimension = message.GetString();
 
-            Message newMessage = Message.Create(MessageSendMode.Unreliable, MessageID.SendChunk);
-            newMessage.AddPoint(position);
-            newMessage.AddString(playerDimension);
             if (
                 Main
                     .InternalServer.World.Dimensions[playerDimension]
-                    .ChunkManager.TryAddNewChunk(position, out Chunk newChunk)
+                    .ChunkManager.TryAddNewChunk(position, out ServerChunk newChunk)
             )
             {
-                ushort[] tileIds = new ushort[Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE];
-
-                for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
+                for (byte i = 0; i < 4; i++)
                 {
-                    for (int y = 0; y < Chunk.CHUNK_SIZE; y++)
-                    {
-                        Tile currentTile = newChunk.Tiles[x, y];
+                    Message newMessage = Message.Create(MessageSendMode.Unreliable, MessageID.SendChunk);
+                    newMessage.AddPoint(position);
+                    newMessage.AddString(playerDimension);
+                    message.AddByte(i);
 
-                        tileIds[Chunk.CHUNK_SIZE * x + y] = currentTile.ID;
-                    }
+                    byte[] tileBytes = newChunk.Sections[i].Tiles.ToByteArray();
+                    byte[] bytesToSend = tileBytes.Compress();
+
+                    Debug.WriteLine(bytesToSend.Length);
+
+                    newMessage.AddBytes(bytesToSend);
+                    Main.InternalServer.Send(newMessage, fromClientId);
                 }
-                byte[] target = tileIds.ToByteArray();
-                byte[] bytesToSend = target.Compress();
-                newMessage.AddBytes(bytesToSend);
-                Main.InternalServer.Send(newMessage, fromClientId);
             }
         }
     }
