@@ -58,7 +58,6 @@ namespace Block2D.Client.Networking
                     if (offset == chunk.ReceivedSections + 1 && offset < 4)
                     {
                         chunk.SetSection(decompressedTiles, offset);
-                        chunk.ReceivedSections = offset;
                     }
                 }
             }
