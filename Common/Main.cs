@@ -68,9 +68,7 @@ namespace Block2D.Common
         {
             InitializeLogger();
             Client.InitializeCamera(Window, GraphicsDevice);
-            // TODO: Add your initialization logic here
-            Point p = new(2048 >> 11, 4096 >> 11);
-            Debug.WriteLine(p);
+
             base.Initialize();
         }
 
@@ -80,7 +78,6 @@ namespace Block2D.Common
             _assetManager.LoadBlockTextures();
 
             _modLoader.LoadAllMods();
-            // TODO: use this.Content to load your game content here
         }
 
         protected override void Update(GameTime gameTime)

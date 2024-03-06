@@ -1,4 +1,5 @@
 ﻿using Block2D.Common;
+using Block2D.Server.IO;
 using Block2D.Server.WorldGen;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
@@ -29,7 +30,12 @@ namespace Block2D.Server
             Chunk newChunk = new(position);
             _generator.GenerateChunkTerrain(newChunk);
             addedChunk = newChunk;
-            return TryAddChunk(newChunk);
+            if (TryAddChunk(newChunk))
+            {
+                ChunkSaver.SaveChunk(newChunk);
+                return true;
+            }
+            return false;
         }
 
         private bool TryAddChunk(Chunk chunk)

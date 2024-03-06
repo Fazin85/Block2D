@@ -1,8 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Block2D.Common;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Block2D.Common.IO
+namespace Block2D.Server.IO
 {
     public class ChunkSaver
     {
@@ -14,10 +15,16 @@ namespace Block2D.Common.IO
                 Main.InternalServer.World.ChunkDataPath
                 + "/r"
                 + regionPos.X.ToString()
+                + "."
                 + regionPos.Y.ToString();
 
-            string path2 = path =
-                "/X" + chunk.Position.X.ToString() + "Y" + chunk.Position.Y.ToString() + ".chunk";
+            string path2 =
+                path
+                + "/X"
+                + chunk.Position.X.ToString()
+                + "Y"
+                + chunk.Position.Y.ToString()
+                + ".chunk";
 
             if (File.Exists(path2))
             {
