@@ -9,7 +9,6 @@ using NLog.Targets;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Text;
 
 namespace Block2D.Common
 {
@@ -17,7 +16,14 @@ namespace Block2D.Common
     {
         public static Client.Client Client { get; private set; }
 
+        public static bool ShouldExit { get; set; }
+
         public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        public static InternalServer InternalServer
+        {
+            get => _instance._internalServer;
+        }
 
         public static string AppDataDirectory
         {
@@ -29,23 +35,30 @@ namespace Block2D.Common
             get => AppDataDirectory + "/" + GameName + "/Mods";
         }
 
+        public static string WorldsDirectory
+        {
+            get => AppDataDirectory + "/" + GameName + "/Worlds";
+        }
+
         public static Version Version { get; private set; }
 
         public const string GameName = "Block2D";
 
-        private readonly GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private GraphicsDeviceManager _graphicsDeviceManager;
         private readonly AssetManager _assetManager;
         private readonly InternalServer _internalServer;
         private readonly ModLoader _modLoader;
+        private static Main _instance;
 
         public Main()
         {
-            Version = new();
-            _graphics = new GraphicsDeviceManager(this);
+            _instance = this;
+            _internalServer = new();
+            _graphicsDeviceManager = new(this);
+            Version = new(0, 1);
             _assetManager = new(Content);
             _modLoader = new();
-            _internalServer = new();
             Client = new();
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -56,7 +69,8 @@ namespace Block2D.Common
             InitializeLogger();
             Client.InitializeCamera(Window, GraphicsDevice);
             // TODO: Add your initialization logic here
-            
+            Point p = new(2048 >> 11, 4096 >> 11);
+            Debug.WriteLine(p);
             base.Initialize();
         }
 
@@ -75,7 +89,7 @@ namespace Block2D.Common
                 GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
                 || Keyboard.GetState().IsKeyDown(Keys.Escape)
             )
-                Exit();
+                ShouldExit = true;
 
             if (Keyboard.GetState().IsKeyDown(Keys.G))
             {
@@ -95,7 +109,10 @@ namespace Block2D.Common
             }
 
             // TODO: Add your update logic here
-
+            if (ShouldExit)
+            {
+                Exit();
+            }
             base.Update(gameTime);
         }
 
@@ -121,6 +138,11 @@ namespace Block2D.Common
             }
 
             base.OnExiting(sender, args);
+        }
+
+        public static void ForceQuitModloader()
+        {
+            _instance._modLoader.ForceQuit();
         }
 
         private static void InitializeLogger()

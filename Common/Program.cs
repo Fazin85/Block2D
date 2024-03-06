@@ -22,7 +22,10 @@ namespace Block2D.Common
             {
                 Directory.CreateDirectory(programAppDataDirectory + "/Mods");
             }
-
+            if (!Directory.Exists(programAppDataDirectory + "/Worlds"))//create "Worlds" directory.
+            {
+                Directory.CreateDirectory(programAppDataDirectory + "/Worlds");
+            }
         }
     }
 }

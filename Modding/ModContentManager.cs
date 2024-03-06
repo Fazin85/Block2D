@@ -42,5 +42,10 @@ namespace Block2D.Modding
                 }
             }
         }
+
+        public void UnloadContent()
+        {
+
+        }
     }
 }

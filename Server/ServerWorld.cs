@@ -1,10 +1,8 @@
 ﻿using Block2D.Common;
 using Block2D.Common.ID;
-using Block2D.Server.WorldGen;
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 
 namespace Block2D.Server
 {
@@ -12,14 +10,28 @@ namespace Block2D.Server
     {
         public bool IsLoaded { get; }
 
+        public string Name { get; private set; }
+
+        public string ChunkDataPath
+        {
+            get => Main.WorldsDirectory + "/" + Name + "/ChunkData";
+        }
+
+        public string PlayerDataPath
+        {
+            get => Main.WorldsDirectory + "/" + Name + "/PlayerData";
+        }
+
         public Dictionary<string, ServerDimension> Dimensions { get; private set; }
 
         private readonly List<ServerPlayer> _players;
         private int _tickCounter;
         private readonly int _seed;
 
-        public ServerWorld()
+        public ServerWorld(string name)
         {
+            Name = name;//must do this beforce creating directories
+            CreateNeededDirectories();
             Dimensions = new();
             _players = new();
             _tickCounter = 0;
@@ -42,6 +54,18 @@ namespace Block2D.Server
         {
             _players.Add(player);
             Main.Logger.Info("Added Player" + player.Name);
+        }
+
+        public void CreateNeededDirectories()
+        {
+            if (!Directory.Exists(ChunkDataPath))
+            {
+                Directory.CreateDirectory(ChunkDataPath);
+            }
+            if (!Directory.Exists(PlayerDataPath))
+            {
+                Directory.CreateDirectory(PlayerDataPath);
+            }
         }
 
         public bool RemovePlayer(ushort id)

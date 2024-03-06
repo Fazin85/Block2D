@@ -1,6 +1,4 @@
-﻿using System;
-using Block2D.Common;
-using Block2D.Common.ID;
+﻿using Block2D.Common;
 using Microsoft.Xna.Framework;
 using Riptide;
 
@@ -39,11 +37,9 @@ namespace Block2D.Client.Networking
                 return;
             }
 
-            byte[] decompressedTiles = Helper.Decompress(compressedTiles);
+            byte[] decompressedTiles = compressedTiles.Decompress();
 
-            ushort[] target = new ushort[decompressedTiles.Length / 2];
-
-            Buffer.BlockCopy(decompressedTiles, 0, target, 0, decompressedTiles.Length);
+            ushort[] target = decompressedTiles.ToUShortArray();
 
             Chunk newChunk = new(position);
 

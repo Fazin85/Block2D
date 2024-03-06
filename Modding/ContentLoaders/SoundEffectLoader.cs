@@ -31,7 +31,12 @@ namespace Block2D.Modding.ContentLoaders
 
                 if (name.Length == 0 || soundFilePath.Length == 0)
                 {
-                    continue;
+                    Main.Logger.Fatal(
+                        "Sound Effect Name Length Or FilePath Length Was Zero.\nBroken Sound Effect Path: "
+                            + soundFilePaths[i]
+                    );
+                    Main.ForceQuitModloader();
+                    return false;
                 }
                 sr.Dispose();
                 soundEffects[i].Name = name;

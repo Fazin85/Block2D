@@ -14,7 +14,7 @@ namespace Block2D.Server.Networking
 
             ServerPlayer newPlayer = new(Vector2.Zero, 20, clientPlayerName);
 
-            InternalServer.Instance.World.AddPlayer(newPlayer);
+            Main.InternalServer.World.AddPlayer(newPlayer);
         }
 
         [MessageHandler((ushort)MessageID.HandleChunkRequest)]
@@ -27,8 +27,8 @@ namespace Block2D.Server.Networking
             newMessage.AddPoint(position);
             newMessage.AddString(playerDimension);
             if (
-                InternalServer
-                    .Instance.World.Dimensions[playerDimension]
+                Main
+                    .InternalServer.World.Dimensions[playerDimension]
                     .ChunkManager.TryAddNewChunk(position, out Chunk newChunk)
             )
             {
@@ -43,14 +43,11 @@ namespace Block2D.Server.Networking
                         tileIds[Chunk.CHUNK_SIZE * x + y] = currentTile.ID;
                     }
                 }
-                byte[] target = new byte[tileIds.Length * 2];
-                Buffer.BlockCopy(tileIds, 0, target, 0, tileIds.Length * 2);
-                byte[] bytesToSend = Helper.Compress(target);
+                byte[] target = tileIds.ToByteArray();
+                byte[] bytesToSend = target.Compress();
                 newMessage.AddBytes(bytesToSend);
-                InternalServer.Instance.Send(newMessage, fromClientId);
+                Main.InternalServer.Send(newMessage, fromClientId);
             }
         }
-
-
     }
 }

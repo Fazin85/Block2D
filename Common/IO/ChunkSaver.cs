@@ -1,0 +1,47 @@
+﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
+using System.IO;
+
+namespace Block2D.Common.IO
+{
+    public class ChunkSaver
+    {
+        public static void SaveChunk(Chunk chunk)
+        {
+            Point regionPos = chunk.GetRegionPos();
+
+            string path =
+                Main.InternalServer.World.ChunkDataPath
+                + "/r"
+                + regionPos.X.ToString()
+                + regionPos.Y.ToString();
+
+            string path2 = path =
+                "/X" + chunk.Position.X.ToString() + "Y" + chunk.Position.Y.ToString() + ".chunk";
+
+            if (File.Exists(path2))
+            {
+                return;
+            }
+
+            if (!Directory.Exists(path))
+            {
+                Directory.CreateDirectory(path);
+            }
+
+            List<ushort> tileIds = new();
+
+            for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
+            {
+                for (int y = 0; y < Chunk.CHUNK_SIZE; y++)
+                {
+                    Tile tile = chunk.Tiles[x, y];
+                    tileIds.Add(tile.ID);
+                }
+            }
+            byte[] compressedTiles = tileIds.ToArray().ToByteArray();
+
+            File.WriteAllBytes(path2, compressedTiles);
+        }
+    }
+}

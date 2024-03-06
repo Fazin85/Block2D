@@ -26,6 +26,10 @@ namespace Block2D.Modding
             Loaded = true;
         }
 
-        public void UnloadContent() { }
+        public void UnloadContent()
+        {
+            ContentManager.UnloadContent();
+            Loaded = false;
+        }
     }
 }

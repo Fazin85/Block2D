@@ -1,17 +1,14 @@
 ﻿using Block2D.Common;
 using Riptide;
 using Riptide.Utils;
-using System.Collections.Generic;
 
 namespace Block2D.Server
 {
     public class InternalServer : ITickable
     {
-        public static InternalServer Instance;
-
         public bool IsRunning
         {
-            get => _server == null ? false : _server.IsRunning;
+            get => _server != null && _server.IsRunning;
         }
 
         public ServerWorld World
@@ -24,8 +21,7 @@ namespace Block2D.Server
 
         public InternalServer()
         {
-            Instance = this;
-            _world = new();
+            _world = new("DevWorld");
         }
 
         public void Start(ushort maxClientCount)
