@@ -1,41 +1,18 @@
 ﻿using System.IO;
 using Block2D.Common;
+using Microsoft.Xna.Framework.Audio;
 
 namespace Block2D.Modding.ContentLoaders
 {
-    public class SoundEffectLoader : IContentLoader
+    public class SoundEffectLoader : ContentLoader
     {
-        public Mod Mod { get; set; }
-        public string FilesPath { get; set; }
-
         public SoundEffectLoader(Mod mod)
         {
             Mod = mod;
             FilesPath = Main.ModsDirectory + Mod.DisplayName + "SoundEffects";
         }
 
-        public string[] GetFilePaths()
-        {
-            string[] files = Directory.GetFiles(FilesPath);
-            if (files.Length == 0)
-            {
-                Main.Logger.Warn("There Are No Files To Get!");
-                return null;
-            }
-            return files;
-        }
-
-        public bool ModContains()
-        {
-            if (Directory.Exists(FilesPath))
-            {
-                string[] tileFiles = Directory.GetFiles(FilesPath);
-                return tileFiles.Length > 0;
-            }
-            return false;
-        }
-
-        public bool TryLoadSoundEffects(out CustomSoundEffect[] soundEffects)
+        public bool TryLoadSoundEffects(out ModSoundEffect[] soundEffects)
         {
             soundEffects = null;
             if (!ModContains())
@@ -44,21 +21,21 @@ namespace Block2D.Modding.ContentLoaders
             }
 
             string[] soundFilePaths = GetFilePaths();
-            soundEffects = new CustomSoundEffect[soundFilePaths.Length];
+            soundEffects = new ModSoundEffect[soundFilePaths.Length];
 
             for (int i = 0; i < soundFilePaths.Length; i++)
             {
                 StreamReader sr = new(soundFilePaths[i]);
-                soundEffects[i].Name = sr.ReadLine();
-                soundEffects[i].Path = soundFilePaths[i];
-                if (float.TryParse(sr.ReadLine(), out float result))
+                string name = sr.ReadLine();
+                string soundFilePath = sr.ReadLine();
+
+                if (name.Length == 0 || soundFilePath.Length == 0)
                 {
-                    soundEffects[i].Volume = result;
+                    continue;
                 }
-                else
-                {
-                    Main.Logger.Warn("Tried To Load Sound Effect With Invalid Volume!");
-                }
+                sr.Dispose();
+                soundEffects[i].Name = name;
+                soundEffects[i].SoundEffect = SoundEffect.FromFile(FilesPath + soundFilePath);
             }
             return true;
         }

@@ -1,6 +1,6 @@
 ﻿namespace Block2D.Modding
 {
-    public class ModTile
+    public struct ModTile
     {
         public string Name { get; set; }
         public string TexturePath { get; set; }

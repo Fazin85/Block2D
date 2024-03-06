@@ -1,5 +1,5 @@
-﻿using Block2D.Common;
-using System.IO;
+﻿using System.IO;
+using Block2D.Common;
 
 namespace Block2D.Modding
 {
@@ -37,8 +37,7 @@ namespace Block2D.Modding
                 return;
             }
 
-            FileInfo fileInfo = new(modDirectory.FullName + "/ModInfo.txt");
-            StreamReader reader = fileInfo.OpenText();
+            StreamReader reader = new(modDirectory.FullName + "/ModInfo.txt");
             string modNameFromFile = reader.ReadLine();
             string modVersion = reader.ReadLine();
 

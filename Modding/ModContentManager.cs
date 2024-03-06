@@ -1,6 +1,6 @@
-﻿using Block2D.Common;
+﻿using System.Collections.Generic;
+using Block2D.Common;
 using Block2D.Modding.ContentLoaders;
-using System.Collections.Generic;
 
 namespace Block2D.Modding
 {
@@ -12,13 +12,14 @@ namespace Block2D.Modding
         private readonly TileLoader _tileLoader;
         public Dictionary<string, ModTile> ModTiles { get; set; }
         private readonly SoundEffectLoader _soundEffectLoader;
-        public Dictionary<string, CustomSoundEffect> SoundEffects { get; set; }
+        public Dictionary<string, ModSoundEffect> SoundEffects { get; set; }
 
         private readonly Mod _mod;
 
         public ModContentManager(Mod mod)
         {
             ModTiles = new();
+            SoundEffects = new();
             _mod = mod;
             _tileLoader = new(_mod);
             _soundEffectLoader = new(_mod);
@@ -26,9 +27,9 @@ namespace Block2D.Modding
 
         public void LoadContent()
         {
-            if (_soundEffectLoader.TryLoadSoundEffects(out CustomSoundEffect[] soundEffects))
+            if (_soundEffectLoader.TryLoadSoundEffects(out ModSoundEffect[] soundEffects))
             {
-                foreach (CustomSoundEffect soundEffect in soundEffects)
+                foreach (ModSoundEffect soundEffect in soundEffects)
                 {
                     SoundEffects.Add(soundEffect.Name, soundEffect);
                 }
