@@ -7,12 +7,7 @@ namespace Block2D.Common
     {
         private const int SECTION_SIZE = CHUNK_SIZE / 4;
 
-        public ChunkLoadAmount LoadAmount
-        {
-            get => _loadAmount;
-        }
-
-        public byte ReceivedSections { get; set; }
+        public byte ReceivedSections { get; private set; }
 
         private readonly Tile[,] _tiles;
         private readonly ChunkLoadAmount _loadAmount;
@@ -81,6 +76,7 @@ namespace Block2D.Common
                     }
                     break;
             }
+            ReceivedSections = offset;
         }
     }
 }
