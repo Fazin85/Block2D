@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Block2D.Common;
+using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework.Audio;
 
 namespace Block2D.Modding.ContentLoaders
@@ -25,6 +26,11 @@ namespace Block2D.Modding.ContentLoaders
 
             for (int i = 0; i < soundFilePaths.Length; i++)
             {
+                if (!soundFilePaths[i].Contains(".txt"))
+                {
+                    return false;
+                }
+
                 StreamReader sr = new(soundFilePaths[i]);
                 string name = sr.ReadLine();
                 string soundFilePath = sr.ReadLine();

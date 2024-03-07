@@ -1,5 +1,6 @@
 ﻿using System.IO;
 using Block2D.Common;
+using Block2D.Modding.DataStructures;
 
 namespace Block2D.Modding.ContentLoaders
 {
@@ -19,12 +20,17 @@ namespace Block2D.Modding.ContentLoaders
                 return false;
             }
 
-            string[] tileFileInfo = GetFilePaths();
-            tiles = new ModTile[tileFileInfo.Length];
+            string[] tileFilePaths = GetFilePaths();
+            tiles = new ModTile[tileFilePaths.Length];
 
-            for (int i = 0; i < tileFileInfo.Length; i++)
+            for (int i = 0; i < tileFilePaths.Length; i++)
             {
-                StreamReader sr = new(tileFileInfo[i]);
+                if (!tileFilePaths[i].Contains(".txt"))
+                {
+                    return false;
+                }
+
+                StreamReader sr = new(tileFilePaths[i]);
                 string name = sr.ReadLine();
                 tiles[i].Name = name;
                 string texturePath = sr.ReadLine();
@@ -38,7 +44,7 @@ namespace Block2D.Modding.ContentLoaders
                 }
                 else
                 {
-                    Main.Logger.Fatal("Tried To Load Tile With Invalid Scale.\nBroken Tile Path: " + tileFileInfo[i]);
+                    Main.Logger.Fatal("Tried To Load Tile With Invalid Scale.\nBroken Tile Path: " + tileFilePaths[i]);
                     Main.ForceQuitModloader();
                 }
             }

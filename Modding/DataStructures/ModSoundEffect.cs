@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework.Audio;
 
-namespace Block2D.Common
+namespace Block2D.Modding.DataStructures
 {
     public struct ModSoundEffect
     {

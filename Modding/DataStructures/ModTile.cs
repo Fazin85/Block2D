@@ -1,4 +1,4 @@
-﻿namespace Block2D.Modding
+﻿namespace Block2D.Modding.DataStructures
 {
     public struct ModTile
     {

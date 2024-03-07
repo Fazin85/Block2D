@@ -141,6 +141,8 @@ namespace Block2D.Common
             _instance._modLoader.ForceQuit();
         }
 
+        public static GraphicsDevice GetGraphicsDevice() => _instance.GraphicsDevice;
+
         private static void InitializeLogger()
         {
             string logFilePath = "Logs/ClientLog.txt";
@@ -159,6 +161,8 @@ namespace Block2D.Common
                         + existingLogFileCreationTime.Hour
                         + "-"
                         + existingLogFileCreationTime.Minute
+                        + "-"
+                        + existingLogFileCreationTime.Second
                         + ".txt"
                 );
 
