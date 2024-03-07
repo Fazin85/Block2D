@@ -26,11 +26,11 @@ namespace Block2D.Client
                 {
                     for (int y = 0; y < Chunk.CHUNK_SIZE; y++)
                     {
-                        Vector2 currentTilePosition = new(x, y);
+                        Point currentTilePosition = new(x, y);
                         Tile currentTile = currentChunk.GetTile(currentTilePosition);
 
                         Vector2 positionToRenderBlock =
-                            (currentChunk.Position.ToVector2() + currentTilePosition) * 16;
+                            (currentChunk.Position.ToVector2() + currentTilePosition.ToVector2()) * 16;
 
                         switch (currentTile.ID)
                         {

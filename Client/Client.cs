@@ -110,6 +110,11 @@ namespace Block2D.Client
 
         public void LocalConnect()
         {
+            if (_client.IsConnecting || _client.IsConnected)
+            {
+                return;
+            }
+
             _client.Connect($"{ip}:{port}");
         }
 

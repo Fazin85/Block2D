@@ -56,6 +56,11 @@ namespace Block2D.Common
             return Chunk.CHUNK_SIZE * p.X + p.Y;
         }
 
+        public static int GetIndexFromPosition(Point p, int chunkSize)
+        {
+            return chunkSize * p.X + p.Y;
+        }
+
         public static int GetIndexFromPosition(this Vector2 p)
         {
             return (int)(Chunk.CHUNK_SIZE * p.X + p.Y);
@@ -63,7 +68,7 @@ namespace Block2D.Common
 
         public static int GetIndexFromPosition(int x, int y)
         {
-            return (Chunk.CHUNK_SIZE * x + y);
+            return Chunk.CHUNK_SIZE * x + y;
         }
 
         public static Point GetRegionPos(this Chunk chunk)

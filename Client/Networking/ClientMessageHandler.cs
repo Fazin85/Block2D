@@ -42,12 +42,12 @@ namespace Block2D.Client.Networking
             byte[] decompressedTileBytes = compressedTiles.Decompress();
 
             ushort[] decompressedTiles = decompressedTileBytes.ToUShortArray();
-            Debug.WriteLine(compressedTiles.Length);
 
             if (offset == 0)
             {
                 ClientChunk newChunk = new(position);
 
+                //newChunk.SetSection(decompressedTiles, offset);
                 newChunk.SetSection(decompressedTiles, offset);
                 Main.Client.World.TryAddChunk(newChunk);
             }
@@ -57,6 +57,7 @@ namespace Block2D.Client.Networking
                 {
                     if (offset == chunk.ReceivedSections + 1 && offset < 4)
                     {
+                        //chunk.SetSection(decompressedTiles, offset);
                         chunk.SetSection(decompressedTiles, offset);
                     }
                 }

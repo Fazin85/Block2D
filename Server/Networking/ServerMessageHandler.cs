@@ -1,7 +1,6 @@
 ﻿using Block2D.Common;
 using Microsoft.Xna.Framework;
 using Riptide;
-using System;
 using System.Diagnostics;
 
 namespace Block2D.Server.Networking
@@ -35,12 +34,10 @@ namespace Block2D.Server.Networking
                     Message newMessage = Message.Create(MessageSendMode.Unreliable, MessageID.SendChunk);
                     newMessage.AddPoint(position);
                     newMessage.AddString(playerDimension);
-                    message.AddByte(i);
+                    newMessage.AddByte(i);
 
                     byte[] tileBytes = newChunk.Sections[i].Tiles.ToByteArray();
                     byte[] bytesToSend = tileBytes.Compress();
-
-                    Debug.WriteLine(bytesToSend.Length);
 
                     newMessage.AddBytes(bytesToSend);
                     Main.InternalServer.Send(newMessage, fromClientId);

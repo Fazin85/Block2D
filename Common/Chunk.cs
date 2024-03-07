@@ -13,7 +13,7 @@ namespace Block2D.Common
         }
         private readonly Tile[,] _tiles = new Tile[CHUNK_SIZE, CHUNK_SIZE];
 
-        public void SetTile(Vector2 position, ushort id)
+        public void SetTile(Point position, ushort id)
         {
             if (position.X >= CHUNK_SIZE || position.X < 0)
             {
@@ -27,10 +27,10 @@ namespace Block2D.Common
                 return;
             }
 
-            _tiles[(int)position.X, (int)position.Y].Set(id);
+            _tiles[position.X, position.Y].Set(id);
         }
 
-        public Tile GetTile(Vector2 position)
+        public Tile GetTile(Point position)
         {
             if (position.X >= CHUNK_SIZE || position.X < 0)
             {
@@ -44,7 +44,7 @@ namespace Block2D.Common
                 return new Tile();
             }
 
-            return _tiles[(int)position.X, (int)position.Y];
+            return _tiles[position.X, position.Y];
         }
     }
 }

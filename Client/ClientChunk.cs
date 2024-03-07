@@ -5,8 +5,7 @@ namespace Block2D.Common
 {
     public class ClientChunk : Chunk, ITickable
     {
-        private const int SECTION_SIZE = CHUNK_SIZE / 4;
-
+        private const int SECTION_S2 = CHUNK_SIZE / 2 * (CHUNK_SIZE / 2);
         public byte ReceivedSections { get; private set; }
 
         private readonly Tile[,] _tiles;
@@ -31,48 +30,36 @@ namespace Block2D.Common
             }
         }
 
-        public void SetSection(ushort[] tiles, byte offset)
+        public void SetSection(ushort[] blocks, byte offset)
         {
             switch (offset)
             {
                 case 0:
-                    for (int x = 0; x < SECTION_SIZE; x++)
+                    for (int i = 0; i < SECTION_S2; i++)
                     {
-                        for (int y = 0; y < SECTION_SIZE; y++)
-                        {
-                            Vector2 pos = new(x, y);
-                            SetTile(pos, tiles[pos.ToPoint().GetIndexFromPosition()]);
-                        }
+                        Point pos = new(i / CHUNK_SIZE, i % CHUNK_SIZE);
+                        SetTile(pos, blocks[i]);
                     }
                     break;
                 case 1:
-                    for (int x = SECTION_SIZE; x < SECTION_SIZE * 2; x++)
+                    for (int i = SECTION_S2; i < SECTION_S2 * 2; i++)
                     {
-                        for (int y = SECTION_SIZE; y < SECTION_SIZE * 2; y++)
-                        {
-                            Vector2 pos = new(x, y);
-                            SetTile(pos, tiles[pos.ToPoint().GetIndexFromPosition()]);
-                        }
+                        Point pos = new(i / CHUNK_SIZE, i % CHUNK_SIZE);
+                        SetTile(pos, blocks[i - SECTION_S2]);
                     }
                     break;
                 case 2:
-                    for (int x = SECTION_SIZE * 2; x < SECTION_SIZE * 3; x++)
+                    for (int i = SECTION_S2 * 2; i < SECTION_S2 * 3; i++)
                     {
-                        for (int y = SECTION_SIZE * 2; y < SECTION_SIZE * 3; y++)
-                        {
-                            Vector2 pos = new(x, y);
-                            SetTile(pos, tiles[pos.ToPoint().GetIndexFromPosition()]);
-                        }
+                        Point pos = new(i / CHUNK_SIZE, i % CHUNK_SIZE);
+                        SetTile(pos, blocks[i - (SECTION_S2 * 2)]);
                     }
                     break;
                 case 3:
-                    for (int x = SECTION_SIZE * 3; x < SECTION_SIZE * 4; x++)
+                    for (int i = SECTION_S2 * 3; i < SECTION_S2 * 4; i++)
                     {
-                        for (int y = SECTION_SIZE * 3; y < SECTION_SIZE * 4; y++)
-                        {
-                            Vector2 pos = new(x, y);
-                            SetTile(pos, tiles[pos.ToPoint().GetIndexFromPosition()]);
-                        }
+                        Point pos = new(i / CHUNK_SIZE, i % CHUNK_SIZE);
+                        SetTile(pos, blocks[i - (SECTION_S2 * 3)]);
                     }
                     break;
             }
