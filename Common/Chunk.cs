@@ -6,6 +6,7 @@ namespace Block2D.Common
     public abstract class Chunk
     {
         public const int CHUNK_SIZE = 64;
+        public const int CHUNK_SECTION_COUNT = 4;
         public Point Position { get; set; }
         public Tile[,] Tiles
         {

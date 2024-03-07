@@ -5,7 +5,7 @@ namespace Block2D.Common
 {
     public class ClientChunk : Chunk, ITickable
     {
-        private const int SECTION_S2 = CHUNK_SIZE / 2 * (CHUNK_SIZE / 2);
+        private const int SECTION_SIZE = CHUNK_SIZE * CHUNK_SIZE / CHUNK_SECTION_COUNT;
         public byte ReceivedSections { get; private set; }
 
         private readonly Tile[,] _tiles;
@@ -35,31 +35,31 @@ namespace Block2D.Common
             switch (offset)
             {
                 case 0:
-                    for (int i = 0; i < SECTION_S2; i++)
+                    for (int i = 0; i < SECTION_SIZE; i++)
                     {
                         Point pos = new(i / CHUNK_SIZE, i % CHUNK_SIZE);
                         SetTile(pos, blocks[i]);
                     }
                     break;
                 case 1:
-                    for (int i = SECTION_S2; i < SECTION_S2 * 2; i++)
+                    for (int i = SECTION_SIZE; i < SECTION_SIZE * 2; i++)
                     {
                         Point pos = new(i / CHUNK_SIZE, i % CHUNK_SIZE);
-                        SetTile(pos, blocks[i - SECTION_S2]);
+                        SetTile(pos, blocks[i - SECTION_SIZE]);
                     }
                     break;
                 case 2:
-                    for (int i = SECTION_S2 * 2; i < SECTION_S2 * 3; i++)
+                    for (int i = SECTION_SIZE * 2; i < SECTION_SIZE * 3; i++)
                     {
                         Point pos = new(i / CHUNK_SIZE, i % CHUNK_SIZE);
-                        SetTile(pos, blocks[i - (SECTION_S2 * 2)]);
+                        SetTile(pos, blocks[i - (SECTION_SIZE * 2)]);
                     }
                     break;
                 case 3:
-                    for (int i = SECTION_S2 * 3; i < SECTION_S2 * 4; i++)
+                    for (int i = SECTION_SIZE * 3; i < SECTION_SIZE * 4; i++)
                     {
                         Point pos = new(i / CHUNK_SIZE, i % CHUNK_SIZE);
-                        SetTile(pos, blocks[i - (SECTION_S2 * 3)]);
+                        SetTile(pos, blocks[i - (SECTION_SIZE * 3)]);
                     }
                     break;
             }
