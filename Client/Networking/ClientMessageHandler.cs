@@ -1,6 +1,7 @@
 ﻿using Block2D.Common;
 using Microsoft.Xna.Framework;
 using Riptide;
+using System.Diagnostics;
 
 namespace Block2D.Client.Networking
 {
@@ -60,6 +61,7 @@ namespace Block2D.Client.Networking
             {
                 Position = position,
             };
+
             Main.Client.World.AddPlayer(newPlayer);
 
             if (Main.Client.ID == id)

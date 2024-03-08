@@ -66,7 +66,7 @@ namespace Block2D.Server.Networking
             if (
                 Main
                     .InternalServer.World.Dimensions[playerDimension]
-                    .ChunkManager.TryAddNewChunk(position, out ServerChunk newChunk)
+                    .ChunkManager.GetOrTryAddChunk(position, out ServerChunk chunk)
             )
             {
                 for (byte i = 0; i < 4; i++)
@@ -79,7 +79,7 @@ namespace Block2D.Server.Networking
                     newMessage.AddString(playerDimension);
                     newMessage.AddByte(i);
 
-                    byte[] tileBytes = newChunk.Sections[i].Tiles.ToByteArray();
+                    byte[] tileBytes = chunk.Sections[i].Tiles.ToByteArray();
                     byte[] bytesToSend = tileBytes.Compress();
 
                     newMessage.AddBytes(bytesToSend);

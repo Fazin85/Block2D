@@ -1,4 +1,5 @@
 ﻿using Block2D.Common;
+using Microsoft.Xna.Framework;
 using System;
 
 namespace Block2D.Server.WorldGen
@@ -7,26 +8,26 @@ namespace Block2D.Server.WorldGen
     {
         private readonly string _dimensionToGenerate;
         private readonly int _seed;
-        
+
         public TerrainGenerator(string dimensionToGenerate, int seed)
         {
             _dimensionToGenerate = dimensionToGenerate;
             _seed = seed;
         }
 
-        public void GenerateChunkTerrain(ServerChunk chunk)
+        public void GenerateChunk(Point chunkPosition, out ServerChunk chunk)
         {
-            //int i = 0;
+            chunk = new(chunkPosition);
+
             for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
             {
                 for (int y = 0; y < Chunk.CHUNK_SIZE; y++)
                 {
-                    //i++;
-                    if(Random.Shared.Next(2) == 0)
+                    if (Random.Shared.Next(2) == 0)
                     {
                         chunk.SetTile(new(x, y), 1);
                     }
-                    else if(Random.Shared.Next(2) == 0)
+                    else if (Random.Shared.Next(2) == 0)
                     {
                         chunk.SetTile(new(x, y), 3);
                     }
