@@ -1,7 +1,6 @@
 using Block2D.Common;
-using Block2D.Server;
 
-namespace Fazin
+namespace Block2D.Server
 {
     public struct ChunkSectionData
     {
@@ -25,7 +24,13 @@ namespace Fazin
             ChunkSectionData d3 = new(b5, 2);
             ChunkSectionData d4 = new(b6, 3);
 
-            ChunkSectionData[] sections = new ChunkSectionData[Chunk.CHUNK_SECTION_COUNT] { d1, d2, d3, d4 };
+            ChunkSectionData[] sections = new ChunkSectionData[Chunk.CHUNK_SECTION_COUNT]
+            {
+                d1,
+                d2,
+                d3,
+                d4
+            };
 
             return sections;
         }
