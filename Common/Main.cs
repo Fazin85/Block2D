@@ -104,7 +104,6 @@ namespace Block2D.Common
                 _internalServer.Tick();
             }
 
-            // TODO: Add your update logic here
             if (ShouldExit)
             {
                 Exit();

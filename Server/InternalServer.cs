@@ -46,17 +46,24 @@ namespace Block2D.Server
 
         public void OnClientDisconnected(object sender, ServerDisconnectedEventArgs args)
         {
-            _world.RemovePlayer((ushort)(args.Client.Id));
+            _world.RemovePlayer(args.Client.Id);
         }
 
         public void Tick()
         {
+            _world.Tick();
+
             _server.Update();
         }
 
         public void Send(Message message, ushort toClientId)
         {
             _server.Send(message, toClientId);
+        }
+
+        public void SendToAll(Message message)
+        {
+            _server.SendToAll(message);
         }
 
         public void Stop()

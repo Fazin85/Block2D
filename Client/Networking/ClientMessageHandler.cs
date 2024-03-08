@@ -1,32 +1,75 @@
 ﻿using Block2D.Common;
 using Microsoft.Xna.Framework;
 using Riptide;
-using System.Diagnostics;
 
 namespace Block2D.Client.Networking
 {
     public class ClientMessageHandler
     {
-        public void PlayerJoin()
+        public static void PlayerJoin()
         {
-            Message message = Message.Create(MessageSendMode.Reliable, MessageID.PlayerJoin);
+            Message message = Message.Create(MessageSendMode.Reliable, ClientMessageID.PlayerJoin);
             message.AddString("Hello World");
             Main.Client.Send(message);
-            RequestChunk(new(64, 0));
+            //RequestChunk(new(64, 0));
         }
 
-        public void RequestChunk(Point position)
+        public static void RequestChunk(Point position)
         {
             Message message = Message.Create(
                 MessageSendMode.Unreliable,
-                MessageID.SendChunkRequest
+                ClientMessageID.SendChunkRequest
             );
             message.AddPoint(position);
             message.AddString(Main.Client.LocalPlayer.Dimension);
             Main.Client.Send(message);
         }
 
-        [MessageHandler((ushort)MessageID.ReceiveChunk)]
+        public static void SendPosition(Vector2 position)
+        {
+            Message message = Message.Create(MessageSendMode.Unreliable, ClientMessageID.SendPosition);
+            message.AddVector2(position);
+            Main.Client.Send(message);
+        }
+
+        [MessageHandler((ushort)ClientMessageID.ReceivePosition)]
+        private static void HandlePosition(Message message)
+        {
+            Vector2 position = message.GetVector2();
+            ushort id = message.GetUShort();
+
+            if (Main.Client.World.Players.TryGetValue(id, out ClientPlayer player))
+            {
+                if (id == Main.Client.ID)
+                {
+                    return;
+                }
+
+                player.Position = position;
+            }
+        }
+
+        [MessageHandler((ushort)ClientMessageID.HandlePlayerSpawn)]
+        public static void PlayerJoin(Message message)
+        {
+            string name = message.GetString();
+            Vector2 position = message.GetVector2();
+            ushort id = message.GetUShort();
+
+            ClientPlayer newPlayer = new(id, name)
+            {
+                Position = position,
+            };
+            Main.Client.World.AddPlayer(newPlayer);
+
+            if (Main.Client.ID == id)
+            {
+                Main.Client.InWorld = true;
+                RequestChunk(Point.Zero);
+            }
+        }
+
+        [MessageHandler((ushort)ClientMessageID.ReceiveChunk)]
         public static void ReceiveChunk(Message message)
         {
             Point position = message.GetPoint();

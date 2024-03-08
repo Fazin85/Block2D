@@ -32,7 +32,6 @@ namespace Block2D.Server
         public ushort ID
         {
             get => _id;
-            set => _id = value;
         }
         
         private Vector2 _position;
@@ -41,8 +40,9 @@ namespace Block2D.Server
         private string _name;
         private ushort _id;
 
-        public ServerPlayer(Vector2 position, int health, string name)
+        public ServerPlayer(ushort id, Vector2 position, int health, string name)
         {
+            _id = id;
             _position = position;
             _health = health;
             _name = name;

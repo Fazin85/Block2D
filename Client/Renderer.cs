@@ -16,8 +16,8 @@ namespace Block2D.Client
             for (int i = 0; i < chunksToDraw.Length; i++)
             {
                 ClientChunk currentChunk = chunksToDraw[i];
-                
-                if(currentChunk.ReceivedSections != 3)
+
+                if (currentChunk.ReceivedSections != 3)
                 {
                     continue;
                 }
@@ -30,7 +30,8 @@ namespace Block2D.Client
                         Tile currentTile = currentChunk.GetTile(currentTilePosition);
 
                         Vector2 positionToRenderBlock =
-                            (currentChunk.Position.ToVector2() + currentTilePosition.ToVector2()) * 16;
+                            (currentChunk.Position.ToVector2() + currentTilePosition.ToVector2())
+                            * 16;
 
                         switch (currentTile.ID)
                         {
@@ -72,6 +73,12 @@ namespace Block2D.Client
         )
         {
             spriteBatch.Draw(assets.GetPlayerTexture(), player.Position, Color.White);
+
+            if (player.ID != Main.Client.ID)
+            {
+                return;
+            }
+
             spriteBatch.DrawRectangle(player.Hitbox.ToRectangleF(), Color.Red);
 
             Rectangle nextHitbox = player.Hitbox;

@@ -1,4 +1,5 @@
-﻿using Block2D.Common;
+﻿using Block2D.Client.Networking;
+using Block2D.Common;
 using Block2D.Common.ID;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
@@ -35,17 +36,20 @@ namespace Block2D.Client
             get => _velocity;
         }
 
+        public string Name { get; private set; }
+
         private Vector2 _velocity;
         private Rectangle _hitbox;
         private readonly int _health;
         private readonly ushort _id;
         private readonly string _dimension = DimensionID.OVERWORLD;
 
-        public ClientPlayer(ushort id)
+        public ClientPlayer(ushort id, string name)
         {
             _id = id;
             _dimension = DimensionID.OVERWORLD;
             _hitbox = new(Position.ToPoint(), new(16, 16));
+            Name = name;
         }
 
         public void Tick()
@@ -91,6 +95,7 @@ namespace Block2D.Client
                     Position += _velocity;
                     _hitbox.Location = Position.ToPoint();
                 }
+                ClientMessageHandler.SendPosition(Position);
             }
         }
     }

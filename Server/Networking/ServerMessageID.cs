@@ -5,5 +5,8 @@
         HandlePlayerJoin,
         HandleChunkRequest,
         SendChunk,
+        PlayerSpawn,
+        ReceivePosition,
+        SendPosition
     }
 }

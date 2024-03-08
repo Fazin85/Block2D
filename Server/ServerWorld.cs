@@ -1,5 +1,6 @@
 ﻿using Block2D.Common;
 using Block2D.Common.ID;
+using Block2D.Server.Networking;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,9 +23,10 @@ namespace Block2D.Server
             get => Main.WorldsDirectory + "/" + Name + "/PlayerData";
         }
 
+        public Dictionary<ushort, ServerPlayer> Players { get; private set; }
+
         public Dictionary<string, ServerDimension> Dimensions { get; private set; }
 
-        private readonly List<ServerPlayer> _players;
         private int _tickCounter;
         private readonly int _seed;
 
@@ -33,7 +35,7 @@ namespace Block2D.Server
             Name = name;//must do this beforce creating directories
             CreateNeededDirectories();
             Dimensions = new();
-            _players = new();
+            Players = new();
             _tickCounter = 0;
 
             CreateDimensions();
@@ -48,11 +50,22 @@ namespace Block2D.Server
         public void Tick()
         {
             _tickCounter++;
+
+            if(_tickCounter == 3)
+            {
+                ServerMessageHandler.SendPositions();
+                _tickCounter = 0;
+            }
         }
 
         public void AddPlayer(ServerPlayer player)
         {
-            _players.Add(player);
+            if (Players.ContainsKey(player.ID))
+            {
+                return;
+            }
+            
+            Players.Add(player.ID, player);
             Main.Logger.Info("Added Player" + player.Name);
         }
 
@@ -72,15 +85,8 @@ namespace Block2D.Server
         {
             try
             {
-                for (int i = 0; i < _players.Count; i++)
-                {
-                    ServerPlayer player = _players[i];
-                    if (player.ID == id)
-                    {
-                        _players.RemoveAt(i);
-                        return true;
-                    }
-                }
+                Players.Remove(id);
+                return true;
             }
             catch (Exception e)
             {

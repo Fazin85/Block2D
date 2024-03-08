@@ -8,7 +8,7 @@ namespace Block2D.Client
 {
     public class ClientWorld : ITickable
     {
-        public List<ClientPlayer> Players { get; private set; }
+        public Dictionary<ushort, ClientPlayer> Players { get; private set; }
 
         public Dictionary<Point, ClientChunk> Chunks { get; private set; }
 
@@ -22,7 +22,12 @@ namespace Block2D.Client
 
         public void AddPlayer(ClientPlayer player)
         {
-            Players.Add(player);
+            if (Players.ContainsKey(player.ID))
+            {
+                return;
+            }
+            
+            Players.Add(player.ID, player);
         }
 
         public bool RemovePlayer(ushort id)
@@ -35,15 +40,8 @@ namespace Block2D.Client
 
             try
             {
-                for (int i = 0; i < Players.Count; i++)
-                {
-                    ClientPlayer player = Players[i];
-                    if (player.ID == id)
-                    {
-                        Players.RemoveAt(i);
-                        return true;
-                    }
-                }
+                Players.Remove(id);
+                return true;
             }
             catch (Exception e)
             {
@@ -54,13 +52,9 @@ namespace Block2D.Client
 
         public ClientPlayer GetPlayerFromId(ushort id)
         {
-            for (int i = 0; i < Players.Count; i++)
+            if(Players.TryGetValue(id, out ClientPlayer player))
             {
-                ClientPlayer player = Players[i];
-                if (player.ID == id)
-                {
-                    return Players[i];
-                }
+                return player;
             }
             Main.Logger.Warn("Could Not Find Player With ID: " + id);
             return null;

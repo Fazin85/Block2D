@@ -22,18 +22,22 @@ namespace Block2D.Client
             get => World.GetPlayerFromId(_client.Id);
         }
 
+        public ushort ID
+        {
+            get => _client.Id;
+        }
+
+        public bool InWorld { get; set; }
+
         public OrthographicCamera Camera { get; private set; }
 
         private readonly Riptide.Client _client;
         private ClientWorld _currentWorld;
-        private readonly ClientMessageHandler _messageHandler;
-        private bool _inWorld;
         private const string ip = "127.0.0.1";
         private const ushort port = 7777;
 
         public Client()
         {
-            _messageHandler = new();
             _client = new();
             _client.Connected += OnConnect;
             _client.Disconnected += OnDisconnect;
@@ -47,17 +51,13 @@ namespace Block2D.Client
 
         private void OnConnect(object sender, EventArgs e)
         {
-            _inWorld = true;
             _currentWorld = new();
-            ClientPlayer lp = new(_client.Id);
-            lp.Position = -Vector2.UnitY * 16;
-            _currentWorld.AddPlayer(lp);
-            _messageHandler.PlayerJoin();
+            ClientMessageHandler.PlayerJoin();
         }
 
         private void OnDisconnect(object sender, EventArgs e)
         {
-            _inWorld = false;
+            InWorld = false;
             _currentWorld = null;
         }
 
@@ -65,11 +65,11 @@ namespace Block2D.Client
         {
             _client.Update();
 
-            if (_inWorld)
+            if (InWorld)
             {
                 for (int i = 0; i < _currentWorld.Players.Count; i++)
                 {
-                    ClientPlayer currentPlayer = _currentWorld.Players[i];
+                    ClientPlayer currentPlayer = _currentWorld.Players.Values.ElementAt(i);
                     currentPlayer.Tick();
                 }
 
@@ -81,13 +81,14 @@ namespace Block2D.Client
 
         public void Draw(SpriteBatch spriteBatch, AssetManager assets)
         {
-            if (_inWorld)
+            if (InWorld)
             {
                 Renderer.DrawChunks(_currentWorld.Chunks.Values.ToArray(), spriteBatch, assets);
 
                 for (int i = 0; i < _currentWorld.Players.Count; i++)
                 {
-                    ClientPlayer currentPlayer = _currentWorld.Players[i];
+                    
+                    ClientPlayer currentPlayer = _currentWorld.Players.Values.ElementAt(i);
                     Renderer.DrawPlayer(currentPlayer, spriteBatch, assets);
                 }
             }
