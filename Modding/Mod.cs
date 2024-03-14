@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Block2D.Modding.DataStructures;
+using System;
 
 namespace Block2D.Modding
 {
@@ -20,9 +21,9 @@ namespace Block2D.Modding
             GameVersion = new();
         }
 
-        public void LoadContent()
+        public void LoadContent(ModContent content)
         {
-            ContentManager.LoadContent();
+            ContentManager.LoadContent(content);
             Loaded = true;
         }
 

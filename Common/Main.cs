@@ -7,7 +7,6 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using System;
-using System.Collections.Generic;
 using System.IO;
 
 namespace Block2D.Common
@@ -38,6 +37,11 @@ namespace Block2D.Common
         public static string WorldsDirectory
         {
             get => AppDataDirectory + "/" + GameName + "/Worlds";
+        }
+
+        public static ModLoader ModLoader
+        {
+            get => _instance._modLoader;
         }
 
         public static Version Version { get; private set; }
@@ -142,11 +146,6 @@ namespace Block2D.Common
         }
 
         public static GraphicsDevice GetGraphicsDevice() => _instance.GraphicsDevice;
-
-        public static Dictionary<string, Mod> GetLoadedMods()
-        {
-            return _instance._modLoader.GetAllMods();
-        }
 
         private static void InitializeLogger()
         {

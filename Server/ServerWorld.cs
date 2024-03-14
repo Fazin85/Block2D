@@ -10,7 +10,7 @@ using System.Linq;
 
 namespace Block2D.Server
 {
-    public class ServerWorld : ITickable
+    public class ServerWorld : World, ITickable
     {
         public bool IsLoaded { get; }
 
@@ -30,8 +30,6 @@ namespace Block2D.Server
 
         public Dictionary<string, ServerDimension> Dimensions { get; private set; }
 
-        private readonly Dictionary<string, Mod> _mods;
-
         public Dictionary<string, ushort> LoadedTiles;
 
         private int _tickCounter;
@@ -40,9 +38,7 @@ namespace Block2D.Server
 
         public ServerWorld(string name)
         {
-            _mods = Main.GetLoadedMods();
             LoadedTiles = new();
-            AddMods();
             _nextTileIdToLoad = 0;
             Name = name;//must do this beforce creating directories
             CreateNeededDirectories();
@@ -51,22 +47,14 @@ namespace Block2D.Server
             _tickCounter = 0;
 
             CreateDimensions();
+
+            LoadAllTiles();
         }
 
         private void CreateDimensions()
         {
             ServerDimension overworld = new(DimensionID.OVERWORLD, _seed, 781250, 781250, 400, 500);
             Dimensions.Add(DimensionID.OVERWORLD, overworld);
-        }
-
-        private void AddMods()
-        {
-            Mod[] mods = _mods.Values.ToArray();
-
-            for (int i = 0; i < mods.Length; i++)
-            {
-                _mods.Add(mods[i].DisplayName, mods[i]);
-            }
         }
 
         public void Tick()
@@ -127,20 +115,26 @@ namespace Block2D.Server
             return LoadedTiles[name];
         }
 
-        private void LoadAllTiles()
+        public string GetTileName(ushort id)
+        {
+            var reversed = LoadedTiles.ToDictionary(x => x.Value, x => x.Key);
+            return reversed[id];
+        }
+
+        protected override void LoadAllTiles()
         {
             LoadDefaultTiles();
 
-            for (int i = 0; i < _mods.Count; i++)
+            for (int i = 0; i < Main.ModLoader.LoadedModCount; i++)
             {
-                Mod currentMod = _mods.Values.ElementAt(i);
+                Mod currentMod = Main.ModLoader.LoadedMods.ElementAt(i);
                 ModTile[] tiles = currentMod.ContentManager.GetModTiles();
 
                 LoadModTiles(tiles);
             }
         }
 
-        private void LoadDefaultTiles()
+        protected override void LoadDefaultTiles()
         {
             LoadedTiles.Add(BlockID.AIR, 0);
             LoadedTiles.Add(BlockID.STONE, 1);
@@ -149,7 +143,7 @@ namespace Block2D.Server
             _nextTileIdToLoad += 4;
         }
 
-        private void LoadModTiles(ModTile[] modTiles)
+        protected override void LoadModTiles(ModTile[] modTiles)
         {
             for (int i = 0; i < modTiles.Length; i++)
             {

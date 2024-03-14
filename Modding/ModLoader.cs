@@ -10,19 +10,26 @@ namespace Block2D.Modding
         private readonly ModManager _modManager;
         private bool _forceQuit;
 
-        /// <summary>
-        /// Searches through all loaded mods for ModTexture with name <paramref name="name"/>
-        /// </summary>
-        public ModTexture? GetTexture(string name)
+        public ModContent LoadedContent { get; private set; }
+
+        public int LoadedModCount
         {
-            
+            get => LoadedMods.Count;
         }
 
+        public List<Mod> LoadedMods { get; private set; }
+
+        public ModTexture GetTexture(string name)
+        {
+            return LoadedContent.Textures[name];
+        }
 
         public ModLoader()
         {
             _modManager = new();
             _forceQuit = false;
+            LoadedContent = new();
+            LoadedMods = new();
         }
 
         public void LoadAllMods()
@@ -53,7 +60,6 @@ namespace Block2D.Modding
             }
         }
 
-
         public void LoadMod(string modDirectoryPath)
         {
             if (_forceQuit)
@@ -80,25 +86,40 @@ namespace Block2D.Modding
             }
 
             Mod mod = new(modNameFromFile, modDirectory.Name, modVersion);
-            mod.LoadContent();
+            mod.LoadContent(LoadedContent);
             _modManager.AddMod(mod);
+            LoadedMods.Add(mod);
             reader.Dispose();
             Main.Logger.Info("Loaded Mod: " + mod.DisplayName);
-        }
-
-        public Dictionary<string, Mod> GetAllMods()
-        {
-            return _modManager.GetAllMods();
         }
 
         public void UnloadMod(string modName)
         {
             _modManager.UnloadAndRemoveMod(modName);
+
+            bool flag = false;
+
+            for (int i = 0; i < LoadedMods.Count; i++)
+            {
+                Mod mod = LoadedMods[i];
+                if (mod.DisplayName == modName)
+                {
+                    LoadedMods.RemoveAt(i);
+                    flag = true;
+                }
+            }
+
+            if (!flag)
+            {
+                Main.Logger.Fatal("Failed To Unload Mod: " + modName);
+                Main.ShouldExit = true;
+            }
         }
 
         public void UnloadAllMods()
         {
             _modManager.UnloadAndRemoveAllMods();
+            LoadedMods.Clear();
         }
 
         public void ForceQuit()

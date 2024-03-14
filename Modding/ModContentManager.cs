@@ -24,13 +24,14 @@ namespace Block2D.Modding
             _textureLoader = new(_mod);
         }
 
-        public void LoadContent()
+        public void LoadContent(ModContent content)
         {
             if (_textureLoader.TryLoadTextures(out ModTexture[] textures))
             {
                 foreach (ModTexture texture in textures)
                 {
                     Content.Textures.Add(texture.Name, texture);
+                    content.Textures.Add(texture.Name, texture);
                 }
             }
 
@@ -39,6 +40,7 @@ namespace Block2D.Modding
                 foreach (ModSoundEffect soundEffect in soundEffects)
                 {
                     Content.SoundEffects.Add(soundEffect.Name, soundEffect);
+                    content.SoundEffects.Add(soundEffect.Name, soundEffect);
                 }
             }
 
@@ -47,6 +49,7 @@ namespace Block2D.Modding
                 foreach (ModTile tile in tiles)
                 {
                     Content.Tiles.Add(tile.Name, tile);
+                    content.Tiles.Add(tile.Name, tile);
                 }
             }
         }

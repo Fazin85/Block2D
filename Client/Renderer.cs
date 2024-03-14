@@ -35,7 +35,12 @@ namespace Block2D.Client
 
                         if (currentTile.ID != 0)
                         {
-                            spriteBatch.Draw()
+                            string currentTileName = Main.Client.World.GetTileName(currentTile.ID);
+                            spriteBatch.Draw(
+                                Main.ModLoader.GetTexture(currentTileName).Texture,
+                                positionToRenderBlock,
+                                Color.White
+                            );
                         }
 
                         switch (currentTile.ID)
