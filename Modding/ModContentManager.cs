@@ -1,6 +1,7 @@
-﻿using Block2D.Modding.ContentLoaders;
+﻿using Block2D.Common;
+using Block2D.Modding.ContentLoaders;
 using Block2D.Modding.DataStructures;
-using System.Collections.Generic;
+using System.Linq;
 
 namespace Block2D.Modding
 {
@@ -10,19 +11,13 @@ namespace Block2D.Modding
     public class ModContentManager
     {
         private readonly TileLoader _tileLoader;
-        public Dictionary<string, ModTile> ModTiles { get; set; }
         private readonly SoundEffectLoader _soundEffectLoader;
-        public Dictionary<string, ModSoundEffect> SoundEffects { get; set; }
         private readonly TextureLoader _textureLoader;
-        public Dictionary<string, ModTexture> Textures { get; set; }
-
         private readonly Mod _mod;
+        public ModContent Content { get; private set; }
 
         public ModContentManager(Mod mod)
         {
-            ModTiles = new();
-            SoundEffects = new();
-            Textures = new();
             _mod = mod;
             _tileLoader = new(_mod);
             _soundEffectLoader = new(_mod);
@@ -35,7 +30,7 @@ namespace Block2D.Modding
             {
                 foreach (ModTexture texture in textures)
                 {
-                    Textures.Add(texture.Name, texture);
+                    Content.Textures.Add(texture.Name, texture);
                 }
             }
 
@@ -43,7 +38,7 @@ namespace Block2D.Modding
             {
                 foreach (ModSoundEffect soundEffect in soundEffects)
                 {
-                    SoundEffects.Add(soundEffect.Name, soundEffect);
+                    Content.SoundEffects.Add(soundEffect.Name, soundEffect);
                 }
             }
 
@@ -51,9 +46,58 @@ namespace Block2D.Modding
             {
                 foreach (ModTile tile in tiles)
                 {
-                    ModTiles.Add(tile.Name, tile);
+                    Content.Tiles.Add(tile.Name, tile);
                 }
             }
+        }
+
+        public ModTile[] GetModTiles()
+        {
+            return Content.Tiles.Values.ToArray();
+        }
+
+        public ModTile GetTile(string name)
+        {
+            if (!Content.Tiles.ContainsKey(name))
+            {
+                Main.Logger.Warn("Tried To Get Mod Tile That Doesn't Exist.");
+                return new();
+            }
+            return Content.Tiles[name];
+        }
+
+        public bool TryGetTexture(string name, out ModTexture texture)
+        {
+            if (Content.Textures.ContainsKey(name))
+            {
+                texture = Content.Textures[name];
+                return true;
+            }
+            else
+            {
+                texture = default;
+                return false;
+            }
+        }
+
+        public ModTexture GetTexture(string name)
+        {
+            if (!Content.Textures.ContainsKey(name))
+            {
+                Main.Logger.Warn("Tried To Get Mod Texture That Doesn't Exist.");
+                return new();
+            }
+            return Content.Textures[name];
+        }
+
+        public ModSoundEffect GetSoundEffect(string name)
+        {
+            if (!Content.SoundEffects.ContainsKey(name))
+            {
+                Main.Logger.Warn("Tried To Get Mod Sound Effect That Doesn't Exist.");
+                return new();
+            }
+            return Content.SoundEffects[name];
         }
 
         public void UnloadContent() { }

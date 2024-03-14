@@ -33,6 +33,11 @@ namespace Block2D.Client
                             (currentChunk.Position.ToVector2() + currentTilePosition.ToVector2())
                             * 16;
 
+                        if (currentTile.ID != 0)
+                        {
+                            spriteBatch.Draw()
+                        }
+
                         switch (currentTile.ID)
                         {
                             case 0:

@@ -1,4 +1,6 @@
 ﻿using Block2D.Common;
+using Block2D.Modding.DataStructures;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Block2D.Modding
@@ -7,6 +9,15 @@ namespace Block2D.Modding
     {
         private readonly ModManager _modManager;
         private bool _forceQuit;
+
+        /// <summary>
+        /// Searches through all loaded mods for ModTexture with name <paramref name="name"/>
+        /// </summary>
+        public ModTexture? GetTexture(string name)
+        {
+            
+        }
+
 
         public ModLoader()
         {
@@ -42,6 +53,7 @@ namespace Block2D.Modding
             }
         }
 
+
         public void LoadMod(string modDirectoryPath)
         {
             if (_forceQuit)
@@ -72,6 +84,11 @@ namespace Block2D.Modding
             _modManager.AddMod(mod);
             reader.Dispose();
             Main.Logger.Info("Loaded Mod: " + mod.DisplayName);
+        }
+
+        public Dictionary<string, Mod> GetAllMods()
+        {
+            return _modManager.GetAllMods();
         }
 
         public void UnloadMod(string modName)

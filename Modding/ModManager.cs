@@ -38,6 +38,11 @@ namespace Block2D.Modding
             _mods.Add(mod.DisplayName, mod);
         }
 
+        public Dictionary<string, Mod> GetAllMods()
+        {
+            return _mods;
+        }
+
         public void UnloadAndRemoveMod(string modName)
         {
             if (!_mods.ContainsKey(modName))
