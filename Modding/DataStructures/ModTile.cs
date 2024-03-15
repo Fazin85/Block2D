@@ -1,10 +1,13 @@
-﻿namespace Block2D.Modding.DataStructures
+﻿using Microsoft.Xna.Framework;
+
+namespace Block2D.Modding.DataStructures
 {
     public struct ModTile
     {
         public string Name { get; set; }
-        public string TexturePath { get; set; }
+        public string TextureName { get; set; }
         public float TextureScale { get; set; }
         public string HitSoundEffectName { get; set; }
+        public Color DrawColor { get; set; }
     }
 }
