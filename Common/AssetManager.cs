@@ -11,14 +11,12 @@ namespace Block2D.Common
     public class AssetManager : ModLoader
     {
         private readonly ContentManager _contentManager;
-        private readonly Dictionary<string, Texture2D> _blockTextures;
         private Texture2D _playerTexture;
         private readonly Dictionary<string, Texture2D> _textures;
 
         public AssetManager(ContentManager contentManager)
         {
             _contentManager = contentManager;
-            _blockTextures = new Dictionary<string, Texture2D>();
             _textures = new();
         }
 
@@ -35,7 +33,7 @@ namespace Block2D.Common
             for (int i = 0; i < loadedContent.Textures.Values.Count; i++)
             {
                 ModTexture tex = loadedContent.Textures.Values.ElementAt(i);
-                _blockTextures.Add(tex.Name, tex.Texture);
+                _textures.Add(tex.Name, tex.Texture);
             }
         }
 
@@ -59,11 +57,6 @@ namespace Block2D.Common
         public Texture2D GetPlayerTexture()
         {
             return _playerTexture;
-        }
-
-        public Texture2D GetBlockTexture(string blockId)
-        {
-            return _blockTextures[blockId];
         }
 
         public Texture2D GetTexture(string textureName)

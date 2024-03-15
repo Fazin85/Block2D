@@ -7,11 +7,7 @@ namespace Block2D.Client
 {
     public class Renderer
     {
-        public static void DrawChunks(
-            ClientChunk[] chunksToDraw,
-            SpriteBatch spriteBatch,
-            AssetManager assets
-        )
+        public static void DrawChunks(ClientChunk[] chunksToDraw, SpriteBatch spriteBatch)
         {
             for (int i = 0; i < chunksToDraw.Length; i++)
             {

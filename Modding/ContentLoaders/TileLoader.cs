@@ -9,7 +9,7 @@ namespace Block2D.Modding.ContentLoaders
         public TileLoader(Mod mod)
         {
             Mod = mod;
-            FilesPath = Main.ModsDirectory + Mod.DisplayName + "Tiles";
+            FilesPath = Main.ModsDirectory + "/" + Mod.InternalName + "/Tiles";
         }
 
         public bool TryLoadTiles(out ModTile[] tiles)

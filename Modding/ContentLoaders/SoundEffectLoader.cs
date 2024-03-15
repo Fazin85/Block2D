@@ -1,7 +1,7 @@
-﻿using System.IO;
-using Block2D.Common;
+﻿using Block2D.Common;
 using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework.Audio;
+using System.IO;
 
 namespace Block2D.Modding.ContentLoaders
 {
@@ -10,7 +10,7 @@ namespace Block2D.Modding.ContentLoaders
         public SoundEffectLoader(Mod mod)
         {
             Mod = mod;
-            FilesPath = Main.ModsDirectory + Mod.DisplayName + "SoundEffects";
+            FilesPath = Main.ModsDirectory + "/" + Mod.InternalName + "/SoundEffects";
         }
 
         public bool TryLoadSoundEffects(out ModSoundEffect[] soundEffects)

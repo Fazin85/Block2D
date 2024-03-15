@@ -10,7 +10,7 @@ namespace Block2D.Modding.ContentLoaders
         public TextureLoader(Mod mod)
         {
             Mod = mod;
-            FilesPath = Main.ModsDirectory + Mod.DisplayName + "Textures";
+            FilesPath = Main.ModsDirectory + "/" + Mod.InternalName + "/Textures";
         }
 
         public bool TryLoadTextures(out ModTexture[] textures)
@@ -37,7 +37,7 @@ namespace Block2D.Modding.ContentLoaders
                 string name = sr.ReadLine();
                 textures[i].Name = name;
                 string texturePath = sr.ReadLine();
-                textures[i].Texture = Texture2D.FromFile(graphicsDevice, texturePath);
+                textures[i].Texture = Texture2D.FromFile(graphicsDevice, FilesPath + "/" + texturePath);
                 sr.Dispose();
             }
 

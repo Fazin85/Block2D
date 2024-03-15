@@ -83,8 +83,6 @@ namespace Block2D.Client
                 }
 
                 Camera.LookAt(LocalPlayer.Position);
-
-                //Camera.Position = LocalPlayer.Position;
             }
         }
 
@@ -92,7 +90,7 @@ namespace Block2D.Client
         {
             if (InWorld)
             {
-                Renderer.DrawChunks(_currentWorld.Chunks.Values.ToArray(), spriteBatch, assets);
+                Renderer.DrawChunks(_currentWorld.Chunks.Values.ToArray(), spriteBatch);
 
                 for (int i = 0; i < _currentWorld.Players.Count; i++)
                 {
