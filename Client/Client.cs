@@ -68,7 +68,8 @@ namespace Block2D.Client
         private void OnConnect(object sender, EventArgs e)
         {
             _currentWorld = new();
-            _nextTileIdToLoad = 0; _fpsCounter.Reset();
+            _nextTileIdToLoad = 0;
+            _fpsCounter.Reset();
             ClientMessageHandler.PlayerJoin();
         }
 
@@ -81,7 +82,9 @@ namespace Block2D.Client
 
         public void Tick(GameTime gameTime)
         {
-            if (Main.KeyboardState.IsKeyDown(DEBUG_KEY) && Main.LastKeyboardState.IsKeyUp(DEBUG_KEY))
+            if (
+                Main.KeyboardState.IsKeyDown(DEBUG_KEY) && Main.LastKeyboardState.IsKeyUp(DEBUG_KEY)
+            )
             {
                 _fpsCounter.Reset();
                 DebugMode = !DebugMode;
