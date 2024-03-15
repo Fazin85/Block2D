@@ -13,6 +13,7 @@ namespace Block2D.Common
         private readonly ContentManager _contentManager;
         private Texture2D _playerTexture;
         private readonly Dictionary<string, Texture2D> _textures;
+        public SpriteFont Font { get; private set; }
 
         public AssetManager(ContentManager contentManager)
         {
@@ -22,6 +23,9 @@ namespace Block2D.Common
 
         public void LoadAllContent()
         {
+            //load font
+            Font = _contentManager.Load<SpriteFont>("pixeled");
+
             LoadBlockTextures();
 
             LoadPlayerTextures();

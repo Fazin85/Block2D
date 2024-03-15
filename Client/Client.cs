@@ -5,6 +5,7 @@ using Block2D.Modding;
 using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 using Riptide;
@@ -14,7 +15,7 @@ using System.Linq;
 
 namespace Block2D.Client
 {
-    public class Client : World, ITickable
+    public class Client : World
     {
         public ClientWorld World
         {
@@ -31,6 +32,8 @@ namespace Block2D.Client
             get => _client.Id;
         }
 
+        public bool DebugMode { get; set; }
+
         public bool InWorld { get; set; }
 
         public OrthographicCamera Camera { get; private set; }
@@ -43,13 +46,17 @@ namespace Block2D.Client
         public Dictionary<string, ushort> LoadedTiles;
 
         private ushort _nextTileIdToLoad;
+        private readonly FPSCounter _fpsCounter;
+        private const Keys DEBUG_KEY = Keys.F3;
 
         public Client()
         {
             LoadedTiles = new();
+            _fpsCounter = new();
             _client = new();
             _client.Connected += OnConnect;
             _client.Disconnected += OnDisconnect;
+            DebugMode = false;
         }
 
         public void InitializeCamera(GameWindow window, GraphicsDevice graphicsDevice)
@@ -61,17 +68,25 @@ namespace Block2D.Client
         private void OnConnect(object sender, EventArgs e)
         {
             _currentWorld = new();
+            _nextTileIdToLoad = 0; _fpsCounter.Reset();
             ClientMessageHandler.PlayerJoin();
         }
 
         private void OnDisconnect(object sender, EventArgs e)
         {
             InWorld = false;
+            _fpsCounter.Reset();
             _currentWorld = null;
         }
 
-        public void Tick()
+        public void Tick(GameTime gameTime)
         {
+            if (Main.KeyboardState.IsKeyDown(DEBUG_KEY) && Main.LastKeyboardState.IsKeyUp(DEBUG_KEY))
+            {
+                _fpsCounter.Reset();
+                DebugMode = !DebugMode;
+            }
+
             _client.Update();
 
             if (InWorld)
@@ -83,6 +98,11 @@ namespace Block2D.Client
                 }
 
                 Camera.LookAt(LocalPlayer.Position);
+            }
+
+            if (DebugMode)
+            {
+                _fpsCounter.Update(gameTime);
             }
         }
 
@@ -97,6 +117,11 @@ namespace Block2D.Client
                     ClientPlayer currentPlayer = _currentWorld.Players.Values.ElementAt(i);
                     Renderer.DrawPlayer(currentPlayer, spriteBatch, assets);
                 }
+            }
+
+            if (DebugMode)
+            {
+                _fpsCounter.Draw(spriteBatch, assets.Font, Camera.Position, Color.White);
             }
         }
 

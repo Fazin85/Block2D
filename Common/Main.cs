@@ -49,6 +49,10 @@ namespace Block2D.Common
             get => _instance._assetManager;
         }
 
+        public static KeyboardState KeyboardState { get; private set; }
+
+        public static KeyboardState LastKeyboardState { get; private set; }
+
         public static Version Version { get; private set; }
 
         public const string GameName = "Block2D";
@@ -92,23 +96,26 @@ namespace Block2D.Common
 
         protected override void Update(GameTime gameTime)
         {
+            LastKeyboardState = KeyboardState;
+            KeyboardState = Keyboard.GetState();
+
             if (
                 GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-                || Keyboard.GetState().IsKeyDown(Keys.Escape)
+                || KeyboardState.IsKeyDown(Keys.Escape)
             )
                 ShouldExit = true;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.G))
+            if (KeyboardState.IsKeyDown(Keys.G))
             {
                 _internalServer.Start(20);
             }
 
-            if (Keyboard.GetState().IsKeyDown(Keys.H))
+            if (KeyboardState.IsKeyDown(Keys.H))
             {
                 Client.LocalConnect();
             }
 
-            Client.Tick();
+            Client.Tick(gameTime);
 
             if (_internalServer.IsRunning)
             {
