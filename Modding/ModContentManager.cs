@@ -18,6 +18,7 @@ namespace Block2D.Modding
 
         public ModContentManager(Mod mod)
         {
+            Content = new();
             _mod = mod;
             _tileLoader = new(_mod);
             _soundEffectLoader = new(_mod);

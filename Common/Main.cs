@@ -41,7 +41,12 @@ namespace Block2D.Common
 
         public static ModLoader ModLoader
         {
-            get => _instance._modLoader;
+            get => _instance._assetManager;
+        }
+
+        public static AssetManager AssetManager
+        {
+            get => _instance._assetManager;
         }
 
         public static Version Version { get; private set; }
@@ -52,7 +57,6 @@ namespace Block2D.Common
         private GraphicsDeviceManager _graphicsDeviceManager;
         private readonly AssetManager _assetManager;
         private readonly InternalServer _internalServer;
-        private readonly ModLoader _modLoader;
         private static Main _instance;
 
         public Main()
@@ -62,7 +66,6 @@ namespace Block2D.Common
             _graphicsDeviceManager = new(this);
             Version = new(0, 1);
             _assetManager = new(Content);
-            _modLoader = new();
             Client = new();
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -79,9 +82,12 @@ namespace Block2D.Common
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _assetManager.LoadBlockTextures();
 
-            _modLoader.LoadAllMods();
+            AssetManager.LoadAllContent();
+
+            _internalServer.World.LoadAllTiles();
+
+            Client.LoadAllTiles();
         }
 
         protected override void Update(GameTime gameTime)
@@ -122,7 +128,7 @@ namespace Block2D.Common
 
             _spriteBatch.Begin(transformMatrix: Client.Camera.GetViewMatrix());
 
-            Client.Draw(_spriteBatch, _assetManager);
+            Client.Draw(_spriteBatch, AssetManager);
 
             _spriteBatch.End();
             base.Draw(gameTime);
@@ -142,7 +148,7 @@ namespace Block2D.Common
 
         public static void ForceQuitModloader()
         {
-            _instance._modLoader.ForceQuit();
+            _instance._assetManager.ForceQuit();
         }
 
         public static GraphicsDevice GetGraphicsDevice() => _instance.GraphicsDevice;

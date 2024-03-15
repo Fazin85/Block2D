@@ -9,23 +9,16 @@ using System.Linq;
 
 namespace Block2D.Client
 {
-    public class ClientWorld : World, ITickable
+    public class ClientWorld : ITickable
     {
         public Dictionary<ushort, ClientPlayer> Players { get; private set; }
 
         public Dictionary<Point, ClientChunk> Chunks { get; private set; }
 
-        public Dictionary<string, ushort> LoadedTiles;
-
-        private ushort _nextTileIdToLoad;
-
         public ClientWorld()
         {
             Chunks = new();
             Players = new();
-            LoadedTiles = new();
-
-            LoadAllTiles();
         }
 
         public void Tick() { }
@@ -104,43 +97,6 @@ namespace Block2D.Client
             }
             tile = new();
             return false;
-        }
-
-        public string GetTileName(ushort id)
-        {
-            var reversed = LoadedTiles.ToDictionary(x => x.Value, x => x.Key);
-            return reversed[id];
-        }
-
-        protected override void LoadAllTiles()
-        {
-            LoadDefaultTiles();
-
-            for (int i = 0; i < Main.ModLoader.LoadedModCount; i++)
-            {
-                Mod currentMod = Main.ModLoader.LoadedMods.ElementAt(i);
-                ModTile[] tiles = currentMod.ContentManager.GetModTiles();
-
-                LoadModTiles(tiles);
-            }
-        }
-
-        protected override void LoadDefaultTiles()
-        {
-            LoadedTiles.Add(BlockID.AIR, 0);
-            LoadedTiles.Add(BlockID.STONE, 1);
-            LoadedTiles.Add(BlockID.DIRT, 2);
-            LoadedTiles.Add(BlockID.GRASS, 3);
-            _nextTileIdToLoad += 4;
-        }
-
-        protected override void LoadModTiles(ModTile[] modTiles)
-        {
-            for (int i = 0; i < modTiles.Length; i++)
-            {
-                _nextTileIdToLoad++;
-                LoadedTiles.Add(modTiles[i].Name, _nextTileIdToLoad);
-            }
         }
     }
 }

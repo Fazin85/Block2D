@@ -47,8 +47,6 @@ namespace Block2D.Server
             _tickCounter = 0;
 
             CreateDimensions();
-
-            LoadAllTiles();
         }
 
         private void CreateDimensions()
@@ -121,7 +119,7 @@ namespace Block2D.Server
             return reversed[id];
         }
 
-        protected override void LoadAllTiles()
+        public override void LoadAllTiles()
         {
             LoadDefaultTiles();
 

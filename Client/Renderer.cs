@@ -35,41 +35,12 @@ namespace Block2D.Client
 
                         if (currentTile.ID != 0)
                         {
-                            string currentTileName = Main.Client.World.GetTileName(currentTile.ID);
+                            string currentTileName = Main.Client.GetTileName(currentTile.ID);
                             spriteBatch.Draw(
-                                Main.ModLoader.GetTexture(currentTileName).Texture,
+                                Main.AssetManager.GetTexture(currentTileName),
                                 positionToRenderBlock,
                                 Color.White
                             );
-                        }
-
-                        switch (currentTile.ID)
-                        {
-                            case 0:
-                                break;
-                            case 1:
-                                spriteBatch.Draw(
-                                    assets.GetBlockTexture("Stone_Block"),
-                                    positionToRenderBlock,
-                                    Color.White
-                                );
-                                break;
-                            case 2:
-                                spriteBatch.Draw(
-                                    assets.GetBlockTexture("Grass_Block"),
-                                    positionToRenderBlock,
-                                    Color.White
-                                );
-                                break;
-                            case 3:
-                                spriteBatch.Draw(
-                                    assets.GetBlockTexture("Dirt_Block"),
-                                    positionToRenderBlock,
-                                    Color.White
-                                );
-                                break;
-                            case 4:
-                                break;
                         }
                     }
                 }

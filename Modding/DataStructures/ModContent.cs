@@ -7,5 +7,12 @@ namespace Block2D.Modding.DataStructures
         public Dictionary<string, ModTile> Tiles { get; set; }
         public Dictionary<string, ModSoundEffect> SoundEffects { get; set; }
         public Dictionary<string, ModTexture> Textures { get; set; }
+
+        public ModContent()
+        {
+            Tiles = new();
+            SoundEffects = new();
+            Textures = new();
+        }
     }
 }

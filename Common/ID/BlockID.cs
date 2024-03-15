@@ -6,5 +6,6 @@
         public const string STONE = "Stone";
         public const string GRASS = "Grass";
         public const string DIRT = "Dirt";
+        public const string SAND = "Sand";
     }
 }

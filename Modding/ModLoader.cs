@@ -5,12 +5,12 @@ using System.IO;
 
 namespace Block2D.Modding
 {
-    public class ModLoader
+    public abstract class ModLoader
     {
         private readonly ModManager _modManager;
         private bool _forceQuit;
 
-        public ModContent LoadedContent { get; private set; }
+        private ModContent _loadedContent;
 
         public int LoadedModCount
         {
@@ -19,20 +19,20 @@ namespace Block2D.Modding
 
         public List<Mod> LoadedMods { get; private set; }
 
-        public ModTexture GetTexture(string name)
-        {
-            return LoadedContent.Textures[name];
-        }
-
         public ModLoader()
         {
             _modManager = new();
             _forceQuit = false;
-            LoadedContent = new();
+            _loadedContent = new();
             LoadedMods = new();
         }
 
-        public void LoadAllMods()
+        public ModContent GetLoadedContent()
+        {
+            return _loadedContent;
+        }
+
+        protected void LoadAllMods()
         {
             if (_forceQuit)
             {
@@ -60,7 +60,7 @@ namespace Block2D.Modding
             }
         }
 
-        public void LoadMod(string modDirectoryPath)
+        private void LoadMod(string modDirectoryPath)
         {
             if (_forceQuit)
             {
@@ -86,7 +86,7 @@ namespace Block2D.Modding
             }
 
             Mod mod = new(modNameFromFile, modDirectory.Name, modVersion);
-            mod.LoadContent(LoadedContent);
+            mod.LoadContent(_loadedContent);
             _modManager.AddMod(mod);
             LoadedMods.Add(mod);
             reader.Dispose();
