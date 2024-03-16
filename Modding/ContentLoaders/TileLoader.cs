@@ -46,18 +46,14 @@ namespace Block2D.Modding.ContentLoaders
 
                 tile.TextureName = textureName;
 
-                DynValue hitSoundEffectVal = Mod.Script.Call(
-                    Mod.Script.Globals["GetSoundEffectName"]
-                );
-
-                string hitSoundEffectName = hitSoundEffectVal.String;
-
-                if (hitSoundEffectName == "null")
+                if (Mod.Script.Globals["GetSoundEffectName"] != null)
                 {
-                    //todo: add something here
-                }
-                else
-                {
+                    DynValue hitSoundEffectVal = Mod.Script.Call(
+                        Mod.Script.Globals["GetSoundEffectName"]
+                    );
+
+                    string hitSoundEffectName = hitSoundEffectVal.String;
+
                     tile.HitSoundEffectName = hitSoundEffectName;
                 }
 

@@ -98,8 +98,11 @@ namespace Block2D.Modding
 
             Mod mod = new(modNameFromFile, modDirectory.Name, modVersion);
 
-            //run init code for mod
-            script.Call(script.Globals["Init"]);
+            if (script.Globals["Init"] != null)
+            {
+                //run init code for mod
+                script.Call(script.Globals["Init"]);
+            }
 
             mod.LoadContent(_loadedContent);
             _modManager.AddMod(mod);
