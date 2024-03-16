@@ -7,6 +7,7 @@ namespace Block2D.Modding.ContentLoaders
     {
         protected Mod Mod { get; set; }
         protected string FilesPath { get; set; }
+        protected const string LUA_FILE_EXTENSION = ".lua";
 
         protected bool ModContains()
         {

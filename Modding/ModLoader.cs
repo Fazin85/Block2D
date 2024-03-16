@@ -1,5 +1,6 @@
 ﻿using Block2D.Common;
 using Block2D.Modding.DataStructures;
+using MoonSharp.Interpreter;
 using System.Collections.Generic;
 using System.IO;
 
@@ -11,6 +12,7 @@ namespace Block2D.Modding
         private bool _forceQuit;
 
         private ModContent _loadedContent;
+        private Script _script;
 
         public int LoadedModCount
         {
@@ -25,6 +27,7 @@ namespace Block2D.Modding
             _forceQuit = false;
             _loadedContent = new();
             LoadedMods = new();
+            _script = new();
         }
 
         public ModContent GetLoadedContent()

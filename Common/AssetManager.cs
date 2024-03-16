@@ -15,7 +15,7 @@ namespace Block2D.Common
         private readonly Dictionary<string, Texture2D> _textures;
         public SpriteFont Font { get; private set; }
 
-        public AssetManager(ContentManager contentManager)
+        public AssetManager(ContentManager contentManager) : base()
         {
             _contentManager = contentManager;
             _textures = new();

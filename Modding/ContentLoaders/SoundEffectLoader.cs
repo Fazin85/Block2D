@@ -1,7 +1,8 @@
 ﻿using Block2D.Common;
 using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework.Audio;
-using System.IO;
+using MoonSharp.Interpreter;
+using System.Collections.Generic;
 
 namespace Block2D.Modding.ContentLoaders
 {
@@ -22,18 +23,24 @@ namespace Block2D.Modding.ContentLoaders
             }
 
             string[] soundFilePaths = GetFilePaths();
-            soundEffects = new ModSoundEffect[soundFilePaths.Length];
+            List<ModSoundEffect> modSoundEffectsList = new();
 
             for (int i = 0; i < soundFilePaths.Length; i++)
             {
-                if (!soundFilePaths[i].Contains(".txt"))
+                if (!soundFilePaths[i].Contains(LUA_FILE_EXTENSION))
                 {
                     return false;
                 }
 
-                StreamReader sr = new(soundFilePaths[i]);
-                string name = sr.ReadLine();
-                string soundFilePath = sr.ReadLine();
+                Mod.Script.DoFile(soundFilePaths[i]);
+
+                DynValue nameVal = Mod.Script.Call(Mod.Script.Globals["GetName"]);
+
+                string name = nameVal.String;
+
+                DynValue pathVal = Mod.Script.Call(Mod.Script.Globals["GetPath"]);
+
+                string soundFilePath = pathVal.String;
 
                 if (name.Length == 0 || soundFilePath.Length == 0)
                 {
@@ -44,10 +51,19 @@ namespace Block2D.Modding.ContentLoaders
                     Main.ForceQuitModloader();
                     return false;
                 }
-                sr.Dispose();
-                soundEffects[i].Name = name;
-                soundEffects[i].SoundEffect = SoundEffect.FromFile(FilesPath + soundFilePath);
+
+                ModSoundEffect modSoundEffect =
+                    new()
+                    {
+                        Name = name,
+                        SoundEffect = SoundEffect.FromFile(FilesPath + soundFilePath)
+                    };
+
+                modSoundEffectsList.Add(modSoundEffect);
             }
+
+            soundEffects = modSoundEffectsList.ToArray();
+
             return true;
         }
     }

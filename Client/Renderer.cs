@@ -41,6 +41,7 @@ namespace Block2D.Client
                     }
                 }
             }
+            spriteBatch.Draw(Main.AssetManager.GetTexture("OldGrass"), Vector2.Zero, Color.Red);
         }
 
         public static void DrawPlayer(

@@ -1,7 +1,8 @@
 ﻿using Block2D.Common;
 using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework.Graphics;
-using System.IO;
+using MoonSharp.Interpreter;
+using System.Collections.Generic;
 
 namespace Block2D.Modding.ContentLoaders
 {
@@ -22,24 +23,32 @@ namespace Block2D.Modding.ContentLoaders
             }
 
             GraphicsDevice graphicsDevice = Main.GetGraphicsDevice();
+            List<ModTexture> textureList = new();
 
             string[] textureFilePaths = GetFilePaths();
-            textures = new ModTexture[textureFilePaths.Length];
 
             for (int i = 0; i < textureFilePaths.Length; i++)
             {
-                if (!textureFilePaths[i].Contains(".txt"))
+                if (!textureFilePaths[i].Contains(LUA_FILE_EXTENSION))
                 {
                     return false;
                 }
 
-                StreamReader sr = new(textureFilePaths[i]);
-                string name = sr.ReadLine();
-                textures[i].Name = name;
-                string texturePath = sr.ReadLine();
-                textures[i].Texture = Texture2D.FromFile(graphicsDevice, FilesPath + "/Textures/" + texturePath);
-                sr.Dispose();
+                ModTexture texture = new();
+
+                Mod.Script.DoFile(textureFilePaths[i]);
+                DynValue nameVal = Mod.Script.Call(Mod.Script.Globals["GetName"]);
+                string name = nameVal.String;
+                texture.Name = name;
+
+                DynValue pathVal = Mod.Script.Call(Mod.Script.Globals["GetPath"]);
+                string texturePath = pathVal.String;
+                texture.Texture = Texture2D.FromFile(graphicsDevice, FilesPath + "/Textures/" + texturePath);
+
+                textureList.Add(texture);
             }
+
+            textures = textureList.ToArray();
 
             return true;
         }

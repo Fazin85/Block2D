@@ -1,4 +1,5 @@
 ﻿using Block2D.Modding.DataStructures;
+using MoonSharp.Interpreter;
 using System;
 
 namespace Block2D.Modding
@@ -11,6 +12,7 @@ namespace Block2D.Modding
         public bool Loaded { get; set; }
         public Version GameVersion { get; private set; }
         public ModContentManager ContentManager { get; private set; }
+        public Script Script { get; private set; }
 
         public Mod(string displayName, string internalName, string version)
         {
@@ -19,6 +21,7 @@ namespace Block2D.Modding
             Version = version;
             ContentManager = new(this);
             GameVersion = new();
+            Script = new();
         }
 
         public void LoadContent(ModContent content)
