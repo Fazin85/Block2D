@@ -15,12 +15,6 @@ namespace Block2D.Common
 {
     public class Main : Game
     {
-        public static Client.Client Client { get; private set; }
-
-        public static bool ShouldExit { get; set; }
-
-        public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
         public static InternalServer InternalServer
         {
             get => _instance._internalServer;
@@ -56,6 +50,14 @@ namespace Block2D.Common
             get => _instance._assetManager;
         }
 
+        public static Client.Client Client { get; private set; }
+
+        public static bool ShouldExit { get; set; }
+
+        public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+
+        public static Script Lua { get; private set; }
+
         public static KeyboardState KeyboardState { get; private set; }
 
         public static KeyboardState LastKeyboardState { get; private set; }
@@ -63,8 +65,6 @@ namespace Block2D.Common
         public static Version Version { get; private set; }
 
         public const string GameName = "Block2D";
-
-        public static Script Lua { get; private set; }
 
         private SpriteBatch _spriteBatch;
         private GraphicsDeviceManager _graphicsDeviceManager;
