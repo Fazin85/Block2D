@@ -73,14 +73,22 @@ namespace Block2D.Modding
 
             DirectoryInfo modDirectory = new(modDirectoryPath);
 
-            if (!File.Exists(modDirectory.FullName + "/ModInfo.txt"))
+            if (!File.Exists(modDirectory.FullName + "/mod.lua"))
             {
                 return;
             }
 
-            StreamReader reader = new(modDirectory.FullName + "/ModInfo.txt");
-            string modNameFromFile = reader.ReadLine();
-            string modVersion = reader.ReadLine();
+            Script script = new();
+            Main.AddTypes(script);
+            script.DoFile(modDirectory.FullName + "/mod.lua");
+
+            DynValue modNameFromFileVal = script.Call(script.Globals["GetModName"]);
+
+            string modNameFromFile = modNameFromFileVal.String;
+
+            DynValue modVersionFromFileVal = script.Call(script.Globals["GetVersion"]);
+
+            string modVersion = modVersionFromFileVal.String;
 
             if (modNameFromFile.Length == 0 || modVersion.Length == 0)
             {
@@ -89,10 +97,13 @@ namespace Block2D.Modding
             }
 
             Mod mod = new(modNameFromFile, modDirectory.Name, modVersion);
+
+            //run init code for mod
+            script.Call(script.Globals["Init"]);
+
             mod.LoadContent(_loadedContent);
             _modManager.AddMod(mod);
             LoadedMods.Add(mod);
-            reader.Dispose();
             Main.Logger.Info("Loaded Mod: " + mod.DisplayName);
         }
 

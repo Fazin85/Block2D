@@ -24,6 +24,11 @@ namespace Block2D.Modding
             Script = new();
         }
 
+        public void Init()
+        {
+
+        }
+
         public void LoadContent(ModContent content)
         {
             ContentManager.LoadContent(content);

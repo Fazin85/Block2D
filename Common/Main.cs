@@ -3,6 +3,8 @@ using Block2D.Server;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MoonSharp.Interpreter;
+using MoonSharp.Interpreter.Interop;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -29,14 +31,19 @@ namespace Block2D.Common
             get => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
         }
 
+        public static string GameAppDataDirectory
+        {
+            get => AppDataDirectory + "/" + GameName;
+        }
+
         public static string ModsDirectory
         {
-            get => AppDataDirectory + "/" + GameName + "/Mods";
+            get => GameAppDataDirectory + "/Mods";
         }
 
         public static string WorldsDirectory
         {
-            get => AppDataDirectory + "/" + GameName + "/Worlds";
+            get => GameAppDataDirectory + "/Worlds";
         }
 
         public static ModLoader ModLoader
@@ -57,6 +64,8 @@ namespace Block2D.Common
 
         public const string GameName = "Block2D";
 
+        public static Script Lua { get; private set; }
+
         private SpriteBatch _spriteBatch;
         private GraphicsDeviceManager _graphicsDeviceManager;
         private readonly AssetManager _assetManager;
@@ -73,12 +82,16 @@ namespace Block2D.Common
             Client = new();
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            Lua = new();
         }
 
         protected override void Initialize()
         {
             InitializeLogger();
+
             Client.InitializeCamera(Window, GraphicsDevice);
+
+            SetupLua();
 
             base.Initialize();
         }
@@ -156,6 +169,25 @@ namespace Block2D.Common
         public static void ForceQuitModloader()
         {
             _instance._assetManager.ForceQuit();
+        }
+
+        public static void AddTypes(Script script)
+        {
+            DynValue main = UserData.Create(_instance);
+            DynValue assetManager = UserData.Create(_instance._assetManager);
+            DynValue keyboardState = UserData.Create(KeyboardState);
+            DynValue logger = UserData.Create(Logger);
+
+            script.Globals.Set("main", main);
+            script.Globals.Set("assetManager", assetManager);
+            script.Globals.Set("keyboardState", keyboardState);
+            script.Globals.Set("logger", logger);
+        }
+
+        private void SetupLua()
+        {
+            UserData.RegistrationPolicy = InteropRegistrationPolicy.Automatic;
+            AddTypes(Lua);
         }
 
         public static GraphicsDevice GetGraphicsDevice() => _instance.GraphicsDevice;

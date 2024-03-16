@@ -43,7 +43,10 @@ namespace Block2D.Modding.ContentLoaders
 
                 DynValue pathVal = Mod.Script.Call(Mod.Script.Globals["GetPath"]);
                 string texturePath = pathVal.String;
-                texture.Texture = Texture2D.FromFile(graphicsDevice, FilesPath + "/Textures/" + texturePath);
+                texture.Texture = Texture2D.FromFile(
+                    graphicsDevice,
+                    FilesPath + "/Textures/" + texturePath
+                );
 
                 textureList.Add(texture);
             }
