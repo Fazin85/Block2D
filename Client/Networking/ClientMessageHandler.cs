@@ -11,7 +11,6 @@ namespace Block2D.Client.Networking
             Message message = Message.Create(MessageSendMode.Reliable, ClientMessageID.PlayerJoin);
             message.AddString("Hello World");
             Main.Client.Send(message);
-            //RequestChunk(new(64, 0));
         }
 
         public static void RequestChunk(Point position)
@@ -100,7 +99,6 @@ namespace Block2D.Client.Networking
                 {
                     if (offset == chunk.ReceivedSections + 1 && offset < 4)
                     {
-                        //chunk.SetSection(decompressedTiles, offset);
                         chunk.SetSection(decompressedTiles, offset);
                     }
                 }

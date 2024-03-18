@@ -9,7 +9,6 @@ using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 using Riptide;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Block2D.Client

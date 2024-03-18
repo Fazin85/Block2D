@@ -57,6 +57,12 @@ namespace Block2D.Common
             return _textures[textureName];
         }
 
+        public ModTile GetTile(string tileName)
+        {
+            ModContent content = GetLoadedContent();
+            return content.Tiles[tileName];
+        }
+
         public Color GetTileDrawColor(string tileName)
         {
             ModContent content = GetLoadedContent();

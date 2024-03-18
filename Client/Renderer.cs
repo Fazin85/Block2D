@@ -1,5 +1,6 @@
 ﻿using Block2D.Common;
 using Block2D.Common.ID;
+using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -34,10 +35,17 @@ namespace Block2D.Client
 
                         if (currentTileName != TileID.AIR)
                         {
+                            ModTile tile = Main.AssetManager.GetTile(currentTileName);
                             spriteBatch.Draw(
                                 Main.AssetManager.GetTexture(currentTileName),
                                 positionToRenderBlock,
-                                Main.AssetManager.GetTileDrawColor(currentTileName)
+                                null,
+                                tile.DrawColor,
+                                0,
+                                Vector2.Zero,
+                                tile.TextureScale,
+                                SpriteEffects.None,
+                                0
                             );
                         }
                     }
