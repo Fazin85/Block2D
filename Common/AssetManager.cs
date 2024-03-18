@@ -1,6 +1,5 @@
 ﻿using Block2D.Modding;
 using Block2D.Modding.DataStructures;
-using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -61,12 +60,6 @@ namespace Block2D.Common
         {
             ModContent content = GetLoadedContent();
             return content.Tiles[tileName];
-        }
-
-        public Color GetTileDrawColor(string tileName)
-        {
-            ModContent content = GetLoadedContent();
-            return content.Tiles[tileName].DrawColor;
         }
     }
 }

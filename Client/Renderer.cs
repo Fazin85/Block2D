@@ -46,12 +46,11 @@ namespace Block2D.Client
                                 tile.TextureScale,
                                 SpriteEffects.None,
                                 0
-                            );
+                            );//thats a lot of parameters
                         }
                     }
                 }
             }
-            spriteBatch.Draw(Main.AssetManager.GetTexture("OldGrass"), Vector2.Zero, Color.Red);
         }
 
         public static void DrawPlayer(
