@@ -1,6 +1,6 @@
 ﻿namespace Block2D.Common.ID
 {
-    public static class BlockID
+    public static class TileID
     {
         public const string AIR = "Air";
         public const string STONE = "Stone";

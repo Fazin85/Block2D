@@ -3,6 +3,7 @@ using Block2D.Common.ID;
 using Block2D.Modding;
 using Block2D.Modding.DataStructures;
 using Block2D.Server.Networking;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -29,8 +30,6 @@ namespace Block2D.Server
         public Dictionary<ushort, ServerPlayer> Players { get; private set; }
 
         public Dictionary<string, ServerDimension> Dimensions { get; private set; }
-
-        public Dictionary<string, ushort> LoadedTiles;
 
         private int _tickCounter;
         private readonly int _seed;
@@ -113,16 +112,44 @@ namespace Block2D.Server
             return LoadedTiles[name];
         }
 
-        public string GetTileName(ushort id)
+        public bool GetChunkLoaded(string dimensionID, Point chunkPosition, out ServerChunk chunk)
         {
-            var reversed = LoadedTiles.ToDictionary(x => x.Value, x => x.Key);
-            return reversed[id];
+            return Dimensions[dimensionID].ChunkManager.TryGetChunk(chunkPosition, out chunk);
+        }
+
+        public void SetTile(string dimensionId, Point worldPosition, string id)
+        {
+            Point chunkPosition = worldPosition.ToChunkCoords();
+            if (GetChunkLoaded(dimensionId, chunkPosition, out ServerChunk chunk))
+            {
+                int x = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.X - worldPosition.X);
+                int y = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.Y - worldPosition.Y);
+
+                chunk.SetTile(new(x, y), id);
+            }
+            else
+            {
+                Main.Logger.Warn("Tried To Set Tile In A Chunk That Doesn't Exist.");
+            }
+        }
+
+        public bool TryGetTile(string dimensionID, Point worldPosition, out Tile tile)
+        {
+            Point chunkPosition = worldPosition.ToChunkCoords();
+            if (GetChunkLoaded(dimensionID, chunkPosition, out ServerChunk chunk))
+            {
+                int x = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.X - worldPosition.X);
+                int y = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.Y - worldPosition.Y);
+
+                tile = chunk.GetTile(new(x, y));
+                return true;
+            }
+            tile = new();
+            return false;
         }
 
         public override void LoadAllTiles()
         {
-            LoadDefaultTiles();
-
             for (int i = 0; i < Main.ModLoader.LoadedModCount; i++)
             {
                 Mod currentMod = Main.ModLoader.LoadedMods.ElementAt(i);
@@ -130,15 +157,6 @@ namespace Block2D.Server
 
                 LoadModTiles(tiles);
             }
-        }
-
-        protected override void LoadDefaultTiles()
-        {
-            LoadedTiles.Add(BlockID.AIR, 0);
-            LoadedTiles.Add(BlockID.STONE, 1);
-            LoadedTiles.Add(BlockID.DIRT, 2);
-            LoadedTiles.Add(BlockID.GRASS, 3);
-            _nextTileIdToLoad += 4;
         }
 
         protected override void LoadModTiles(ModTile[] modTiles)

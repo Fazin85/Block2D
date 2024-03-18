@@ -9,8 +9,8 @@ namespace Block2D.Modding.ContentLoaders
     public class TileLoader : ContentLoader
     {
         public TileLoader(Mod mod)
+            : base(mod)
         {
-            Mod = mod;
             FilesPath = Main.ModsDirectory + "/" + Mod.InternalName + "/TileData";
         }
 
@@ -32,37 +32,43 @@ namespace Block2D.Modding.ContentLoaders
                     return false;
                 }
 
+                Script script = new();
+                Main.SetupScript(script);
+
                 ModTile tile = new();
 
-                Mod.Script.DoFile(tileFilePaths[i]);
+                script.DoFile(tileFilePaths[i]);
 
-                DynValue nameVal = Mod.Script.Call(Mod.Script.Globals["GetName"]);
+                DynValue nameVal = script.Call(script.Globals["GetName"]);
                 string name = nameVal.String;
 
                 tile.Name = name;
 
-                DynValue texVal = Mod.Script.Call(Mod.Script.Globals["GetTextureName"]);
-                string textureName = texVal.String;
-
-                tile.TextureName = textureName;
-
-                if (Mod.Script.Globals["GetSoundEffectName"] != null)
+                if (script.Globals["GetTextureName"] != null)
                 {
-                    DynValue hitSoundEffectVal = Mod.Script.Call(
-                        Mod.Script.Globals["GetSoundEffectName"]
-                    );
+                    DynValue texVal = script.Call(script.Globals["GetTextureName"]);
+                    string textureName = texVal.String;
+
+                    tile.TextureName = textureName;
+                }
+
+                if (script.Globals["GetSoundEffectName"] != null)
+                {
+                    DynValue hitSoundEffectVal = script.Call(script.Globals["GetSoundEffectName"]);
 
                     string hitSoundEffectName = hitSoundEffectVal.String;
 
                     tile.HitSoundEffectName = hitSoundEffectName;
                 }
 
-                DynValue scaleVal = Mod.Script.Call(Mod.Script.Globals["GetScale"]);
+                DynValue scaleVal = script.Call(script.Globals["GetScale"]);
                 float scale = (float)scaleVal.Number;
 
                 tile.TextureScale = scale;
 
-                tile.DrawColor = GetTileColor();
+                tile.DrawColor = GetTileColor(script);
+
+                tile.Script = script;
 
                 modTileList.Add(tile);
             }
@@ -72,12 +78,12 @@ namespace Block2D.Modding.ContentLoaders
             return true;
         }
 
-        private Color GetTileColor()
+        private Color GetTileColor(Script script)
         {
-            DynValue DrawColorR = Mod.Script.Call(Mod.Script.Globals["GetDrawColorR"]);
-            DynValue DrawColorG = Mod.Script.Call(Mod.Script.Globals["GetDrawColorG"]);
-            DynValue DrawColorB = Mod.Script.Call(Mod.Script.Globals["GetDrawColorB"]);
-            DynValue DrawColorAlpha = Mod.Script.Call(Mod.Script.Globals["GetDrawColorAlpha"]);
+            DynValue DrawColorR = script.Call(script.Globals["GetDrawColorR"]);
+            DynValue DrawColorG = script.Call(script.Globals["GetDrawColorG"]);
+            DynValue DrawColorB = script.Call(script.Globals["GetDrawColorB"]);
+            DynValue DrawColorAlpha = script.Call(script.Globals["GetDrawColorAlpha"]);
 
             int r = (int)DrawColorR.Number;
             int g = (int)DrawColorG.Number;

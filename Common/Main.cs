@@ -4,7 +4,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MoonSharp.Interpreter;
-using MoonSharp.Interpreter.Interop;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
@@ -171,23 +170,31 @@ namespace Block2D.Common
             _instance._assetManager.ForceQuit();
         }
 
-        public static void AddTypes(Script script)
+        public void RegisterTypes()
         {
-            DynValue main = UserData.Create(_instance);
-            DynValue assetManager = UserData.Create(_instance._assetManager);
-            DynValue keyboardState = UserData.Create(KeyboardState);
-            DynValue logger = UserData.Create(Logger);
+            UserData.RegisterType<KeyboardState>();
+            UserData.RegisterType<Logger>();
+            UserData.RegisterType<ModWorld>();
+            UserData.RegisterType<Tile>();
+        }
 
-            script.Globals.Set("main", main);
-            script.Globals.Set("assetManager", assetManager);
+        public static void SetupScript(Script script)
+        {
+            DynValue keyboardState = UserData.Create(KeyboardState);
+            DynValue lastKeyboardState = UserData.Create(LastKeyboardState);
+            DynValue logger = UserData.Create(Logger);
+            DynValue modWorld = UserData.Create(new ModWorld());
+
             script.Globals.Set("keyboardState", keyboardState);
+            script.Globals.Set("lastKeyboardState", lastKeyboardState);
             script.Globals.Set("logger", logger);
+            script.Globals.Set("world", modWorld);
         }
 
         private void SetupLua()
         {
-            UserData.RegistrationPolicy = InteropRegistrationPolicy.Automatic;
-            AddTypes(Lua);
+            RegisterTypes();
+            SetupScript(Lua);
         }
 
         public static GraphicsDevice GetGraphicsDevice() => _instance.GraphicsDevice;

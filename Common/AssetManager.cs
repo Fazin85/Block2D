@@ -1,6 +1,6 @@
-﻿using Block2D.Common.ID;
-using Block2D.Modding;
+﻿using Block2D.Modding;
 using Block2D.Modding.DataStructures;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -15,7 +15,8 @@ namespace Block2D.Common
         private readonly Dictionary<string, Texture2D> _textures;
         public SpriteFont Font { get; private set; }
 
-        public AssetManager(ContentManager contentManager) : base()
+        public AssetManager(ContentManager contentManager)
+            : base()
         {
             _contentManager = contentManager;
             _textures = new();
@@ -26,7 +27,7 @@ namespace Block2D.Common
             //load font
             Font = _contentManager.Load<SpriteFont>("pixeled");
 
-            LoadBlockTextures();
+            //load tiles with modloader
 
             LoadPlayerTextures();
 
@@ -39,18 +40,6 @@ namespace Block2D.Common
                 ModTexture tex = loadedContent.Textures.Values.ElementAt(i);
                 _textures.Add(tex.Name, tex.Texture);
             }
-        }
-
-        private void LoadBlockTextures()
-        {
-            Texture2D stone = _contentManager.Load<Texture2D>(BlockID.STONE);
-            _textures.Add(BlockID.STONE, stone);
-            Texture2D grass = _contentManager.Load<Texture2D>(BlockID.GRASS);
-            _textures.Add(BlockID.GRASS, grass);
-            Texture2D dirt = _contentManager.Load<Texture2D>(BlockID.DIRT);
-            _textures.Add(BlockID.DIRT, dirt);
-            Texture2D sand = _contentManager.Load<Texture2D>(BlockID.SAND);
-            _textures.Add(BlockID.SAND, sand);
         }
 
         public void LoadPlayerTextures()
@@ -66,6 +55,12 @@ namespace Block2D.Common
         public Texture2D GetTexture(string textureName)
         {
             return _textures[textureName];
+        }
+
+        public Color GetTileDrawColor(string tileName)
+        {
+            ModContent content = GetLoadedContent();
+            return content.Tiles[tileName].DrawColor;
         }
     }
 }

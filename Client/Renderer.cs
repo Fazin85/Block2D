@@ -1,4 +1,5 @@
 ﻿using Block2D.Common;
+using Block2D.Common.ID;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -29,13 +30,14 @@ namespace Block2D.Client
                             (currentChunk.Position.ToVector2() + currentTilePosition.ToVector2())
                             * 16;
 
-                        if (currentTile.ID != 0)
+                        string currentTileName = Main.Client.GetTileName(currentTile.ID);
+
+                        if (currentTileName != TileID.AIR)
                         {
-                            string currentTileName = Main.Client.GetTileName(currentTile.ID);
                             spriteBatch.Draw(
                                 Main.AssetManager.GetTexture(currentTileName),
                                 positionToRenderBlock,
-                                Color.White
+                                Main.AssetManager.GetTileDrawColor(currentTileName)
                             );
                         }
                     }

@@ -1,0 +1,33 @@
+﻿using Block2D.Common;
+using Microsoft.Xna.Framework;
+
+namespace Block2D.Modding
+{
+    public class ModWorld
+    {
+        public string Name
+        {
+            get => Main.InternalServer.World.Name;
+        }
+
+        public bool TryGetTile(int x, int y, string dimensionId, out Tile tile)
+        {
+            Point position = new Point(x, y).ToChunkCoords();
+
+            if (Main.InternalServer.World.TryGetTile(dimensionId, new(x, y), out tile))
+            {
+                return true;
+            }
+            else
+            {
+                Main.Logger.Fatal("Tried To Get Tile In A Chunk That Doesn't Exist. " + position.ToString());
+                return false;
+            }
+        }
+
+        public void SetTile(string dimensionId, int x, int y, string id)
+        {
+            Main.InternalServer.World.SetTile(dimensionId, new(x, y), id);
+        }
+    }
+}

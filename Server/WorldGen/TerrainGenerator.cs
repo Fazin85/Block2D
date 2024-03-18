@@ -1,4 +1,5 @@
 ﻿using Block2D.Common;
+using Block2D.Common.ID;
 using Microsoft.Xna.Framework;
 using System;
 
@@ -15,9 +16,9 @@ namespace Block2D.Server.WorldGen
             _seed = seed;
         }
 
-        public void GenerateChunk(Point chunkPosition, out ServerChunk chunk)
+        public void GenerateChunk(Point chunkPosition, string dimensionId, World world, out ServerChunk chunk)
         {
-            chunk = new(chunkPosition);
+            chunk = new(chunkPosition, dimensionId, world);
 
             for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
             {
@@ -25,15 +26,15 @@ namespace Block2D.Server.WorldGen
                 {
                     if (Random.Shared.Next(2) == 0)
                     {
-                        chunk.SetTile(new(x, y), 1);
+                        chunk.SetTile(new(x, y), TileID.STONE);
                     }
                     else if (Random.Shared.Next(2) == 0)
                     {
-                        chunk.SetTile(new(x, y), 3);
+                        chunk.SetTile(new(x, y), TileID.DIRT);
                     }
                     else
                     {
-                        chunk.SetTile(new(x, y), 2);
+                        chunk.SetTile(new(x, y), TileID.GRASS);
                     }
                 }
             }

@@ -1,11 +1,7 @@
 ﻿using Block2D.Common;
-using Block2D.Common.ID;
-using Block2D.Modding;
-using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Block2D.Client
 {
@@ -78,10 +74,10 @@ namespace Block2D.Client
             return Chunks.TryGetValue(chunkPosition, out chunk);
         }
 
-        public object TrySetTile(Vector2 position, out Tile tile)
+        public void TrySetTile(Vector2 position, out Tile tile)
         {
             tile = new Tile();
-            return new NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public bool TryGetTile(Point worldPosition, out Tile tile)

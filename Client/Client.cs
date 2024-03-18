@@ -1,6 +1,5 @@
 ﻿using Block2D.Client.Networking;
 using Block2D.Common;
-using Block2D.Common.ID;
 using Block2D.Modding;
 using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework;
@@ -42,8 +41,6 @@ namespace Block2D.Client
         private ClientWorld _currentWorld;
         private const string ip = "127.0.0.1";
         private const ushort port = 7777;
-
-        public Dictionary<string, ushort> LoadedTiles;
 
         private ushort _nextTileIdToLoad;
         private readonly FPSCounter _fpsCounter;
@@ -162,8 +159,6 @@ namespace Block2D.Client
 
         public override void LoadAllTiles()
         {
-            LoadDefaultTiles();
-
             for (int i = 0; i < Main.ModLoader.LoadedModCount; i++)
             {
                 Mod currentMod = Main.ModLoader.LoadedMods.ElementAt(i);
@@ -173,15 +168,6 @@ namespace Block2D.Client
             }
         }
 
-        protected override void LoadDefaultTiles()
-        {
-            LoadedTiles.Add(BlockID.AIR, 0);
-            LoadedTiles.Add(BlockID.STONE, 1);
-            LoadedTiles.Add(BlockID.DIRT, 2);
-            LoadedTiles.Add(BlockID.GRASS, 3);
-            _nextTileIdToLoad += 4;
-        }
-
         protected override void LoadModTiles(ModTile[] modTiles)
         {
             for (int i = 0; i < modTiles.Length; i++)
@@ -189,12 +175,6 @@ namespace Block2D.Client
                 _nextTileIdToLoad++;
                 LoadedTiles.Add(modTiles[i].Name, _nextTileIdToLoad);
             }
-        }
-
-        public string GetTileName(ushort id)
-        {
-            var reversed = LoadedTiles.ToDictionary(x => x.Value, x => x.Key);
-            return reversed[id];
         }
     }
 }

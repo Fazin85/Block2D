@@ -8,9 +8,8 @@ namespace Block2D.Modding.ContentLoaders
 {
     public class TextureLoader : ContentLoader
     {
-        public TextureLoader(Mod mod)
+        public TextureLoader(Mod mod) : base(mod)
         {
-            Mod = mod;
             FilesPath = Main.ModsDirectory + "/" + Mod.InternalName + "/TextureData";
         }
 
@@ -34,14 +33,17 @@ namespace Block2D.Modding.ContentLoaders
                     return false;
                 }
 
+                Script script = new();
+                Main.SetupScript(script);
+
                 ModTexture texture = new();
 
-                Mod.Script.DoFile(textureFilePaths[i]);
-                DynValue nameVal = Mod.Script.Call(Mod.Script.Globals["GetName"]);
+                script.DoFile(textureFilePaths[i]);
+                DynValue nameVal = script.Call(script.Globals["GetName"]);
                 string name = nameVal.String;
                 texture.Name = name;
 
-                DynValue pathVal = Mod.Script.Call(Mod.Script.Globals["GetPath"]);
+                DynValue pathVal = script.Call(script.Globals["GetPath"]);
                 string texturePath = pathVal.String;
                 texture.Texture = Texture2D.FromFile(
                     graphicsDevice,

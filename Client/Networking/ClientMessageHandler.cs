@@ -1,7 +1,6 @@
 ﻿using Block2D.Common;
 using Microsoft.Xna.Framework;
 using Riptide;
-using System.Diagnostics;
 
 namespace Block2D.Client.Networking
 {
@@ -28,7 +27,10 @@ namespace Block2D.Client.Networking
 
         public static void SendPosition(Vector2 position)
         {
-            Message message = Message.Create(MessageSendMode.Unreliable, ClientMessageID.SendPosition);
+            Message message = Message.Create(
+                MessageSendMode.Unreliable,
+                ClientMessageID.SendPosition
+            );
             message.AddVector2(position);
             Main.Client.Send(message);
         }
@@ -57,10 +59,7 @@ namespace Block2D.Client.Networking
             Vector2 position = message.GetVector2();
             ushort id = message.GetUShort();
 
-            ClientPlayer newPlayer = new(id, name)
-            {
-                Position = position,
-            };
+            ClientPlayer newPlayer = new(id, name) { Position = position, };
 
             Main.Client.World.AddPlayer(newPlayer);
 
@@ -90,9 +89,8 @@ namespace Block2D.Client.Networking
 
             if (offset == 0)
             {
-                ClientChunk newChunk = new(position);
+                ClientChunk newChunk = new(position, Main.Client);
 
-                //newChunk.SetSection(decompressedTiles, offset);
                 newChunk.SetSection(decompressedTiles, offset);
                 Main.Client.World.TryAddChunk(newChunk);
             }

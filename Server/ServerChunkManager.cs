@@ -1,4 +1,5 @@
-﻿using Block2D.Server.WorldGen;
+﻿using Block2D.Common;
+using Block2D.Server.WorldGen;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
@@ -16,7 +17,7 @@ namespace Block2D.Server
             _generator = new(dimensionName, seed);
         }
 
-        public bool GetOrTryAddChunk(Point position, out ServerChunk chunk)
+        public bool GetOrTryAddChunk(Point position, string dimensionId, out ServerChunk chunk)
         {
             if (_chunks.ContainsKey(position))
             {
@@ -25,9 +26,27 @@ namespace Block2D.Server
             }
             else
             {
-                _generator.GenerateChunk(position, out chunk);
+                _generator.GenerateChunk(position, dimensionId, Main.InternalServer.World, out chunk);
                 return TryAddChunk(chunk);
             }
+        }
+
+        public ServerChunk GetChunk(Point position)
+        {
+            if (_chunks.ContainsKey(position))
+            {
+                return _chunks[position];
+            }
+            else
+            {
+                Main.Logger.Warn("Tried To Get Chunk That Doesn't Exist.");
+                return null;
+            }
+        }
+
+        public bool TryGetChunk(Point position, out ServerChunk chunk)
+        {
+            return _chunks.TryGetValue(position, out chunk);
         }
 
         private bool TryAddChunk(ServerChunk chunk)

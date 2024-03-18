@@ -5,9 +5,14 @@ namespace Block2D.Modding.ContentLoaders
 {
     public abstract class ContentLoader
     {
-        protected Mod Mod { get; set; }
+        protected Mod Mod { get; private set; }
         protected string FilesPath { get; set; }
         protected const string LUA_FILE_EXTENSION = ".lua";
+
+        public ContentLoader(Mod mod)
+        {
+            Mod = mod;
+        }
 
         protected bool ModContains()
         {

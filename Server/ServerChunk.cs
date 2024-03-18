@@ -17,12 +17,14 @@ namespace Block2D.Server
 
         private readonly ChunkLoadAmount _loadAmount;
         private readonly Tile[,] _tiles;
+        private readonly string dimensionId;
 
-        public ServerChunk(Point position)
+        public ServerChunk(Point position, string dimensionId, World world) : base(world)
         {
             _tiles = new Tile[CHUNK_SIZE, CHUNK_SIZE];
             _loadAmount = ChunkLoadAmount.Unloaded;
             Position = position;
+            this.dimensionId = dimensionId;
         }
 
         public void Tick()
@@ -31,7 +33,7 @@ namespace Block2D.Server
             {
                 for (int y = 0; y < CHUNK_SIZE; y++)
                 {
-                    _tiles[x, y].Tick();
+                    _tiles[x, y].Tick(Position.X + x, Position.Y + y, dimensionId);
                 }
             }
         }

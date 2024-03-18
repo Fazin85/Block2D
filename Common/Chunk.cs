@@ -13,9 +13,22 @@ namespace Block2D.Common
             get => _tiles;
         }
         private readonly Tile[,] _tiles = new Tile[CHUNK_SIZE, CHUNK_SIZE];
+        public World World { get; private set; }
 
-        public void SetTile(Point position, ushort id)
+        public Chunk(World world)
         {
+            World = world;
+        }
+
+        public void SetTile(Point position, string tileName)
+        {
+            if (!World.LoadedTiles.ContainsKey(tileName))
+            {
+                return;
+            }
+
+            ushort id = World.LoadedTiles[tileName];
+
             if (position.X >= CHUNK_SIZE || position.X < 0)
             {
                 Console.WriteLine("Position X is out of bounds");

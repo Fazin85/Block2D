@@ -73,14 +73,14 @@ namespace Block2D.Modding
 
             DirectoryInfo modDirectory = new(modDirectoryPath);
 
-            if (!File.Exists(modDirectory.FullName + "/mod.lua"))
+            if (!File.Exists(modDirectory.FullName + "/Mod.lua"))
             {
                 return;
             }
 
             Script script = new();
-            Main.AddTypes(script);
-            script.DoFile(modDirectory.FullName + "/mod.lua");
+            Main.SetupScript(script);
+            script.DoFile(modDirectory.FullName + "/Mod.lua");
 
             DynValue modNameFromFileVal = script.Call(script.Globals["GetModName"]);
 

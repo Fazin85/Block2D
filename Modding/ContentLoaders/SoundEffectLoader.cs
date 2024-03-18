@@ -8,9 +8,8 @@ namespace Block2D.Modding.ContentLoaders
 {
     public class SoundEffectLoader : ContentLoader
     {
-        public SoundEffectLoader(Mod mod)
+        public SoundEffectLoader(Mod mod) : base(mod)
         {
-            Mod = mod;
             FilesPath = Main.ModsDirectory + "/" + Mod.InternalName + "/SoundEffects";
         }
 
@@ -32,13 +31,16 @@ namespace Block2D.Modding.ContentLoaders
                     return false;
                 }
 
-                Mod.Script.DoFile(soundFilePaths[i]);
+                Script script = new();
+                Main.SetupScript(script);
 
-                DynValue nameVal = Mod.Script.Call(Mod.Script.Globals["GetName"]);
+                script.DoFile(soundFilePaths[i]);
+
+                DynValue nameVal = script.Call(script.Globals["GetName"]);
 
                 string name = nameVal.String;
 
-                DynValue pathVal = Mod.Script.Call(Mod.Script.Globals["GetPath"]);
+                DynValue pathVal = script.Call(script.Globals["GetPath"]);
 
                 string soundFilePath = pathVal.String;
 

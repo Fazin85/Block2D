@@ -66,7 +66,7 @@ namespace Block2D.Server.Networking
             if (
                 Main
                     .InternalServer.World.Dimensions[playerDimension]
-                    .ChunkManager.GetOrTryAddChunk(position, out ServerChunk chunk)
+                    .ChunkManager.GetOrTryAddChunk(position, playerDimension, out ServerChunk chunk)
             )
             {
                 for (byte i = 0; i < 4; i++)
