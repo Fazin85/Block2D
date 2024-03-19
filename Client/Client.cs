@@ -171,8 +171,8 @@ namespace Block2D.Client
         {
             for (int i = 0; i < modTiles.Length; i++)
             {
-                _nextTileIdToLoad++;
                 LoadedTiles.Add(modTiles[i].Name, _nextTileIdToLoad);
+                _nextTileIdToLoad++;
             }
         }
     }

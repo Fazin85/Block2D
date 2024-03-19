@@ -8,6 +8,7 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using System;
+using System.Diagnostics;
 using System.IO;
 
 namespace Block2D.Common
@@ -49,6 +50,8 @@ namespace Block2D.Common
             get => _instance._assetManager;
         }
 
+        public static Random Random { get; private set; }
+
         public static Client.Client Client { get; private set; }
 
         public static bool ShouldExit { get; set; }
@@ -76,6 +79,7 @@ namespace Block2D.Common
             _instance = this;
             _internalServer = new();
             _graphicsDeviceManager = new(this);
+            Random = new(0);
             Version = new(0, 1);
             _assetManager = new(Content);
             Client = new();

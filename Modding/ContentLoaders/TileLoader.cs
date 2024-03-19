@@ -66,6 +66,11 @@ namespace Block2D.Modding.ContentLoaders
 
                 tile.TextureScale = scale;
 
+                DynValue tickableVal = script.Call(script.Globals["Tickable"]);
+                bool tickable = tickableVal.Boolean;
+
+                tile.Tickable = tickable;
+
                 tile.DrawColor = GetTileColor(script);
 
                 tile.Script = script;

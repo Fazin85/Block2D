@@ -2,40 +2,43 @@
 {
     public struct Tile
     {
-        public readonly ushort ID
-        {
-            get => _id;
-        }
-        private ushort _id;
-        public bool Modded;
+        public ushort ID { get; private set; }
+        public bool Tickable { get; private set; }
+        public bool TileEntity { get; private set; }
 
-        public Tile()
+        public readonly void Tick(int x, int y, string dimensionId)
         {
-            _id = 0;
-            Modded = false;
-        }
+            bool randomTick = Main.Random.Next(160) == 0;
 
-        public Tile(bool modded)
-        {
-            _id = 0;
-            Modded = modded;
-        }
+            string name = Main.InternalServer.World.GetTileName(ID);
 
-        public void Tick(int x, int y, string dimensionId)
-        {
-            if (Modded)
-            {
-                
-            }
-            else
+            if (TileEntity)
             {
 
             }
+            //else if (randomTick)
+            //{
+            //    string name = Main.InternalServer.World.GetTileName(ID);
+
+            //    if (name == TileID.DIRT)
+            //    {
+            //        Debug.WriteLine("Ticked Dirt");
+            //    }
+
+            //    var modTile = Main.AssetManager.GetTile(name);
+
+            //    if (modTile.Tickable)
+            //    {
+            //        modTile.Script.Call(modTile.Script.Globals["RandomTick"], x, y, dimensionId);
+            //    }
+            //}
         }
 
-        public void Set(ushort id)
+        public void Set(ushort id, bool tickable, bool tileEntity)
         {
-            _id = id;
+            ID = id;
+            Tickable = tickable;
+            TileEntity = tileEntity;
         }
     }
 }

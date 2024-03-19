@@ -31,7 +31,7 @@ namespace Block2D.Server
 
         public Dictionary<string, ServerDimension> Dimensions { get; private set; }
 
-        private int _tickCounter;
+        private long _currentTick;
         private readonly int _seed;
         private ushort _nextTileIdToLoad;
 
@@ -39,11 +39,11 @@ namespace Block2D.Server
         {
             LoadedTiles = new();
             _nextTileIdToLoad = 0;
-            Name = name;//must do this beforce creating directories
+            Name = name; //must do this beforce creating directories
             CreateNeededDirectories();
             Dimensions = new();
             Players = new();
-            _tickCounter = 0;
+            _currentTick = 0;
 
             CreateDimensions();
         }
@@ -56,12 +56,19 @@ namespace Block2D.Server
 
         public void Tick()
         {
-            _tickCounter++;
+            _currentTick++;
 
-            if (_tickCounter == 3)
+            if (_currentTick % 3 == 0)
             {
                 ServerMessageHandler.SendPositions();
-                _tickCounter = 0;
+
+                foreach (var dim in Dimensions.Values)
+                {
+                    foreach (var chunk in dim.ChunkManager.Chunks.Values.Where(c => c.LoadAmount != ChunkLoadAmount.Unloaded))
+                    {
+                        chunk.Tick();
+                    }
+                }
             }
         }
 
@@ -114,7 +121,8 @@ namespace Block2D.Server
 
         public bool GetChunkLoaded(string dimensionID, Point chunkPosition, out ServerChunk chunk)
         {
-            return Dimensions[dimensionID].ChunkManager.TryGetChunk(chunkPosition, out chunk);
+            return Dimensions[dimensionID]
+                .ChunkManager.Chunks.TryGetValue(chunkPosition, out chunk);
         }
 
         public void SetTile(string dimensionId, Point worldPosition, string id)
@@ -163,8 +171,8 @@ namespace Block2D.Server
         {
             for (int i = 0; i < modTiles.Length; i++)
             {
-                _nextTileIdToLoad++;
                 LoadedTiles.Add(modTiles[i].Name, _nextTileIdToLoad);
+                _nextTileIdToLoad++;
             }
         }
     }

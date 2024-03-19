@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Block2D.Modding.DataStructures;
+using Microsoft.Xna.Framework;
 using System;
 
 namespace Block2D.Common
@@ -12,12 +13,13 @@ namespace Block2D.Common
         {
             get => _tiles;
         }
-        private readonly Tile[,] _tiles = new Tile[CHUNK_SIZE, CHUNK_SIZE];
+        private readonly Tile[,] _tiles;
         public World World { get; private set; }
 
         public Chunk(World world)
         {
             World = world;
+            _tiles = new Tile[CHUNK_SIZE, CHUNK_SIZE];
         }
 
         public void SetTile(Point position, string tileName)
@@ -26,8 +28,6 @@ namespace Block2D.Common
             {
                 return;
             }
-
-            ushort id = World.LoadedTiles[tileName];
 
             if (position.X >= CHUNK_SIZE || position.X < 0)
             {
@@ -41,7 +41,12 @@ namespace Block2D.Common
                 return;
             }
 
-            _tiles[position.X, position.Y].Set(id);
+            ushort id = World.LoadedTiles[tileName];
+
+            ModTile tile = Main.AssetManager.GetTile(tileName);
+
+            //TODO: add TileEntitys
+            _tiles[position.X, position.Y].Set(id, tile.Tickable, false);
         }
 
         public Tile GetTile(Point position)

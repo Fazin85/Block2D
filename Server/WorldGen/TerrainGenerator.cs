@@ -38,6 +38,7 @@ namespace Block2D.Server.WorldGen
                     }
                 }
             }
+            chunk.LoadAmount = ChunkLoadAmount.FullyLoaded;//do this for now
         }
     }
 }
