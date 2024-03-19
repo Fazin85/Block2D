@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Block2D
+namespace Block2D.Client
 {
     public class FPSCounter
     {
