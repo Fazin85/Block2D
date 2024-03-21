@@ -74,19 +74,19 @@ namespace Block2D.Client
             return Chunks.TryGetValue(chunkPosition, out chunk);
         }
 
-        public void TrySetTile(Vector2 position, out Tile tile)
+        public void TrySetTile(Vector2 position, out ClientTile tile)
         {
-            tile = new Tile();
+            tile = new ClientTile();
             throw new NotImplementedException();
         }
 
-        public bool TryGetTile(Point worldPosition, out Tile tile)
+        public bool TryGetTile(Point worldPosition, out ClientTile tile)
         {
             Point chunkPosition = worldPosition.ToChunkCoords();
             if (GetChunkLoaded(chunkPosition, out ClientChunk chunk))
             {
-                int x = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.X - worldPosition.X);
-                int y = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.Y - worldPosition.Y);
+                int x = CC.CHUNK_SIZE - Math.Abs(chunkPosition.X - worldPosition.X);
+                int y = CC.CHUNK_SIZE - Math.Abs(chunkPosition.Y - worldPosition.Y);
 
                 tile = chunk.GetTile(new(x, y));
                 return true;

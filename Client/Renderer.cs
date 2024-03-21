@@ -20,12 +20,12 @@ namespace Block2D.Client
                     continue;
                 }
 
-                for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
+                for (int x = 0; x < CC.CHUNK_SIZE; x++)
                 {
-                    for (int y = 0; y < Chunk.CHUNK_SIZE; y++)
+                    for (int y = 0; y < CC.CHUNK_SIZE; y++)
                     {
                         Point currentTilePosition = new(x, y);
-                        Tile currentTile = currentChunk.GetTile(currentTilePosition);
+                        ClientTile currentTile = currentChunk.GetTile(currentTilePosition);
 
                         Vector2 positionToRenderBlock =
                             (currentChunk.Position.ToVector2() + currentTilePosition.ToVector2())
@@ -46,9 +46,15 @@ namespace Block2D.Client
                                 tile.TextureScale,
                                 SpriteEffects.None,
                                 0
-                            );//thats a lot of parameters
+                            );
                         }
                     }
+                }
+                if (Main.Client.DebugMode)
+                {
+                    RectangleF rectangle = new(currentChunk.Position, new(1024, 1024));
+
+                    spriteBatch.DrawRectangle(rectangle, Color.Red);
                 }
             }
         }

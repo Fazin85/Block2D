@@ -130,8 +130,8 @@ namespace Block2D.Server
             Point chunkPosition = worldPosition.ToChunkCoords();
             if (GetChunkLoaded(dimensionId, chunkPosition, out ServerChunk chunk))
             {
-                int x = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.X - worldPosition.X);
-                int y = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.Y - worldPosition.Y);
+                int x = CC.CHUNK_SIZE - Math.Abs(chunkPosition.X - worldPosition.X);
+                int y = CC.CHUNK_SIZE - Math.Abs(chunkPosition.Y - worldPosition.Y);
 
                 chunk.SetTile(new(x, y), id);
             }
@@ -141,13 +141,13 @@ namespace Block2D.Server
             }
         }
 
-        public bool TryGetTile(string dimensionID, Point worldPosition, out Tile tile)
+        public bool TryGetTile(string dimensionID, Point worldPosition, out ServerTile tile)
         {
             Point chunkPosition = worldPosition.ToChunkCoords();
             if (GetChunkLoaded(dimensionID, chunkPosition, out ServerChunk chunk))
             {
-                int x = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.X - worldPosition.X);
-                int y = Chunk.CHUNK_SIZE - Math.Abs(chunkPosition.Y - worldPosition.Y);
+                int x = CC.CHUNK_SIZE - Math.Abs(chunkPosition.X - worldPosition.X);
+                int y = CC.CHUNK_SIZE - Math.Abs(chunkPosition.Y - worldPosition.Y);
 
                 tile = chunk.GetTile(new(x, y));
                 return true;

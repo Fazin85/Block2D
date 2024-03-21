@@ -8,7 +8,6 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using System;
-using System.Diagnostics;
 using System.IO;
 
 namespace Block2D.Common
@@ -179,7 +178,7 @@ namespace Block2D.Common
             UserData.RegisterType<KeyboardState>();
             UserData.RegisterType<Logger>();
             UserData.RegisterType<ModWorld>();
-            UserData.RegisterType<Tile>();
+            UserData.RegisterType<ServerTile>();
         }
 
         public static void SetupScript(Script script)

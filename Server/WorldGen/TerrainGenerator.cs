@@ -20,9 +20,9 @@ namespace Block2D.Server.WorldGen
         {
             chunk = new(chunkPosition, dimensionId, world);
 
-            for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
+            for (int x = 0; x < CC.CHUNK_SIZE; x++)
             {
-                for (int y = 0; y < Chunk.CHUNK_SIZE; y++)
+                for (int y = 0; y < CC.CHUNK_SIZE; y++)
                 {
                     if (Random.Shared.Next(2) == 0)
                     {

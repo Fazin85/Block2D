@@ -1,4 +1,5 @@
 ﻿using Block2D.Common;
+using Block2D.Server;
 using Microsoft.Xna.Framework;
 
 namespace Block2D.Modding
@@ -10,7 +11,7 @@ namespace Block2D.Modding
             get => Main.InternalServer.World.Name;
         }
 
-        public bool TryGetTile(int x, int y, string dimensionId, out Tile tile)
+        public bool TryGetTile(int x, int y, string dimensionId, out ServerTile tile)
         {
             Point position = new Point(x, y).ToChunkCoords();
 

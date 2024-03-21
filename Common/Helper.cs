@@ -46,14 +46,14 @@ namespace Block2D.Common
             return new() { X = Math.Abs(point.X), Y = Math.Abs(point.Y) };
         }
 
-        public static bool Collidable(this Tile tile)
+        public static bool Collidable(this ushort tileId)
         {
-            return tile.ID == 0; //am I stupid or does this not make sense?
+            return tileId == 0; //am I stupid or does this not make sense?
         }
 
         public static int GetIndexFromPosition(this Point p)
         {
-            return Chunk.CHUNK_SIZE * p.X + p.Y;
+            return CC.CHUNK_SIZE * p.X + p.Y;
         }
 
         public static int GetIndexFromPosition(Point p, int chunkSize)
@@ -63,17 +63,17 @@ namespace Block2D.Common
 
         public static int GetIndexFromPosition(this Vector2 p)
         {
-            return (int)(Chunk.CHUNK_SIZE * p.X + p.Y);
+            return (int)(CC.CHUNK_SIZE * p.X + p.Y);
         }
 
         public static int GetIndexFromPosition(int x, int y)
         {
-            return Chunk.CHUNK_SIZE * x + y;
+            return CC.CHUNK_SIZE * x + y;
         }
 
-        public static Point GetRegionPos(this Chunk chunk)
+        public static Point GetRegionPos(this Point chunkPos)
         {
-            return new() { X = chunk.Position.X >> 11, Y = chunk.Position.Y >> 11, };
+            return new() { X = chunkPos.X >> 11, Y = chunkPos.Y >> 11, };
         }
 
         public static byte[] ToByteArray(this ushort[] array)
@@ -103,12 +103,12 @@ namespace Block2D.Common
 
         public static ushort[] GetChunkTileIds(this ServerChunk chunk)
         {
-            ushort[] result = new ushort[Chunk.CHUNK_SIZE * Chunk.CHUNK_SIZE];
-            for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
+            ushort[] result = new ushort[CC.CHUNK_SIZE * CC.CHUNK_SIZE];
+            for (int x = 0; x < CC.CHUNK_SIZE; x++)
             {
-                for (int y = 0; y < Chunk.CHUNK_SIZE; y++)
+                for (int y = 0; y < CC.CHUNK_SIZE; y++)
                 {
-                    result[new Point(x, y).GetIndexFromPosition()] = chunk.Tiles[x, y].ID;
+                    result[new Point(x, y).GetIndexFromPosition()] = chunk.GetTile(new(x, y)).ID;
                 }
             }
             return result;

@@ -24,7 +24,7 @@ namespace Block2D.Server
             ChunkSectionData d3 = new(b5, 2);
             ChunkSectionData d4 = new(b6, 3);
 
-            ChunkSectionData[] sections = new ChunkSectionData[Chunk.CHUNK_SECTION_COUNT]
+            ChunkSectionData[] sections = new ChunkSectionData[CC.CHUNK_SECTION_COUNT]
             {
                 d1,
                 d2,

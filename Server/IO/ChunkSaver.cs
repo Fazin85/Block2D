@@ -9,7 +9,7 @@ namespace Block2D.Server.IO
     {
         public static void SaveChunk(ServerChunk chunk)
         {
-            Point regionPos = chunk.GetRegionPos();
+            Point regionPos = chunk.Position.GetRegionPos();
 
             string path =
                 Main.InternalServer.World.ChunkDataPath
@@ -38,11 +38,11 @@ namespace Block2D.Server.IO
 
             List<ushort> tileIds = new();
 
-            for (int x = 0; x < Chunk.CHUNK_SIZE; x++)
+            for (int x = 0; x < CC.CHUNK_SIZE; x++)
             {
-                for (int y = 0; y < Chunk.CHUNK_SIZE; y++)
+                for (int y = 0; y < CC.CHUNK_SIZE; y++)
                 {
-                    Tile tile = chunk.Tiles[x, y];
+                    var tile = chunk.GetTile(new(x, y));
                     tileIds.Add(tile.ID);
                 }
             }

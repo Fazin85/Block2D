@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Block2D.Client;
+using Microsoft.Xna.Framework;
 
 namespace Block2D.Common
 {
@@ -24,9 +25,9 @@ namespace Block2D.Common
                 for (int y = hitbox.Top; y <= hitbox.Bottom; y++)
                 {
                     Point currentPosition = new(x, y);
-                    if (Main.Client.World.TryGetTile(currentPosition, out Tile tile))
+                    if (Main.Client.World.TryGetTile(currentPosition, out ClientTile tile))
                     {
-                        if (tile.Collidable())
+                        if (tile.ID.Collidable())
                         {
                             Rectangle currentTileRect = new(currentPosition, new(16, 16));
                             if (hitbox.Intersects(currentTileRect))
