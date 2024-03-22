@@ -54,6 +54,11 @@ namespace Block2D.Server
             Dimensions.Add(DimensionID.OVERWORLD, overworld);
         }
 
+        public void LoadContent()
+        {
+            LoadAllTiles();
+        }
+
         public void Tick()
         {
             _currentTick++;
@@ -160,7 +165,7 @@ namespace Block2D.Server
             return false;
         }
 
-        public override void LoadAllTiles()
+        protected override void LoadAllTiles()
         {
             for (int i = 0; i < Main.ModLoader.LoadedModCount; i++)
             {

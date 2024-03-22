@@ -1,7 +1,7 @@
 ﻿using Block2D.Common;
 using Block2D.Common.ID;
 using Microsoft.Xna.Framework;
-using System;
+using Simplex;
 
 namespace Block2D.Server.WorldGen
 {
@@ -9,36 +9,46 @@ namespace Block2D.Server.WorldGen
     {
         private readonly string _dimensionToGenerate;
         private readonly int _seed;
+        private readonly Noise Noise;
 
         public TerrainGenerator(string dimensionToGenerate, int seed)
         {
             _dimensionToGenerate = dimensionToGenerate;
             _seed = seed;
+            Noise = new() { Seed = seed };
         }
 
-        public void GenerateChunk(Point chunkPosition, string dimensionId, World world, out ServerChunk chunk)
+        public void GenerateChunk(
+            Point chunkPosition,
+            string dimensionId,
+            World world,
+            out ServerChunk chunk
+        )
         {
             chunk = new(chunkPosition, dimensionId, world);
 
-            for (int x = 0; x < CC.CHUNK_SIZE; x++)
+            if (chunkPosition.X == 0)
             {
-                for (int y = 0; y < CC.CHUNK_SIZE; y++)
+                for (int x = chunkPosition.X; x < chunkPosition.X + CC.CHUNK_SIZE; x++)
                 {
-                    if (Random.Shared.Next(2) == 0)
+                    int height = (int)Noise.CalcPixel1D(x, 0.1f) / 16;
+
+                    for (int y = 0; y < CC.CHUNK_SIZE; y++)
                     {
-                        chunk.SetTile(new(x, y), TileID.STONE);
-                    }
-                    else if (Random.Shared.Next(2) == 0)
-                    {
-                        chunk.SetTile(new(x, y), TileID.DIRT);
-                    }
-                    else
-                    {
-                        chunk.SetTile(new(x, y), TileID.GRASS);
+                        Point position = new(x - chunkPosition.X, y);
+                        if (y > height)
+                        {
+                            chunk.SetTile(position, TileID.DIRT);
+                        }
+                        else
+                        {
+                            chunk.SetTile(position, TileID.AIR);
+                        }
                     }
                 }
             }
-            chunk.LoadAmount = ChunkLoadAmount.FullyLoaded;//do this for now
+
+            chunk.LoadAmount = ChunkLoadAmount.FullyLoaded; //do this for now
         }
     }
 }

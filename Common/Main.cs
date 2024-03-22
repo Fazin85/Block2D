@@ -107,9 +107,8 @@ namespace Block2D.Common
 
             AssetManager.LoadAllContent();
 
-            _internalServer.World.LoadAllTiles();
+            _internalServer.World.LoadContent();
 
-            Client.LoadAllTiles();
             Client.LoadContent(this, _spriteBatch);
         }
 

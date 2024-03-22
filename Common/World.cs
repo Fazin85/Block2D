@@ -7,7 +7,7 @@ namespace Block2D.Common
     public abstract class World
     {
         public Dictionary<string, ushort> LoadedTiles;
-        public abstract void LoadAllTiles();
+        protected abstract void LoadAllTiles();
         protected abstract void LoadModTiles(ModTile[] modTiles);
 
         public string GetTileName(ushort id)

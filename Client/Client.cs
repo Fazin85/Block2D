@@ -25,6 +25,8 @@ namespace Block2D.Client
             get => _currentWorld ?? null;
         }
 
+        public ClientState State { get; private set; }
+
         public ClientPlayer LocalPlayer
         {
             get => World.GetPlayerFromId(_client.Id);
@@ -61,9 +63,10 @@ namespace Block2D.Client
             _client.Disconnected += OnDisconnect;
             DebugMode = false;
         }
-
+        //do all client content loading here
         public void LoadContent(Game game, SpriteBatch spriteBatch)
         {
+            State = ClientState.Loading;
             MlemPlatform.Current = new MlemPlatform.DesktopGl<TextInputEventArgs>((w, c) => w.TextInput += c);
 
             var style = new UntexturedStyle(spriteBatch)
@@ -74,10 +77,15 @@ namespace Block2D.Client
             UI = new UiSystem(game, style);
             var panel = new Panel(Anchor.Center, size: new(100, 100), positionOffset: Vector2.Zero);
             UI.Add("Panel", panel);
+
+            //load tiles
+            LoadAllTiles();
         }
 
+        //do all client initializing here
         public void InitializeCamera(GameWindow window, GraphicsDevice graphicsDevice)
         {
+            State = ClientState.Initializing;
             BoxingViewportAdapter viewportAdapter = new(window, graphicsDevice, 800, 480);
             Camera = new OrthographicCamera(viewportAdapter);
         }
@@ -92,6 +100,7 @@ namespace Block2D.Client
 
         private void OnDisconnect(object sender, EventArgs e)
         {
+            State = ClientState.MainMenu;
             InWorld = false;
             _fpsCounter.Reset();
             _currentWorld = null;
@@ -114,7 +123,7 @@ namespace Block2D.Client
                 for (int i = 0; i < _currentWorld.Players.Count; i++)
                 {
                     ClientPlayer currentPlayer = _currentWorld.Players.Values.ElementAt(i);
-                    currentPlayer.Tick();
+                    currentPlayer.Tick(gameTime);
                 }
 
                 Camera.LookAt(LocalPlayer.Position);
@@ -155,6 +164,7 @@ namespace Block2D.Client
             }
 
             _client.Connect($"{ip}:{port}");
+            State = ClientState.Multiplayer;
         }
 
         public void Disconnect()
@@ -170,6 +180,7 @@ namespace Block2D.Client
             }
 
             _client.Connect($"{ip}:{port}");
+            State = ClientState.Singleplayer;
         }
 
         public void Send(Message message)
@@ -177,7 +188,7 @@ namespace Block2D.Client
             _client.Send(message);
         }
 
-        public override void LoadAllTiles()
+        protected override void LoadAllTiles()
         {
             for (int i = 0; i < Main.ModLoader.LoadedModCount; i++)
             {

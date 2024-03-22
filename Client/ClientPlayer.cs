@@ -3,7 +3,6 @@ using Block2D.Common;
 using Block2D.Common.ID;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using System.Diagnostics;
 
 namespace Block2D.Client
 {
@@ -52,7 +51,7 @@ namespace Block2D.Client
             Name = name;
         }
 
-        public void Tick()
+        public void Tick(GameTime gameTime)
         {
             if (IsLocal)
             {
@@ -92,7 +91,7 @@ namespace Block2D.Client
 
                 if (!Collision.CollidingWithTiles(Position.ToPoint(), _velocity.ToPoint(), _hitbox.Size))
                 {
-                    Position += _velocity;
+                    Position += _velocity * (gameTime.ElapsedGameTime.Milliseconds / 16);
                     _hitbox.Location = Position.ToPoint();
                 }
                 ClientMessageHandler.SendPosition(Position);
