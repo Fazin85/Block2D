@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Block2D.Client
 {
-    public class ClientWorld : ITickable
+    public class ClientWorld
     {
         public Dictionary<ushort, ClientPlayer> Players { get; private set; }
 

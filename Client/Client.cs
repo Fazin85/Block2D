@@ -5,6 +5,11 @@ using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MLEM.Font;
+using MLEM.Misc;
+using MLEM.Ui;
+using MLEM.Ui.Elements;
+using MLEM.Ui.Style;
 using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 using Riptide;
@@ -36,6 +41,8 @@ namespace Block2D.Client
 
         public OrthographicCamera Camera { get; private set; }
 
+        public UiSystem UI { get; private set; }
+
         private readonly Riptide.Client _client;
         private ClientWorld _currentWorld;
         private const string ip = "127.0.0.1";
@@ -53,6 +60,20 @@ namespace Block2D.Client
             _client.Connected += OnConnect;
             _client.Disconnected += OnDisconnect;
             DebugMode = false;
+        }
+
+        public void LoadContent(Game game, SpriteBatch spriteBatch)
+        {
+            MlemPlatform.Current = new MlemPlatform.DesktopGl<TextInputEventArgs>((w, c) => w.TextInput += c);
+
+            var style = new UntexturedStyle(spriteBatch)
+            {
+                Font = new GenericSpriteFont(Main.AssetManager.Font)
+            };
+
+            UI = new UiSystem(game, style);
+            var panel = new Panel(Anchor.Center, size: new(100, 100), positionOffset: Vector2.Zero);
+            UI.Add("Panel", panel);
         }
 
         public void InitializeCamera(GameWindow window, GraphicsDevice graphicsDevice)
@@ -98,6 +119,8 @@ namespace Block2D.Client
 
                 Camera.LookAt(LocalPlayer.Position);
             }
+
+            UI.Update(gameTime);
 
             if (DebugMode)
             {
@@ -153,8 +176,6 @@ namespace Block2D.Client
         {
             _client.Send(message);
         }
-
-        public void LoadContent() { }
 
         public override void LoadAllTiles()
         {

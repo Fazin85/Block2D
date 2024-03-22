@@ -9,6 +9,7 @@ using NLog.Config;
 using NLog.Targets;
 using System;
 using System.IO;
+using System.Threading;
 
 namespace Block2D.Common
 {
@@ -71,12 +72,14 @@ namespace Block2D.Common
         private GraphicsDeviceManager _graphicsDeviceManager;
         private readonly AssetManager _assetManager;
         private readonly InternalServer _internalServer;
+        private readonly Thread _internalServerThread;
         private static Main _instance;
 
         public Main()
         {
             _instance = this;
             _internalServer = new();
+            _internalServerThread = new(InternalServer.Run);
             _graphicsDeviceManager = new(this);
             Random = new(0);
             Version = new(0, 1);
@@ -107,6 +110,7 @@ namespace Block2D.Common
             _internalServer.World.LoadAllTiles();
 
             Client.LoadAllTiles();
+            Client.LoadContent(this, _spriteBatch);
         }
 
         protected override void Update(GameTime gameTime)
@@ -120,9 +124,9 @@ namespace Block2D.Common
             )
                 ShouldExit = true;
 
-            if (KeyboardState.IsKeyDown(Keys.G))
+            if (KeyboardState.IsKeyDown(Keys.G) && LastKeyboardState.IsKeyUp(Keys.G))
             {
-                _internalServer.Start(20);
+                _internalServerThread.Start();
             }
 
             if (KeyboardState.IsKeyDown(Keys.H))
@@ -131,11 +135,6 @@ namespace Block2D.Common
             }
 
             Client.Tick(gameTime);
-
-            if (_internalServer.IsRunning)
-            {
-                _internalServer.Tick();
-            }
 
             if (ShouldExit)
             {
@@ -153,6 +152,9 @@ namespace Block2D.Common
             Client.Draw(_spriteBatch, AssetManager);
 
             _spriteBatch.End();
+
+            Client.UI.Draw(gameTime, _spriteBatch);
+
             base.Draw(gameTime);
         }
 

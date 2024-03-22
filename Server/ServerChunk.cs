@@ -4,7 +4,7 @@ using Microsoft.Xna.Framework;
 
 namespace Block2D.Server
 {
-    public class ServerChunk : ITickable
+    public class ServerChunk
     {
         public ChunkLoadAmount LoadAmount { get; set; }
 

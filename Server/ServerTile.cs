@@ -16,7 +16,7 @@ namespace Block2D.Server
                 string name = Main.InternalServer.World.GetTileName(ID);
                 ModTile tile = Main.AssetManager.GetTile(name);
 
-                tile.Script.Call(tile.Script.Globals["Tick"], x, y, dimensionId);
+                tile.TileCode.Call(tile.TileCode.Globals["Tick"], x, y, dimensionId);
             }
         }
 

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework;
 
 namespace Block2D.Server
 {
-    public class ServerPlayer : ITickable
+    public class ServerPlayer
     {
         public Vector2 Position
         {

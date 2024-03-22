@@ -11,6 +11,6 @@ namespace Block2D.Modding.DataStructures
         public string HitSoundEffectName { get; set; }
         public bool Tickable { get; set; }
         public Color DrawColor { get; set; }
-        public Script Script { get; set; }
+        public Script TileCode { get; set; }
     }
 }

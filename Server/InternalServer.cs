@@ -1,10 +1,11 @@
 ﻿using Block2D.Common;
 using Riptide;
 using Riptide.Utils;
+using System.Threading;
 
 namespace Block2D.Server
 {
-    public class InternalServer : ITickable
+    public class InternalServer
     {
         public bool IsRunning
         {
@@ -24,7 +25,25 @@ namespace Block2D.Server
             _world = new("DevWorld");
         }
 
-        public void Start(ushort maxClientCount)
+        public void Run()
+        {
+            Setup(20);
+
+            while (!Main.ShouldExit)
+            {
+                if (_server.IsRunning)
+                {
+                    //do ticking stuff here
+                    _world.Tick();
+
+                    _server.Update();
+                }
+
+                Thread.Sleep(16);
+            }
+        }
+
+        private void Setup(ushort maxClientCount)
         {
             if (IsRunning)
             {
@@ -37,23 +56,17 @@ namespace Block2D.Server
 
             _server.Start(7777, maxClientCount);
             _server.ClientConnected += OnClientConnected;
+            _server.ClientDisconnected += OnClientDisconnected;
         }
 
-        public void OnClientConnected(object sender, ServerConnectedEventArgs args)
+        private void OnClientConnected(object sender, ServerConnectedEventArgs args)
         {
 
         }
 
-        public void OnClientDisconnected(object sender, ServerDisconnectedEventArgs args)
+        private void OnClientDisconnected(object sender, ServerDisconnectedEventArgs args)
         {
             _world.RemovePlayer(args.Client.Id);
-        }
-
-        public void Tick()
-        {
-            _world.Tick();
-
-            _server.Update();
         }
 
         public void Send(Message message, ushort toClientId)

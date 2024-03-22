@@ -11,7 +11,7 @@ using System.Linq;
 
 namespace Block2D.Server
 {
-    public class ServerWorld : World, ITickable
+    public class ServerWorld : World
     {
         public bool IsLoaded { get; }
 
@@ -64,7 +64,11 @@ namespace Block2D.Server
 
                 foreach (var dim in Dimensions.Values)
                 {
-                    foreach (var chunk in dim.ChunkManager.Chunks.Values.Where(c => c.LoadAmount != ChunkLoadAmount.Unloaded))
+                    foreach (
+                        var chunk in dim.ChunkManager.Chunks.Values.Where(c =>
+                            c.LoadAmount != ChunkLoadAmount.Unloaded
+                        )
+                    )
                     {
                         chunk.Tick();
                     }

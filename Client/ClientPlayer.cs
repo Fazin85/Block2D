@@ -7,7 +7,7 @@ using System.Diagnostics;
 
 namespace Block2D.Client
 {
-    public class ClientPlayer : ITickable
+    public class ClientPlayer
     {
         private bool IsLocal
         {

@@ -38,15 +38,16 @@ namespace Block2D.Modding.ContentLoaders
                 ModTile tile = new();
 
                 script.DoFile(tileFilePaths[i]);
+                SetScript(script);
 
-                DynValue nameVal = script.Call(script.Globals["GetName"]);
+                DynValue nameVal = GetGlobal("GetName");
                 string name = nameVal.String;
 
                 tile.Name = name;
 
                 if (script.Globals["GetTextureName"] != null)
                 {
-                    DynValue texVal = script.Call(script.Globals["GetTextureName"]);
+                    DynValue texVal = GetGlobal("GetTextureName");
                     string textureName = texVal.String;
 
                     tile.TextureName = textureName;
@@ -54,26 +55,26 @@ namespace Block2D.Modding.ContentLoaders
 
                 if (script.Globals["GetSoundEffectName"] != null)
                 {
-                    DynValue hitSoundEffectVal = script.Call(script.Globals["GetSoundEffectName"]);
+                    DynValue hitSoundEffectVal = GetGlobal("GetSoundEffectName");
 
                     string hitSoundEffectName = hitSoundEffectVal.String;
 
                     tile.HitSoundEffectName = hitSoundEffectName;
                 }
 
-                DynValue scaleVal = script.Call(script.Globals["GetScale"]);
+                DynValue scaleVal = GetGlobal("GetScale");
                 float scale = (float)scaleVal.Number;
 
                 tile.TextureScale = scale;
 
-                DynValue tickableVal = script.Call(script.Globals["Tickable"]);
+                DynValue tickableVal = GetGlobal("Tickable");
                 bool tickable = tickableVal.Boolean;
 
                 tile.Tickable = tickable;
 
                 tile.DrawColor = GetTileColor(script);
 
-                tile.Script = script;
+                tile.TileCode = script;
 
                 modTileList.Add(tile);
             }
