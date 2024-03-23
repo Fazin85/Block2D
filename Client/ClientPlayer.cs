@@ -94,7 +94,6 @@ namespace Block2D.Client
                     Position += _velocity * (gameTime.ElapsedGameTime.Milliseconds / 16);
                     _hitbox.Location = Position.ToPoint();
                 }
-                ClientMessageHandler.SendPosition(Position);
             }
         }
     }

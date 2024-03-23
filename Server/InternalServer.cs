@@ -17,12 +17,14 @@ namespace Block2D.Server
             get => _world;
         }
 
+        public ServerState State { get; private set; }
+
         private Riptide.Server _server;
-        private readonly ServerWorld _world;
+        private ServerWorld _world;
 
         public InternalServer()
         {
-            _world = new("DevWorld");
+            State = ServerState.Inactive;
         }
 
         public void Run()
@@ -45,6 +47,13 @@ namespace Block2D.Server
 
         private void Setup(ushort maxClientCount)
         {
+            if(State == ServerState.Starting)
+            {
+                return;
+            }
+
+            State = ServerState.Starting;
+            
             if (IsRunning)
             {
                 return;
@@ -57,6 +66,12 @@ namespace Block2D.Server
             _server.Start(7777, maxClientCount);
             _server.ClientConnected += OnClientConnected;
             _server.ClientDisconnected += OnClientDisconnected;
+
+            _world = new("DevWorld");
+
+            _world.LoadContent();
+
+            State = ServerState.Loaded;
         }
 
         private void OnClientConnected(object sender, ServerConnectedEventArgs args)

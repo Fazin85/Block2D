@@ -107,8 +107,6 @@ namespace Block2D.Common
 
             AssetManager.LoadAllContent();
 
-            _internalServer.World.LoadContent();
-
             Client.LoadContent(this, _spriteBatch);
         }
 
@@ -152,7 +150,7 @@ namespace Block2D.Common
 
             _spriteBatch.End();
 
-            Client.UI.Draw(gameTime, _spriteBatch);
+            //Client.UI.Draw(gameTime, _spriteBatch);
 
             base.Draw(gameTime);
         }

@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Block2D.Client
 {
@@ -85,8 +86,8 @@ namespace Block2D.Client
             Point chunkPosition = worldPosition.ToChunkCoords();
             if (GetChunkLoaded(chunkPosition, out ClientChunk chunk))
             {
-                int x = CC.CHUNK_SIZE - Math.Abs(chunkPosition.X - worldPosition.X);
-                int y = CC.CHUNK_SIZE - Math.Abs(chunkPosition.Y - worldPosition.Y);
+                int x = Math.Abs(chunkPosition.X - worldPosition.X);
+                int y = Math.Abs(chunkPosition.Y - worldPosition.Y);
 
                 tile = chunk.GetTile(new(x, y));
                 return true;
