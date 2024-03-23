@@ -27,7 +27,7 @@ namespace Block2D.Server.WorldGen
         {
             chunk = new(chunkPosition, dimensionId, world);
 
-            if (chunkPosition.X == 0)
+            if (chunkPosition.Y == 0)
             {
                 for (int x = chunkPosition.X; x < chunkPosition.X + CC.CHUNK_SIZE; x++)
                 {

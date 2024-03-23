@@ -29,7 +29,7 @@ namespace Block2D.Client
 
                         Vector2 positionToRenderBlock =
                             (currentChunk.Position.ToVector2() + currentTilePosition.ToVector2())
-                            * 16;
+                            * CC.TILE_SIZE;
 
                         string currentTileName = Main.Client.GetTileName(currentTile.ID);
 
@@ -52,7 +52,7 @@ namespace Block2D.Client
                 }
                 if (Main.Client.DebugMode)
                 {
-                    RectangleF rectangle = new(currentChunk.Position, new(1024, 1024));
+                    RectangleF rectangle = new(new(currentChunk.Position.X * CC.TILE_SIZE, currentChunk.Position.Y *  CC.TILE_SIZE), new(CC.CHUNK_SIZE * CC.TILE_SIZE, CC.CHUNK_SIZE * CC.TILE_SIZE));
 
                     spriteBatch.DrawRectangle(rectangle, Color.Red);
                 }

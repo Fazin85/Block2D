@@ -66,6 +66,9 @@ namespace Block2D.Client.Networking
             {
                 Main.Client.InWorld = true;
                 RequestChunk(Point.Zero);
+                RequestChunk(new(64, 0));
+                RequestChunk(new(64, -64));
+                RequestChunk(new(0, -64));
             }
         }
 

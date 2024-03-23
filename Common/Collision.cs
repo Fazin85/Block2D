@@ -1,4 +1,5 @@
-﻿using Block2D.Client;
+﻿using System;
+using Block2D.Client;
 using Microsoft.Xna.Framework;
 
 namespace Block2D.Common
@@ -19,16 +20,19 @@ namespace Block2D.Common
 
         public static bool CollidingWithTiles(Point position, Point velocity, Point size)
         {
+            //shift >> 4
             Rectangle hitbox = new(position + velocity, size);
+            //Console.WriteLine(position);
             for (int x = hitbox.Left; x <= hitbox.Right; x++)
             {
                 for (int y = hitbox.Top; y <= hitbox.Bottom; y++)
                 {
                     Point currentPosition = new(x, y);
-                    if (Main.Client.World.TryGetTile(currentPosition, out ClientTile tile))
+                    if (Main.Client.World.TryGetTile(new(x >> 4, y >> 4), out ClientTile tile))
                     {
                         if (tile.Collidable)
                         {
+                            Console.WriteLine("Colliding");
                             Rectangle currentTileRect = new(currentPosition, new(16, 16));
                             if (hitbox.Intersects(currentTileRect))
                             {
