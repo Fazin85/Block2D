@@ -8,6 +8,7 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Threading;
 
@@ -88,6 +89,9 @@ namespace Block2D.Common
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
             Lua = new();
+
+            Debug.WriteLine(120 >> 6);
+            Debug.WriteLine(129 >> 6);
         }
 
         protected override void Initialize()
