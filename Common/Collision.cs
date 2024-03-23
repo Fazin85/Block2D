@@ -27,7 +27,7 @@ namespace Block2D.Common
                     Point currentPosition = new(x, y);
                     if (Main.Client.World.TryGetTile(currentPosition, out ClientTile tile))
                     {
-                        if (tile.ID.Collidable())
+                        if (tile.Collidable)
                         {
                             Rectangle currentTileRect = new(currentPosition, new(16, 16));
                             if (hitbox.Intersects(currentTileRect))

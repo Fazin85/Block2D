@@ -52,7 +52,7 @@ namespace Block2D.Server
             ModTile tile = Main.AssetManager.GetTile(tileName);
 
             //TODO add tileEntitys
-            _tiles[position.X, position.Y].Set(id, tile.Tickable, false);
+            _tiles[position.X, position.Y].Set(id, tile.Tickable, false, tile.Collidable);
         }
 
         public ServerTile GetTile(Point position)

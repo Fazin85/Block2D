@@ -25,3 +25,11 @@ end
 function GetDrawColorAlpha()
     return 0
 end
+
+function Tickable()
+    return false
+end
+
+function Collidable()
+    return false
+end

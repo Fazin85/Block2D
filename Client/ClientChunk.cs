@@ -1,4 +1,5 @@
 ﻿using Block2D.Client;
+using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework;
 
 namespace Block2D.Common
@@ -40,7 +41,9 @@ namespace Block2D.Common
 
             ushort id = _world.LoadedTiles[tileName];
 
-            _tiles[position.X, position.Y].Set(id, false);
+            ModTile tile = Main.AssetManager.GetTile(tileName);
+
+            _tiles[position.X, position.Y].Set(id, false, tile.Collidable);
         }
 
         public ClientTile GetTile(Point position)//we have to return a new tile in the error checking parts because the renderer is funny like that

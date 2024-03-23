@@ -45,12 +45,7 @@ namespace Block2D.Common
         {
             return new() { X = Math.Abs(point.X), Y = Math.Abs(point.Y) };
         }
-
-        public static bool Collidable(this ushort tileId)
-        {
-            return tileId == 0; //am I stupid or does this not make sense?
-        }
-
+        
         public static int GetIndexFromPosition(this Point p)
         {
             return CC.CHUNK_SIZE * p.X + p.Y;

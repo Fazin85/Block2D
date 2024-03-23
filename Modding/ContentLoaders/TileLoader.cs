@@ -72,6 +72,11 @@ namespace Block2D.Modding.ContentLoaders
 
                 tile.Tickable = tickable;
 
+                DynValue collidableVal = GetGlobal("Collidable");
+                bool collidable = collidableVal.Boolean;
+
+                tile.Collidable = collidable;
+
                 tile.DrawColor = GetTileColor(script);
 
                 tile.TileCode = script;
