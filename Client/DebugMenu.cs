@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Block2D.Client
 {
-    public class FPSCounter
+    public class DebugMenu
     {
         private double frames = 0;
         private double updates = 0;
@@ -11,11 +11,9 @@ namespace Block2D.Client
         private double last = 0;
         private double now = 0;
         public const double MSG_FREQUENCY = 1.0f;
-        public string msg = "";
-
-        /// <summary>
-        /// The msgFrequency here is the reporting time to update the message.
-        /// </summary>
+        private string msg = "";
+        public int ChunksToRenderCount = 0; 
+        
         public void Update(GameTime gameTime)
         {
             now = gameTime.TotalGameTime.TotalSeconds;
@@ -32,7 +30,9 @@ namespace Block2D.Client
                     + "\n Updates: "
                     + updates.ToString()
                     + "\n Frames: "
-                    + frames.ToString();
+                    + frames.ToString()
+                    + "\n ChunksToRenderCount: "
+                    + ChunksToRenderCount.ToString();
                 elapsed = 0;
                 frames = 0;
                 updates = 0;
@@ -59,6 +59,7 @@ namespace Block2D.Client
             last = 0;
             frames = 0;
             updates = 0;
+            ChunksToRenderCount = 0;
         }
     }
 }

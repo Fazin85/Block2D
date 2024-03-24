@@ -40,25 +40,10 @@ namespace Block2D.Common
         {
             return new Point { X = (point.X >> 6) * 64, Y = (point.Y >> 6) * 64 };
         }
-
-        public static Point Abs(this Point point)
-        {
-            return new() { X = Math.Abs(point.X), Y = Math.Abs(point.Y) };
-        }
         
         public static int GetIndexFromPosition(this Point p)
         {
             return CC.CHUNK_SIZE * p.X + p.Y;
-        }
-
-        public static int GetIndexFromPosition(Point p, int chunkSize)
-        {
-            return chunkSize * p.X + p.Y;
-        }
-
-        public static int GetIndexFromPosition(this Vector2 p)
-        {
-            return (int)(CC.CHUNK_SIZE * p.X + p.Y);
         }
 
         public static int GetIndexFromPosition(int x, int y)

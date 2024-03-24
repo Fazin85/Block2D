@@ -15,6 +15,7 @@ using MonoGame.Extended.ViewportAdapters;
 using Riptide;
 using System;
 using System.Linq;
+using RectangleF = MonoGame.Extended.RectangleF;
 
 namespace Block2D.Client
 {
@@ -45,20 +46,21 @@ namespace Block2D.Client
 
         public UiSystem UI { get; private set; }
 
+        public DebugMenu DebugMenu { get; private set; }
+
         private readonly Riptide.Client _client;
         private ClientWorld _currentWorld;
         private const string ip = "127.0.0.1";
         private const ushort port = 7777;
 
         private ushort _nextTileIdToLoad;
-        private readonly FPSCounter _fpsCounter;
         private const Keys DEBUG_KEY = Keys.F3;
         private long _tickCounter;
 
         public Client()
         {
             LoadedTiles = new();
-            _fpsCounter = new();
+            DebugMenu = new();
             _client = new();
             _client.Connected += OnConnect;
             _client.Disconnected += OnDisconnect;
@@ -96,7 +98,7 @@ namespace Block2D.Client
         {
             _currentWorld = new();
             _nextTileIdToLoad = 0;
-            _fpsCounter.Reset();
+            DebugMenu.Reset();
             ClientMessageHandler.PlayerJoin();
             _tickCounter = 0;
         }
@@ -105,7 +107,7 @@ namespace Block2D.Client
         {
             State = ClientState.MainMenu;
             InWorld = false;
-            _fpsCounter.Reset();
+            DebugMenu.Reset();
             _currentWorld = null;
             _tickCounter = 0;
         }
@@ -116,7 +118,7 @@ namespace Block2D.Client
                 Main.KeyboardState.IsKeyDown(DEBUG_KEY) && Main.LastKeyboardState.IsKeyUp(DEBUG_KEY)
             )
             {
-                _fpsCounter.Reset();
+                DebugMenu.Reset();
                 DebugMode = !DebugMode;
             }
 
@@ -142,7 +144,7 @@ namespace Block2D.Client
 
             if (DebugMode)
             {
-                _fpsCounter.Update(gameTime);
+                DebugMenu.Update(gameTime);
             }
 
             _tickCounter++;
@@ -152,7 +154,10 @@ namespace Block2D.Client
         {
             if (InWorld)
             {
-                Renderer.DrawChunks(_currentWorld.Chunks.Values.ToArray(), spriteBatch);
+                RectangleF viewRect = Camera.BoundingRectangle;
+                viewRect.Inflate(CC.TILE_SIZE, CC.TILE_SIZE);
+                
+                Renderer.DrawChunks(_currentWorld.Chunks.Values.ToArray(), spriteBatch, viewRect);
 
                 for (int i = 0; i < _currentWorld.Players.Count; i++)
                 {
@@ -163,7 +168,7 @@ namespace Block2D.Client
 
             if (DebugMode)
             {
-                _fpsCounter.Draw(spriteBatch, assets.Font, Camera.Position, Color.White);
+                DebugMenu.Draw(spriteBatch, assets.Font, Camera.Position, Color.White);
             }
         }
 
