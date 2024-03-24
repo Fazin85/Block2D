@@ -1,8 +1,9 @@
-﻿namespace Block2D;
-
-public enum ServerState
+﻿namespace Block2D
 {
-    Inactive,
-    Starting,
-    Loaded    
+    public enum ServerState
+    {
+        Inactive,
+        Starting,
+        Loaded
+    }
 }
