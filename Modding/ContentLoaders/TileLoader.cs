@@ -1,8 +1,8 @@
-﻿using Block2D.Common;
+﻿using System.Collections.Generic;
+using Block2D.Common;
 using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework;
 using MoonSharp.Interpreter;
-using System.Collections.Generic;
 
 namespace Block2D.Modding.ContentLoaders
 {

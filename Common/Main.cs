@@ -1,4 +1,8 @@
-﻿using Block2D.Modding;
+﻿using System;
+using System.Diagnostics;
+using System.IO;
+using System.Threading;
+using Block2D.Modding;
 using Block2D.Server;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -7,10 +11,6 @@ using MoonSharp.Interpreter;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
-using System;
-using System.Diagnostics;
-using System.IO;
-using System.Threading;
 
 namespace Block2D.Common
 {

@@ -89,7 +89,13 @@ namespace Block2D.Client
                     _velocity.X = 0f;
                 }
 
-                if (!Collision.CollidingWithTiles(Position.ToPoint(), _velocity.ToPoint(), _hitbox.Size))
+                if (
+                    !Collision.CollidingWithTiles(
+                        Position.ToPoint(),
+                        _velocity.ToPoint(),
+                        _hitbox.Size
+                    )
+                )
                 {
                     Position += _velocity * (gameTime.ElapsedGameTime.Milliseconds / 16);
                     _hitbox.Location = Position.ToPoint();

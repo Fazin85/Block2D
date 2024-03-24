@@ -12,8 +12,8 @@ namespace Block2D.Client
         private double now = 0;
         public const double MSG_FREQUENCY = 1.0f;
         private string msg = "";
-        public int ChunksToRenderCount = 0; 
-        
+        public int ChunksToRenderCount = 0;
+
         public void Update(GameTime gameTime)
         {
             now = gameTime.TotalGameTime.TotalSeconds;

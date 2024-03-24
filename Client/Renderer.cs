@@ -12,17 +12,28 @@ namespace Block2D.Client
 {
     public class Renderer
     {
-        public static void DrawChunks(ClientChunk[] chunksToDraw, SpriteBatch spriteBatch, RectangleF cameraRect)
-        {           
+        public static void DrawChunks(
+            ClientChunk[] chunksToDraw,
+            SpriteBatch spriteBatch,
+            RectangleF cameraRect
+        )
+        {
             int chunksToRenderCount = 0;
 
             for (int i = 0; i < chunksToDraw.Length; i++)
             {
                 ClientChunk currentChunk = chunksToDraw[i];
 
-                RectangleF currentChunkRect = new(new(currentChunk.Position.X * CC.TILE_SIZE, currentChunk.Position.Y * CC.TILE_SIZE), new(CC.CHUNK_SIZE * CC.TILE_SIZE, CC.CHUNK_SIZE * CC.TILE_SIZE));//create a rectangle the size of a chunk
+                RectangleF currentChunkRect =
+                    new(
+                        new(
+                            currentChunk.Position.X * CC.TILE_SIZE,
+                            currentChunk.Position.Y * CC.TILE_SIZE
+                        ),
+                        new(CC.CHUNK_SIZE * CC.TILE_SIZE, CC.CHUNK_SIZE * CC.TILE_SIZE)
+                    ); //create a rectangle the size of a chunk
 
-                if (currentChunk.ReceivedSections != 3 || !cameraRect.Intersects(currentChunkRect))//don't render chunks out of the camera's view
+                if (currentChunk.ReceivedSections != 3 || !cameraRect.Intersects(currentChunkRect)) //don't render chunks out of the camera's view
                 {
                     continue;
                 }
@@ -41,7 +52,7 @@ namespace Block2D.Client
                             (currentChunk.Position.ToVector2() + currentTilePosition.ToVector2())
                             * CC.TILE_SIZE;
 
-                        if (!cameraRect.Contains(positionToRenderBlock))//don't render tiles out of the camera's view
+                        if (!cameraRect.Contains(positionToRenderBlock)) //don't render tiles out of the camera's view
                         {
                             continue;
                         }
@@ -65,7 +76,7 @@ namespace Block2D.Client
                         }
                     }
                 }
-                
+
                 if (Main.Client.DebugMode)
                 {
                     spriteBatch.DrawRectangle(currentChunkRect, Color.Red);

@@ -1,4 +1,6 @@
-﻿using Block2D.Client.Networking;
+﻿using System;
+using System.Linq;
+using Block2D.Client.Networking;
 using Block2D.Common;
 using Block2D.Modding;
 using Block2D.Modding.DataStructures;
@@ -13,8 +15,6 @@ using MLEM.Ui.Style;
 using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 using Riptide;
-using System;
-using System.Linq;
 using RectangleF = MonoGame.Extended.RectangleF;
 
 namespace Block2D.Client
@@ -67,11 +67,14 @@ namespace Block2D.Client
             DebugMode = false;
             _tickCounter = 0;
         }
+
         //do all client content loading here
         public void LoadContent(Game game, SpriteBatch spriteBatch)
         {
             State = ClientState.Loading;
-            MlemPlatform.Current = new MlemPlatform.DesktopGl<TextInputEventArgs>((w, c) => w.TextInput += c);
+            MlemPlatform.Current = new MlemPlatform.DesktopGl<TextInputEventArgs>(
+                (w, c) => w.TextInput += c
+            );
 
             var style = new UntexturedStyle(spriteBatch)
             {
@@ -131,7 +134,7 @@ namespace Block2D.Client
                     ClientPlayer currentPlayer = _currentWorld.Players.Values.ElementAt(i);
                     currentPlayer.Tick(gameTime);
 
-                    if(_tickCounter % 3 == 0)
+                    if (_tickCounter % 3 == 0)
                     {
                         ClientMessageHandler.SendPosition(currentPlayer.Position);
                     }
@@ -156,7 +159,7 @@ namespace Block2D.Client
             {
                 RectangleF viewRect = Camera.BoundingRectangle;
                 viewRect.Inflate(CC.TILE_SIZE, CC.TILE_SIZE);
-                
+
                 Renderer.DrawChunks(_currentWorld.Chunks.Values.ToArray(), spriteBatch, viewRect);
 
                 for (int i = 0; i < _currentWorld.Players.Count; i++)

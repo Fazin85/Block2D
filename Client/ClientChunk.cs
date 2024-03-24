@@ -46,7 +46,7 @@ namespace Block2D.Common
             _tiles[position.X, position.Y].Set(id, false, tile.Collidable);
         }
 
-        public ClientTile GetTile(Point position)//we have to return a new tile in the error checking parts because the renderer is funny like that
+        public ClientTile GetTile(Point position) //we have to return a new tile in the error checking parts because the renderer is funny like that
         {
             if (position.X >= CC.CHUNK_SIZE || position.X < 0)
             {

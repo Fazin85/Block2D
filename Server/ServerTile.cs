@@ -8,7 +8,7 @@ namespace Block2D.Server
         public ushort ID { get; private set; }
         public bool Tickable { get; private set; }
         public bool TileEntity { get; private set; }
-        public bool Collidable {get; private set; }
+        public bool Collidable { get; private set; }
 
         public readonly void Tick(int x, int y, string dimensionId)
         {

@@ -1,7 +1,7 @@
-﻿using Block2D.Common;
+﻿using System.Threading;
+using Block2D.Common;
 using Riptide;
 using Riptide.Utils;
-using System.Threading;
 
 namespace Block2D.Server
 {
@@ -47,13 +47,13 @@ namespace Block2D.Server
 
         private void Setup(ushort maxClientCount)
         {
-            if(State == ServerState.Starting)
+            if (State == ServerState.Starting)
             {
                 return;
             }
 
             State = ServerState.Starting;
-            
+
             if (IsRunning)
             {
                 return;
@@ -74,10 +74,7 @@ namespace Block2D.Server
             State = ServerState.Loaded;
         }
 
-        private void OnClientConnected(object sender, ServerConnectedEventArgs args)
-        {
-
-        }
+        private void OnClientConnected(object sender, ServerConnectedEventArgs args) { }
 
         private void OnClientDisconnected(object sender, ServerDisconnectedEventArgs args)
         {
