@@ -10,6 +10,8 @@ using MoonSharp.Interpreter;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using Steamworks;
+using Version = System.Version;
 
 namespace Block2D.Common
 {
@@ -50,6 +52,8 @@ namespace Block2D.Common
             get => _instance._assetManager;
         }
 
+        public static bool OfflineMode { get; private set; }
+
         public static Random Random { get; private set; }
 
         public static Client.Client Client { get; private set; }
@@ -86,6 +90,7 @@ namespace Block2D.Common
             _assetManager = new(Content);
             Client = new();
             Content.RootDirectory = "Content";
+            OfflineMode = false;
             IsMouseVisible = true;
             Lua = new();
         }
@@ -98,6 +103,16 @@ namespace Block2D.Common
 
             SetupLua();
 
+            if (!SteamAPI.Init()) 
+            { 
+                OfflineMode = true;
+                Logger.Warn("(CLIENT): Failed To Connect To Steam.");
+            }
+            else
+            {
+                Logger.Info("(CLIENT): Successfully Connected To Steam.");
+            }
+
             base.Initialize();
         }
 
@@ -105,7 +120,7 @@ namespace Block2D.Common
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            AssetManager.LoadAllContent();
+            AssetManager.LoadContent();
 
             Client.LoadContent(this, _spriteBatch);
         }
@@ -137,7 +152,7 @@ namespace Block2D.Common
             {
                 Exit();
             }
-            
+
             base.Update(gameTime);
         }
 

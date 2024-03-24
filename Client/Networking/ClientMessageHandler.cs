@@ -9,7 +9,7 @@ namespace Block2D.Client.Networking
         public static void PlayerJoin()
         {
             Message message = Message.Create(MessageSendMode.Reliable, ClientMessageID.PlayerJoin);
-            message.AddString("Hello World");
+            message.AddString(Main.Client.Username);
             Main.Client.Send(message);
         }
 

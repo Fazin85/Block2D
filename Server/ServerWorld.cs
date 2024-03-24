@@ -1,13 +1,13 @@
-﻿using Block2D.Common;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Block2D.Common;
 using Block2D.Common.ID;
 using Block2D.Modding;
 using Block2D.Modding.DataStructures;
 using Block2D.Server.Networking;
 using Microsoft.Xna.Framework;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace Block2D.Server
 {
@@ -33,12 +33,11 @@ namespace Block2D.Server
 
         private long _currentTick;
         private readonly int _seed;
-        private ushort _nextTileIdToLoad;
 
         public ServerWorld(string name)
         {
             LoadedTiles = new();
-            _nextTileIdToLoad = 0;
+            NextTileIdToLoad = 0;
             Name = name; //must do this beforce creating directories
             CreateNeededDirectories();
             Dimensions = new();
@@ -56,7 +55,7 @@ namespace Block2D.Server
 
         public void LoadContent()
         {
-            LoadAllTiles();
+            LoadTiles();
         }
 
         public void Tick()
@@ -89,7 +88,7 @@ namespace Block2D.Server
             }
 
             Players.Add(player.ID, player);
-            Main.Logger.Info("Added Player" + player.Name);
+            Main.Logger.Info("(SERVER): " + player.Name + " Joined The Game");
         }
 
         private void CreateNeededDirectories()
@@ -163,26 +162,6 @@ namespace Block2D.Server
             }
             tile = new();
             return false;
-        }
-
-        protected override void LoadAllTiles()
-        {
-            for (int i = 0; i < Main.ModLoader.LoadedModCount; i++)
-            {
-                Mod currentMod = Main.ModLoader.LoadedMods.ElementAt(i);
-                ModTile[] tiles = currentMod.ContentManager.GetModTiles();
-
-                LoadModTiles(tiles);
-            }
-        }
-
-        protected override void LoadModTiles(ModTile[] modTiles)
-        {
-            for (int i = 0; i < modTiles.Length; i++)
-            {
-                LoadedTiles.Add(modTiles[i].Name, _nextTileIdToLoad);
-                _nextTileIdToLoad++;
-            }
         }
     }
 }

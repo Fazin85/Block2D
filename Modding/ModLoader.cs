@@ -1,8 +1,8 @@
-﻿using Block2D.Common;
+﻿using System.Collections.Generic;
+using System.IO;
+using Block2D.Common;
 using Block2D.Modding.DataStructures;
 using MoonSharp.Interpreter;
-using System.Collections.Generic;
-using System.IO;
 
 namespace Block2D.Modding
 {
@@ -11,13 +11,7 @@ namespace Block2D.Modding
         private readonly ModManager _modManager;
         private bool _forceQuit;
 
-        private ModContent _loadedContent;
-        private Script _script;
-
-        public int LoadedModCount
-        {
-            get => LoadedMods.Count;
-        }
+        protected ModContent LoadedContent;
 
         public List<Mod> LoadedMods { get; private set; }
 
@@ -25,21 +19,15 @@ namespace Block2D.Modding
         {
             _modManager = new();
             _forceQuit = false;
-            _loadedContent = new();
+            LoadedContent = new();
             LoadedMods = new();
-            _script = new();
-        }
-
-        public ModContent GetLoadedContent()
-        {
-            return _loadedContent;
         }
 
         protected void LoadAllMods()
         {
             if (_forceQuit)
             {
-                Main.Logger.Fatal("Terminating Modloader.");
+                Main.Logger.Fatal("(MODLOADER): Terminating Modloader.");
                 return;
             }
 
@@ -47,7 +35,7 @@ namespace Block2D.Modding
 
             if (modDirectories.Length == 0)
             {
-                Main.Logger.Info("No Mods Detected, Skipping Mod Loading Process.");
+                Main.Logger.Info("(MODLOADER): No Mods Detected, Skipping Mod Loading Process.");
                 return;
             }
 
@@ -55,7 +43,7 @@ namespace Block2D.Modding
             {
                 if (_forceQuit)
                 {
-                    Main.Logger.Fatal("Terminating Modloader.");
+                    Main.Logger.Fatal("(MODLOADER): Terminating Modloader.");
                     return;
                 }
 
@@ -67,7 +55,7 @@ namespace Block2D.Modding
         {
             if (_forceQuit)
             {
-                Main.Logger.Fatal("Terminating Modloader.");
+                Main.Logger.Fatal("(MODLOADER): Terminating Modloader.");
                 return;
             }
 
@@ -92,7 +80,7 @@ namespace Block2D.Modding
 
             if (modNameFromFile.Length == 0 || modVersion.Length == 0)
             {
-                Main.Logger.Warn("Tried To Load A Corrupted Mod.");
+                Main.Logger.Warn("(MODLOADER): Tried To Load A Corrupted Mod.");
                 return;
             }
 
@@ -104,10 +92,10 @@ namespace Block2D.Modding
                 script.Call(script.Globals["Init"]);
             }
 
-            mod.LoadContent(_loadedContent);
+            mod.LoadContent(LoadedContent);
             _modManager.AddMod(mod);
             LoadedMods.Add(mod);
-            Main.Logger.Info("Loaded Mod: " + mod.DisplayName);
+            Main.Logger.Info("(MODLOADER): Loaded Mod: " + mod.DisplayName);
         }
 
         public void UnloadMod(string modName)
@@ -116,19 +104,18 @@ namespace Block2D.Modding
 
             bool flag = false;
 
-            for (int i = 0; i < LoadedMods.Count; i++)
+            foreach (Mod mod in LoadedMods)
             {
-                Mod mod = LoadedMods[i];
                 if (mod.DisplayName == modName)
                 {
-                    LoadedMods.RemoveAt(i);
+                    LoadedMods.Remove(mod);
                     flag = true;
                 }
             }
 
             if (!flag)
             {
-                Main.Logger.Fatal("Failed To Unload Mod: " + modName);
+                Main.Logger.Fatal("(MODLOADER): Failed To Unload Mod: " + modName);
                 Main.ShouldExit = true;
             }
         }
@@ -143,7 +130,7 @@ namespace Block2D.Modding
         {
             _forceQuit = true;
             UnloadAllMods();
-            Main.Logger.Fatal("Force Quit Modloader Due To Broken Mod.");
+            Main.Logger.Fatal("(MODLOADER): Force Quit Modloader Due To Broken Mod.");
         }
     }
 }

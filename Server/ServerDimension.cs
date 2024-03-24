@@ -1,6 +1,6 @@
 ﻿namespace Block2D.Server
 {
-    public struct ServerDimension
+    public class ServerDimension
     {
         public ServerChunkManager ChunkManager { get; private set; }
         

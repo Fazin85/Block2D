@@ -21,7 +21,7 @@ namespace Block2D.Common
             _textures = new();
         }
 
-        public void LoadAllContent()
+        public void LoadContent()
         {
             //load font
             Font = _contentManager.Load<SpriteFont>("gamefont");
@@ -32,11 +32,8 @@ namespace Block2D.Common
 
             LoadAllMods();
 
-            ModContent loadedContent = GetLoadedContent();
-
-            for (int i = 0; i < loadedContent.Textures.Values.Count; i++)
+            foreach(ModTexture tex in LoadedContent.Textures.Values)
             {
-                ModTexture tex = loadedContent.Textures.Values.ElementAt(i);
                 _textures.Add(tex.Name, tex.Texture);
             }
         }
@@ -58,8 +55,7 @@ namespace Block2D.Common
 
         public ModTile GetTile(string tileName)
         {
-            ModContent content = GetLoadedContent();
-            return content.Tiles[tileName];
+            return LoadedContent.Tiles[tileName];
         }
     }
 }

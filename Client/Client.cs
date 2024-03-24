@@ -15,6 +15,7 @@ using MLEM.Ui.Style;
 using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 using Riptide;
+using Steamworks;
 using RectangleF = MonoGame.Extended.RectangleF;
 
 namespace Block2D.Client
@@ -42,6 +43,8 @@ namespace Block2D.Client
 
         public bool InWorld { get; set; }
 
+        public string Username { get; private set; }
+
         public OrthographicCamera Camera { get; private set; }
 
         public UiSystem UI { get; private set; }
@@ -52,8 +55,6 @@ namespace Block2D.Client
         private ClientWorld _currentWorld;
         private const string ip = "127.0.0.1";
         private const ushort port = 7777;
-
-        private ushort _nextTileIdToLoad;
         private const Keys DEBUG_KEY = Keys.F3;
 
         public Client()
@@ -64,12 +65,23 @@ namespace Block2D.Client
             _client.Connected += OnConnect;
             _client.Disconnected += OnDisconnect;
             DebugMode = false;
+            NextTileIdToLoad = 0;
         }
 
         //do all client content loading here
         public void LoadContent(Game game, SpriteBatch spriteBatch)
         {
             State = ClientState.Loading;
+
+            if (Main.OfflineMode)
+            {
+                Username = "Player" + Random.Shared.Next(1000).ToString();
+            }
+            else
+            {
+                Username = SteamFriends.GetPersonaName();
+            }
+
             MlemPlatform.Current = new MlemPlatform.DesktopGl<TextInputEventArgs>(
                 (w, c) => w.TextInput += c
             );
@@ -84,7 +96,7 @@ namespace Block2D.Client
             UI.Add("Panel", panel);
 
             //load tiles
-            LoadAllTiles();
+            LoadTiles();
         }
 
         //do all client initializing here
@@ -98,7 +110,6 @@ namespace Block2D.Client
         private void OnConnect(object sender, EventArgs e)
         {
             _currentWorld = new();
-            _nextTileIdToLoad = 0;
             DebugMenu.Reset();
             ClientMessageHandler.PlayerJoin();
         }
@@ -190,26 +201,6 @@ namespace Block2D.Client
         public void Send(Message message)
         {
             _client.Send(message);
-        }
-
-        protected override void LoadAllTiles()
-        {
-            for (int i = 0; i < Main.ModLoader.LoadedModCount; i++)
-            {
-                Mod currentMod = Main.ModLoader.LoadedMods.ElementAt(i);
-                ModTile[] tiles = currentMod.ContentManager.GetModTiles();
-
-                LoadModTiles(tiles);
-            }
-        }
-
-        protected override void LoadModTiles(ModTile[] modTiles)
-        {
-            for (int i = 0; i < modTiles.Length; i++)
-            {
-                LoadedTiles.Add(modTiles[i].Name, _nextTileIdToLoad);
-                _nextTileIdToLoad++;
-            }
         }
     }
 }
