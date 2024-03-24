@@ -3,6 +3,7 @@ using Block2D.Common;
 using Block2D.Common.ID;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 
 namespace Block2D.Client
 {
@@ -29,7 +30,7 @@ namespace Block2D.Client
         }
 
         public Vector2 Position { get; set; }
-
+        public Vector2 PreviousPosition { get; private set; }
         public Vector2 Velocity
         {
             get => _velocity;
@@ -88,19 +89,47 @@ namespace Block2D.Client
                 {
                     _velocity.X = 0f;
                 }
+                PreviousPosition = Position;
+                Position += _velocity * (gameTime.ElapsedGameTime.Milliseconds / 16);
+                _hitbox.Location = Position.ToPoint();
 
-                if (
-                    !Collision.CollidingWithTiles(
-                        Position.ToPoint(),
-                        _velocity.ToPoint(),
-                        _hitbox.Size
-                    )
-                )
+                HandleCollision();
+            }
+        }
+
+        private void HandleCollision()
+        {
+            Rectangle hitbox = _hitbox;
+            for (int x = hitbox.Left; x <= hitbox.Right; x++)
+            {
+                for (int y = hitbox.Top; y <= hitbox.Bottom; y++)
                 {
-                    Position += _velocity * (gameTime.ElapsedGameTime.Milliseconds / 16);
-                    _hitbox.Location = Position.ToPoint();
+                    Point currentPosition = new(x, y);
+                    if (Main.Client.World.TryGetTile(new(x >> 4, y >> 4), out ClientTile tile))
+                    {
+                        if (tile.Collidable)
+                        {
+                            Rectangle currentTileRect =
+                                new(currentPosition, new(CC.TILE_SIZE, CC.TILE_SIZE));
+                            if (hitbox.Intersects(currentTileRect))
+                            {
+                                Vector2 depth = Helper.GetIntersectionDepth(
+                                    hitbox,
+                                    currentTileRect
+                                );
+
+                                if (depth != Vector2.Zero)
+                                {
+                                    Position += depth;
+
+                                    hitbox.Location = Position.ToPoint();
+                                }
+                            }
+                        }
+                    }
                 }
             }
+            _hitbox = hitbox;
         }
     }
 }
