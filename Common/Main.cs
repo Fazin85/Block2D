@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using Block2D.Modding;
@@ -138,6 +137,7 @@ namespace Block2D.Common
             {
                 Exit();
             }
+            
             base.Update(gameTime);
         }
 

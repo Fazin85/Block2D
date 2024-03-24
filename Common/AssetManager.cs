@@ -24,7 +24,7 @@ namespace Block2D.Common
         public void LoadAllContent()
         {
             //load font
-            Font = _contentManager.Load<SpriteFont>("pixeled");
+            Font = _contentManager.Load<SpriteFont>("gamefont");
 
             //load tiles with modloader
 

@@ -13,12 +13,12 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin pixeled.spritefont
+#begin gamefont.spritefont
 /importer:FontDescriptionImporter
 /processor:FontDescriptionProcessor
 /processorParam:PremultiplyAlpha=True
 /processorParam:TextureFormat=Compressed
-/build:pixeled.spritefont
+/build:gamefont.spritefont
 
 #begin Player_Texture.png
 /importer:TextureImporter

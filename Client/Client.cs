@@ -55,7 +55,6 @@ namespace Block2D.Client
 
         private ushort _nextTileIdToLoad;
         private const Keys DEBUG_KEY = Keys.F3;
-        private long _tickCounter;
 
         public Client()
         {
@@ -65,7 +64,6 @@ namespace Block2D.Client
             _client.Connected += OnConnect;
             _client.Disconnected += OnDisconnect;
             DebugMode = false;
-            _tickCounter = 0;
         }
 
         //do all client content loading here
@@ -103,7 +101,6 @@ namespace Block2D.Client
             _nextTileIdToLoad = 0;
             DebugMenu.Reset();
             ClientMessageHandler.PlayerJoin();
-            _tickCounter = 0;
         }
 
         private void OnDisconnect(object sender, EventArgs e)
@@ -112,7 +109,6 @@ namespace Block2D.Client
             InWorld = false;
             DebugMenu.Reset();
             _currentWorld = null;
-            _tickCounter = 0;
         }
 
         public void Tick(GameTime gameTime)
@@ -129,16 +125,7 @@ namespace Block2D.Client
 
             if (InWorld)
             {
-                for (int i = 0; i < _currentWorld.Players.Count; i++)
-                {
-                    ClientPlayer currentPlayer = _currentWorld.Players.Values.ElementAt(i);
-                    currentPlayer.Tick(gameTime);
-
-                    if (_tickCounter % 3 == 0)
-                    {
-                        ClientMessageHandler.SendPosition(currentPlayer.Position);
-                    }
-                }
+                _currentWorld.Tick(gameTime);
 
                 Camera.LookAt(LocalPlayer.Position);
             }
@@ -149,8 +136,6 @@ namespace Block2D.Client
             {
                 DebugMenu.Update(gameTime);
             }
-
-            _tickCounter++;
         }
 
         public void Draw(SpriteBatch spriteBatch, AssetManager assets)

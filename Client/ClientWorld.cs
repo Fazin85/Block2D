@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using Block2D.Client.Networking;
 using Block2D.Common;
 using Microsoft.Xna.Framework;
 
@@ -12,13 +14,28 @@ namespace Block2D.Client
 
         public Dictionary<Point, ClientChunk> Chunks { get; private set; }
 
+        private long _tickCounter;
+
         public ClientWorld()
         {
             Chunks = new();
             Players = new();
         }
 
-        public void Tick() { }
+        public void Tick(GameTime gameTime)
+        {
+            foreach (ClientPlayer currentPlayer in Players.Values)
+            {
+                currentPlayer.Tick(gameTime);
+
+                if (_tickCounter % 3 == 0)
+                {
+                    ClientMessageHandler.SendPosition(currentPlayer.Position);
+                }
+            }
+
+            _tickCounter++;
+        }
 
         public void AddPlayer(ClientPlayer player)
         {
