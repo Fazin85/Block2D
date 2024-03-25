@@ -73,26 +73,29 @@ namespace Block2D.Common
         public const string GameName = "Block2D";
 
         private SpriteBatch _spriteBatch;
-        private GraphicsDeviceManager _graphicsDeviceManager;
+        private GraphicsDeviceManager _graphics;
         private readonly AssetManager _assetManager;
         private readonly InternalServer _internalServer;
         private readonly Thread _internalServerThread;
         private static Main _instance;
+        private bool _windowSizeBeingChanged;
 
         public Main()
         {
             _instance = this;
             _internalServer = new();
             _internalServerThread = new(InternalServer.Run);
-            _graphicsDeviceManager = new(this);
+            _graphics = new(this);
             Random = new(0);
             Version = new(0, 1);
             _assetManager = new(Content);
+            _windowSizeBeingChanged = false;
             Client = new();
             Content.RootDirectory = "Content";
             OfflineMode = false;
             IsMouseVisible = true;
             Lua = new();
+            Window.AllowUserResizing = true;
         }
 
         protected override void Initialize()
@@ -103,8 +106,8 @@ namespace Block2D.Common
 
             SetupLua();
 
-            if (!SteamAPI.Init()) 
-            { 
+            if (!SteamAPI.Init())
+            {
                 OfflineMode = true;
                 Logger.Warn("(CLIENT): Failed To Connect To Steam.");
             }
@@ -123,6 +126,8 @@ namespace Block2D.Common
             AssetManager.LoadContent();
 
             Client.LoadContent(this, _spriteBatch);
+
+            Window.ClientSizeChanged += OnClientSizeChanged();
         }
 
         protected override void Update(GameTime gameTime)
@@ -130,21 +135,7 @@ namespace Block2D.Common
             LastKeyboardState = KeyboardState;
             KeyboardState = Keyboard.GetState();
 
-            if (
-                GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-                || KeyboardState.IsKeyDown(Keys.Escape)
-            )
-                ShouldExit = true;
-
-            if (KeyboardState.IsKeyDown(Keys.G) && LastKeyboardState.IsKeyUp(Keys.G))
-            {
-                _internalServerThread.Start();
-            }
-
-            if (KeyboardState.IsKeyDown(Keys.H))
-            {
-                Client.LocalConnect();
-            }
+            HandleGenericInput();
 
             Client.Tick(gameTime);
 
@@ -183,12 +174,62 @@ namespace Block2D.Common
             base.OnExiting(sender, args);
         }
 
+        private EventHandler<EventArgs> OnClientSizeChanged()
+        {
+            _windowSizeBeingChanged = !_windowSizeBeingChanged;
+
+            if (_windowSizeBeingChanged)
+            {
+                _graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
+                _graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
+                _graphics.ApplyChanges();
+            }
+
+            return null;
+        }
+
+        private void HandleGenericInput()
+        {
+            if (
+                GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
+                || KeyboardState.IsKeyDown(Keys.Escape)
+            )
+                ShouldExit = true;
+
+            if (KeyboardState.IsKeyDown(Keys.G) && LastKeyboardState.IsKeyUp(Keys.G))
+            {
+                _internalServerThread.Start();
+            }
+
+            if (KeyboardState.IsKeyDown(Keys.F11) && LastKeyboardState.IsKeyUp(Keys.F11))
+            {
+                if (_graphics.IsFullScreen)
+                {
+                    _graphics.PreferredBackBufferWidth = 800;
+                    _graphics.PreferredBackBufferHeight = 480;
+                }
+                else
+                {
+                    _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+                    _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+                }
+
+                _graphics.IsFullScreen = !_graphics.IsFullScreen;
+                _graphics.ApplyChanges();
+            }
+
+            if (KeyboardState.IsKeyDown(Keys.H))
+            {
+                Client.LocalConnect();
+            }
+        }
+
         public static void ForceQuitModloader()
         {
             _instance._assetManager.ForceQuit();
         }
 
-        public void RegisterTypes()
+        private void RegisterTypes()
         {
             UserData.RegisterType<KeyboardState>();
             UserData.RegisterType<Logger>();
