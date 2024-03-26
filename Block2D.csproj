@@ -83,7 +83,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Build/" />
     <Folder Include="Client\UI\" />
   </ItemGroup>
   <Target Name="RestoreDotnetTools" BeforeTargets="Restore">
