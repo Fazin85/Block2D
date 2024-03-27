@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using Block2D.Client.Networking;
 using Block2D.Common;
 using Microsoft.Xna.Framework;
@@ -28,7 +26,7 @@ namespace Block2D.Client
             {
                 currentPlayer.Tick(gameTime);
 
-                if (_tickCounter % 3 == 0)
+                if (_tickCounter % 3 == 0 && currentPlayer.ID == Main.Client.ID) //must be local player
                 {
                     ClientMessageHandler.SendPosition(currentPlayer.Position);
                 }
