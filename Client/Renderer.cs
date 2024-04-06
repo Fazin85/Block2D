@@ -94,7 +94,7 @@ namespace Block2D.Client
         {
             spriteBatch.Draw(assets.GetPlayerTexture(), player.Position, Color.White);
 
-            if (player.ID != Main.Client.ID)
+            if (!player.IsLocal)
             {
                 return;
             }

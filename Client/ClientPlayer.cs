@@ -8,7 +8,7 @@ namespace Block2D.Client
 {
     public class ClientPlayer
     {
-        private bool IsLocal
+        public bool IsLocal
         {
             get => _id == Main.Client.LocalPlayer.ID;
         }

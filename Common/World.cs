@@ -11,7 +11,7 @@ namespace Block2D.Common
 
         protected void LoadTiles()
         {
-            foreach (Mod currentMod in Main.ModLoader.LoadedMods)
+            foreach (Mod currentMod in Main.AssetManager.LoadedMods)
             {
                 var tiles = currentMod.ContentManager.GetModTiles();
 

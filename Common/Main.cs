@@ -42,11 +42,6 @@ namespace Block2D.Common
             get => GameAppDataDirectory + "/Worlds";
         }
 
-        public static ModLoader ModLoader
-        {
-            get => _instance._assetManager;
-        }
-
         public static AssetManager AssetManager
         {
             get => _instance._assetManager;
