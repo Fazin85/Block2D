@@ -128,6 +128,7 @@ namespace Block2D.Client
                                     }
 
                                     _hitbox.Location = Position.ToPoint();
+                                    break;
                                 }
                             }
                         }
