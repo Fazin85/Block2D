@@ -1,11 +1,8 @@
-﻿using System;
-using System.Diagnostics;
-using Block2D.Client.Networking;
-using Block2D.Common;
+﻿using Block2D.Common;
 using Block2D.Common.ID;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
+using System;
 
 namespace Block2D.Client
 {
@@ -105,13 +102,13 @@ namespace Block2D.Client
             {
                 for (int y = _hitbox.Top; y <= _hitbox.Bottom; y++)
                 {
-                    Point currentPosition = new(x, y);
-                    if (Main.Client.World.TryGetTile(new(x >> 4, y >> 4), out ClientTile tile))
+                    Point currentPosition = new(x >> 4, y >> 4);
+                    if (Main.Client.World.TryGetTile(currentPosition, out ClientTile tile))
                     {
                         if (tile.Collidable)
                         {
                             Rectangle currentTileRect =
-                                new(currentPosition, new(CC.TILE_SIZE, CC.TILE_SIZE));
+                                new(new(currentPosition.X * CC.TILE_SIZE, currentPosition.Y * CC.TILE_SIZE), new(CC.TILE_SIZE, CC.TILE_SIZE));
                             if (_hitbox.Intersects(currentTileRect))
                             {
                                 Vector2 depth = Helper.GetIntersectionDepth(
@@ -121,31 +118,15 @@ namespace Block2D.Client
 
                                 if (depth != Vector2.Zero)
                                 {
-                                    if (_velocity.X < 0)
+                                    if (Math.Abs(depth.X) < Math.Abs(depth.Y))
                                     {
-                                        if (Math.Abs(depth.X) < Math.Abs(depth.Y))
-                                        {
-                                            Position = new(Position.X + depth.X, Position.Y);
-                                        }
-                                        else
-                                        {
-                                            Position = new(Position.X, Position.Y + depth.Y);
-                                        }
-
-                                        Console.WriteLine("LEFT");
+                                        Position = new(Position.X + depth.X, Position.Y);
                                     }
                                     else
                                     {
-                                        if (Math.Abs(depth.X) < Math.Abs(depth.Y))
-                                        {
-                                            Position = new(Position.X + depth.X, Position.Y);
-                                        }
-                                        else
-                                        {
-                                            Position = new(Position.X, Position.Y + depth.Y);
-                                        }
-                                        Console.WriteLine("RIGHT");
+                                        Position = new(Position.X, Position.Y + depth.Y);
                                     }
+
                                     _hitbox.Location = Position.ToPoint();
                                 }
                             }
