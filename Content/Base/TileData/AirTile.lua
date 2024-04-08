@@ -2,6 +2,15 @@ function GetName()
     return "Air"
 end
 
+function GetTextureName()
+    return GetName()
+end
+
+function GetSoundEffectName()
+	return "null"
+end
+
+
 function Tick(x, y, dimensionId)
     
 end

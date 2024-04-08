@@ -3,7 +3,6 @@ using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Block2D.Common
 {
@@ -23,16 +22,13 @@ namespace Block2D.Common
 
         public void LoadContent()
         {
-            //load font
             Font = _contentManager.Load<SpriteFont>("gamefont");
-
-            //load tiles with modloader
 
             LoadPlayerTextures();
 
             LoadAllMods();
 
-            foreach(ModTexture tex in LoadedContent.Textures.Values)
+            foreach (ModTexture tex in LoadedContent.Textures.Values)
             {
                 _textures.Add(tex.Name, tex.Texture);
             }

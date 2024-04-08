@@ -6,6 +6,10 @@ function GetTextureName()
     return "Dirt"
 end
 
+function GetSoundEffectName()
+	return "null"
+end
+
 function Tick(x, y, dimensionId)
     
 end

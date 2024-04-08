@@ -36,19 +36,18 @@ namespace Block2D.Modding.ContentLoaders
                 Script script = new();
                 Main.SetupScript(script);
 
-                ModTexture texture = new();
-
                 script.DoFile(textureFilePaths[i]);
                 DynValue nameVal = script.Call(script.Globals["GetName"]);
                 string name = nameVal.String;
-                texture.Name = name;
 
                 DynValue pathVal = script.Call(script.Globals["GetPath"]);
                 string texturePath = pathVal.String;
-                texture.Texture = Texture2D.FromFile(
+                Texture2D tex = Texture2D.FromFile(
                     graphicsDevice,
                     FilesPath + "/Textures/" + texturePath
                 );
+
+                ModTexture texture = new(name, tex);
 
                 textureList.Add(texture);
             }

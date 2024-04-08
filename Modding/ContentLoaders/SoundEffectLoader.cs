@@ -54,12 +54,9 @@ namespace Block2D.Modding.ContentLoaders
                     return false;
                 }
 
-                ModSoundEffect modSoundEffect =
-                    new()
-                    {
-                        Name = name,
-                        SoundEffect = SoundEffect.FromFile(FilesPath + soundFilePath)
-                    };
+                SoundEffect soundEffect = SoundEffect.FromFile(FilesPath + soundFilePath);
+
+                ModSoundEffect modSoundEffect = new(name, soundEffect);
 
                 modSoundEffectsList.Add(modSoundEffect);
             }

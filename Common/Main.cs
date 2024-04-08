@@ -67,7 +67,7 @@ namespace Block2D.Common
         public const string GameName = "Block2D";
 
         private SpriteBatch _spriteBatch;
-        private GraphicsDeviceManager _graphics;
+        private readonly GraphicsDeviceManager _graphics;
         private readonly AssetManager _assetManager;
         private readonly InternalServer _internalServer;
         private readonly Thread _internalServerThread;

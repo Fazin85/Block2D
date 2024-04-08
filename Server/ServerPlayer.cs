@@ -38,7 +38,7 @@ namespace Block2D.Server
         private Vector2 _velocity;
         private int _health;
         private string _name;
-        private ushort _id;
+        private readonly ushort _id;
 
         public ServerPlayer(ushort id, Vector2 position, int health, string name)
         {

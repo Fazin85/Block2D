@@ -2,9 +2,24 @@
 
 namespace Block2D.Modding.DataStructures
 {
-    public struct ModTexture
+    public readonly struct ModTexture
     {
-        public string Name { get; set; }
-        public Texture2D Texture { get; set; }
+        public readonly string Name
+        {
+            get => _name;
+        }
+        public readonly Texture2D Texture
+        {
+            get => _texture;
+        }
+
+        private readonly string _name;
+        private readonly Texture2D _texture;
+
+        public ModTexture(string name, Texture2D texture)
+        {
+            _name = name;
+            _texture = texture;
+        }
     }
 }

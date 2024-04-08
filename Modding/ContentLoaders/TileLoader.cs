@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using Block2D.Common;
+﻿using Block2D.Common;
+using Block2D.Common.ID;
 using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework;
 using MoonSharp.Interpreter;
+using System.Collections.Generic;
 
 namespace Block2D.Modding.ContentLoaders
 {
@@ -35,51 +36,47 @@ namespace Block2D.Modding.ContentLoaders
                 Script script = new();
                 Main.SetupScript(script);
 
-                ModTile tile = new();
-
                 script.DoFile(tileFilePaths[i]);
                 SetScript(script);
 
                 DynValue nameVal = GetGlobal("GetName");
                 string name = nameVal.String;
 
-                tile.Name = name;
-
+                string textureName = TileID.AIR;
                 if (script.Globals["GetTextureName"] != null)
                 {
                     DynValue texVal = GetGlobal("GetTextureName");
-                    string textureName = texVal.String;
-
-                    tile.TextureName = textureName;
+                    textureName = texVal.String;
+                }
+                else
+                {
+                    Main.Logger.Fatal("(MODLOADER): Could Not Find Function GetTextureName In " + tileFilePaths[i]);
+                    continue;
                 }
 
+                string hitSoundEffectName = string.Empty;
                 if (script.Globals["GetSoundEffectName"] != null)
                 {
                     DynValue hitSoundEffectVal = GetGlobal("GetSoundEffectName");
 
-                    string hitSoundEffectName = hitSoundEffectVal.String;
-
-                    tile.HitSoundEffectName = hitSoundEffectName;
+                    hitSoundEffectName = hitSoundEffectVal.String;
+                }
+                else
+                {
+                    Main.Logger.Fatal("(MODLOADER): Could Not Find Function GetSoundEffectName In " + tileFilePaths[i]);
+                    continue;
                 }
 
                 DynValue scaleVal = GetGlobal("GetScale");
                 float scale = (float)scaleVal.Number;
 
-                tile.TextureScale = scale;
-
                 DynValue tickableVal = GetGlobal("Tickable");
                 bool tickable = tickableVal.Boolean;
-
-                tile.Tickable = tickable;
 
                 DynValue collidableVal = GetGlobal("Collidable");
                 bool collidable = collidableVal.Boolean;
 
-                tile.Collidable = collidable;
-
-                tile.DrawColor = GetTileColor(script);
-
-                tile.TileCode = script;
+                ModTile tile = new(name, textureName, scale, hitSoundEffectName, tickable, collidable, GetTileColor(script), script);
 
                 modTileList.Add(tile);
             }
