@@ -64,7 +64,7 @@ namespace Block2D.Client.Networking
 
             if (Main.Client.ID == id)
             {
-                Main.Client.InWorld = true;
+                Main.Client.OnJoinWorld();
                 RequestChunk(Point.Zero);
                 RequestChunk(new(64, 0));
                 RequestChunk(new(64, -64));
@@ -103,6 +103,10 @@ namespace Block2D.Client.Networking
                     if (offset == chunk.ReceivedSections + 1 && offset < 4)
                     {
                         chunk.SetSection(decompressedTiles, offset);
+                    }
+                    else
+                    {
+                        Main.Logger.Warn("(CLIENT): Received Corrupted Chunk Data.");
                     }
                 }
             }

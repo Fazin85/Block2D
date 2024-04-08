@@ -44,11 +44,11 @@ namespace Block2D.Client
         public void Draw(
             SpriteBatch spriteBatch,
             SpriteFont font,
-            Vector2 fpsDisplayPosition,
-            Color fpsTextColor
+            Vector2 displayPosition,
+            Color textColor
         )
         {
-            spriteBatch.DrawString(font, msg, fpsDisplayPosition, fpsTextColor);
+            spriteBatch.DrawString(font, msg, displayPosition, textColor);
             frames++;
         }
 

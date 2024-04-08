@@ -1,9 +1,5 @@
-﻿using System;
-using System.Linq;
-using Block2D.Client.Networking;
+﻿using Block2D.Client.Networking;
 using Block2D.Common;
-using Block2D.Modding;
-using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -16,6 +12,8 @@ using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 using Riptide;
 using Steamworks;
+using System;
+using System.Linq;
 using RectangleF = MonoGame.Extended.RectangleF;
 
 namespace Block2D.Client
@@ -41,7 +39,7 @@ namespace Block2D.Client
 
         public bool DebugMode { get; set; }
 
-        public bool InWorld { get; set; }
+        public bool InWorld { get; private set; }
 
         public string Username { get; private set; }
 
@@ -50,6 +48,11 @@ namespace Block2D.Client
         public UiSystem UI { get; private set; }
 
         public DebugMenu DebugMenu { get; private set; }
+
+        private bool _canConnect
+        {
+            get => !_client.IsConnected && !_client.IsConnecting && !InWorld;
+        }
 
         private readonly Riptide.Client _client;
         private ClientWorld _currentWorld;
@@ -122,6 +125,11 @@ namespace Block2D.Client
             _currentWorld = null;
         }
 
+        public void OnJoinWorld()
+        {
+            InWorld = true;
+        }
+
         public void Tick(GameTime gameTime)
         {
             if (
@@ -173,7 +181,7 @@ namespace Block2D.Client
 
         public void Connect(string ip, ushort port)
         {
-            if (_client.IsConnecting || _client.IsConnected)
+            if (!_canConnect)
             {
                 return;
             }
@@ -189,7 +197,7 @@ namespace Block2D.Client
 
         public void LocalConnect()
         {
-            if (_client.IsConnecting || _client.IsConnected)
+            if (!_canConnect)
             {
                 return;
             }
