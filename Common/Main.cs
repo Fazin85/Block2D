@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Threading;
+using Block2D.Client;
 using Block2D.Modding;
 using Block2D.Server;
 using Microsoft.Xna.Framework;
@@ -51,8 +52,6 @@ namespace Block2D.Common
 
         public static Random Random { get; private set; }
 
-        public static Client.Client Client { get; private set; }
-
         public static bool ShouldExit { get; set; }
 
         public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
@@ -85,7 +84,6 @@ namespace Block2D.Common
             Version = new(0, 1);
             _assetManager = new(Content);
             _windowSizeBeingChanged = false;
-            Client = new();
             Content.RootDirectory = "Content";
             OfflineMode = false;
             IsMouseVisible = true;
@@ -97,7 +95,7 @@ namespace Block2D.Common
         {
             InitializeLogger();
 
-            Client.InitializeCamera(Window, GraphicsDevice);
+            ClientMain.Initialize(Window, GraphicsDevice);
 
             SetupLua();
 
@@ -120,7 +118,7 @@ namespace Block2D.Common
 
             AssetManager.LoadContent();
 
-            Client.LoadContent(this, _spriteBatch);
+            ClientMain.LoadContent(this, _spriteBatch);
 
             Window.ClientSizeChanged += OnClientSizeChanged();
         }
@@ -132,7 +130,7 @@ namespace Block2D.Common
 
             HandleGenericInput();
 
-            Client.Tick(gameTime);
+            ClientMain.Tick(gameTime);
 
             if (ShouldExit)
             {
@@ -146,9 +144,9 @@ namespace Block2D.Common
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin(transformMatrix: Client.Camera.GetViewMatrix());
+            _spriteBatch.Begin(transformMatrix: ClientMain.Camera.GetViewMatrix());
 
-            Client.Draw(_spriteBatch, AssetManager);
+            ClientMain.Draw(_spriteBatch, AssetManager);
 
             _spriteBatch.End();
 
@@ -159,7 +157,7 @@ namespace Block2D.Common
 
         protected override void OnExiting(object sender, EventArgs args)
         {
-            Client.Disconnect();
+            ClientMain.Disconnect();
 
             if (_internalServer.IsRunning)
             {
@@ -215,7 +213,7 @@ namespace Block2D.Common
 
             if (KeyboardState.IsKeyDown(Keys.H))
             {
-                Client.LocalConnect();
+                ClientMain.LocalConnect();
             }
         }
 

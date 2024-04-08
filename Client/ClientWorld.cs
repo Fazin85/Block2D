@@ -26,7 +26,7 @@ namespace Block2D.Client
             {
                 currentPlayer.Tick(gameTime);
 
-                if (_tickCounter % 3 == 0 && currentPlayer.ID == Main.Client.ID) //must be local player
+                if (_tickCounter % 3 == 0 && currentPlayer.ID == ClientMain.ID) //must be local player
                 {
                     ClientMessageHandler.SendPosition(currentPlayer.Position);
                 }
@@ -47,7 +47,7 @@ namespace Block2D.Client
 
         public bool RemovePlayer(ushort id)
         {
-            if (id == Main.Client.LocalPlayer.ID)
+            if (id == ClientMain.LocalPlayer.ID)
             {
                 Main.Logger.Warn("Tried To Remove Local Player");
                 return false;

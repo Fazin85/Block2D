@@ -1,13 +1,11 @@
-﻿using System;
+﻿using Block2D.Common;
+using Block2D.Common.ID;
+using Block2D.Server.Networking;
+using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Block2D.Common;
-using Block2D.Common.ID;
-using Block2D.Modding;
-using Block2D.Modding.DataStructures;
-using Block2D.Server.Networking;
-using Microsoft.Xna.Framework;
 
 namespace Block2D.Server
 {
@@ -125,6 +123,11 @@ namespace Block2D.Server
             }
 
             return LoadedTiles[name];
+        }
+
+        public string GetTileName(ushort id)
+        {
+            return GEtTileName(id);
         }
 
         public bool GetChunkLoaded(string dimensionID, Point chunkPosition, out ServerChunk chunk)

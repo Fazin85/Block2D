@@ -72,7 +72,7 @@ namespace Block2D.Common
                     {
                         Point pos = new(i / CC.CHUNK_SIZE, i % CC.CHUNK_SIZE);
 
-                        string tileName = _world.GetTileName(blocks[i]);
+                        string tileName = ClientMain.GetTileName(blocks[i]);
                         SetTile(pos, tileName);
                     }
                     break;
@@ -80,7 +80,7 @@ namespace Block2D.Common
                     for (int i = SECTION_SIZE; i < SECTION_SIZE * 2; i++)
                     {
                         Point pos = new(i / CC.CHUNK_SIZE, i % CC.CHUNK_SIZE);
-                        string tileName = _world.GetTileName(blocks[i - SECTION_SIZE]);
+                        string tileName = ClientMain.GetTileName(blocks[i - SECTION_SIZE]);
                         SetTile(pos, tileName);
                     }
                     break;
@@ -88,7 +88,7 @@ namespace Block2D.Common
                     for (int i = SECTION_SIZE * 2; i < SECTION_SIZE * 3; i++)
                     {
                         Point pos = new(i / CC.CHUNK_SIZE, i % CC.CHUNK_SIZE);
-                        string tileName = _world.GetTileName(blocks[i - (SECTION_SIZE * 2)]);
+                        string tileName = ClientMain.GetTileName(blocks[i - (SECTION_SIZE * 2)]);
                         SetTile(pos, tileName);
                     }
                     break;
@@ -96,7 +96,7 @@ namespace Block2D.Common
                     for (int i = SECTION_SIZE * 3; i < SECTION_SIZE * 4; i++)
                     {
                         Point pos = new(i / CC.CHUNK_SIZE, i % CC.CHUNK_SIZE);
-                        string tileName = _world.GetTileName(blocks[i - (SECTION_SIZE * 3)]);
+                        string tileName = ClientMain.GetTileName(blocks[i - (SECTION_SIZE * 3)]);
                         SetTile(pos, tileName);
                     }
                     break;

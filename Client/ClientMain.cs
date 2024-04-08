@@ -18,36 +18,36 @@ using RectangleF = MonoGame.Extended.RectangleF;
 
 namespace Block2D.Client
 {
-    public class Client : World
+    public class ClientMain : World
     {
-        public ClientWorld World
+        public static ClientWorld World
         {
-            get => _currentWorld ?? null;
+            get => _instance._currentWorld ?? null;
         }
 
         public ClientState State { get; private set; }
 
-        public ClientPlayer LocalPlayer
+        public static ClientPlayer LocalPlayer
         {
-            get => World.GetPlayerFromId(_client.Id);
+            get => World.GetPlayerFromId(_instance._client.Id);
         }
 
-        public ushort ID
+        public static ushort ID
         {
-            get => _client.Id;
+            get => _instance._client.Id;
         }
 
-        public bool DebugMode { get; set; }
+        public static bool DebugMode { get; set; }
 
         public bool InWorld { get; private set; }
 
-        public string Username { get; private set; }
+        public static string Username { get; private set; }
 
-        public OrthographicCamera Camera { get; private set; }
+        public static OrthographicCamera Camera { get; private set; }
 
         public UiSystem UI { get; private set; }
 
-        public DebugMenu DebugMenu { get; private set; }
+        public static DebugMenu DebugMenu { get; private set; }
 
         private bool _canConnect
         {
@@ -59,8 +59,9 @@ namespace Block2D.Client
         private const string ip = "127.0.0.1";
         private const ushort port = 7777;
         private const Keys DEBUG_KEY = Keys.F3;
+        private static ClientMain _instance;
 
-        public Client()
+        public ClientMain()
         {
             LoadedTiles = new();
             DebugMenu = new();
@@ -71,10 +72,23 @@ namespace Block2D.Client
             NextTileIdToLoad = 0;
         }
 
-        //do all client content loading here
-        public void LoadContent(Game game, SpriteBatch spriteBatch)
+        //do all client initializing here
+        public static void Initialize(GameWindow window, GraphicsDevice graphicsDevice)
         {
-            State = ClientState.Loading;
+            if (_instance == null)
+            {
+                _instance = new();
+            }
+
+            _instance.State = ClientState.Initializing;
+            BoxingViewportAdapter viewportAdapter = new(window, graphicsDevice, 800, 480);
+            Camera = new OrthographicCamera(viewportAdapter);
+        }
+
+        //do all client content loading here
+        public static void LoadContent(Game game, SpriteBatch spriteBatch)
+        {
+            _instance.State = ClientState.Loading;
 
             if (Main.OfflineMode)
             {
@@ -94,20 +108,12 @@ namespace Block2D.Client
                 Font = new GenericSpriteFont(Main.AssetManager.Font)
             };
 
-            UI = new UiSystem(game, style);
+            _instance.UI = new UiSystem(game, style);
             var panel = new Panel(Anchor.Center, size: new(100, 100), positionOffset: Vector2.Zero);
-            UI.Add("Panel", panel);
+            _instance.UI.Add("Panel", panel);
 
             //load tiles
-            LoadTiles();
-        }
-
-        //do all client initializing here
-        public void InitializeCamera(GameWindow window, GraphicsDevice graphicsDevice)
-        {
-            State = ClientState.Initializing;
-            BoxingViewportAdapter viewportAdapter = new(window, graphicsDevice, 800, 480);
-            Camera = new OrthographicCamera(viewportAdapter);
+            _instance.LoadTiles();
         }
 
         private void OnConnect(object sender, EventArgs e)
@@ -125,12 +131,12 @@ namespace Block2D.Client
             _currentWorld = null;
         }
 
-        public void OnJoinWorld()
+        public static void OnJoinWorld()
         {
-            InWorld = true;
+            _instance.InWorld = true;
         }
 
-        public void Tick(GameTime gameTime)
+        public static void Tick(GameTime gameTime)
         {
             if (
                 Main.KeyboardState.IsKeyDown(DEBUG_KEY) && Main.LastKeyboardState.IsKeyUp(DEBUG_KEY)
@@ -140,16 +146,16 @@ namespace Block2D.Client
                 DebugMode = !DebugMode;
             }
 
-            _client.Update();
+            _instance._client.Update();
 
-            if (InWorld)
+            if (_instance.InWorld)
             {
-                _currentWorld.Tick(gameTime);
+                _instance._currentWorld.Tick(gameTime);
 
                 Camera.LookAt(LocalPlayer.Position);
             }
 
-            UI.Update(gameTime);
+            _instance.UI.Update(gameTime);
 
             if (DebugMode)
             {
@@ -157,18 +163,18 @@ namespace Block2D.Client
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, AssetManager assets)
+        public static void Draw(SpriteBatch spriteBatch, AssetManager assets)
         {
-            if (InWorld)
+            if (_instance.InWorld)
             {
                 RectangleF viewRect = Camera.BoundingRectangle;
                 viewRect.Inflate(CC.TILE_SIZE, CC.TILE_SIZE);
 
-                Renderer.DrawChunks(_currentWorld.Chunks.Values.ToArray(), spriteBatch, viewRect);
+                Renderer.DrawChunks(_instance._currentWorld.Chunks.Values.ToArray(), spriteBatch, viewRect);
 
-                for (int i = 0; i < _currentWorld.Players.Count; i++)
+                for (int i = 0; i < _instance._currentWorld.Players.Count; i++)
                 {
-                    ClientPlayer currentPlayer = _currentWorld.Players.Values.ElementAt(i);
+                    ClientPlayer currentPlayer = _instance._currentWorld.Players.Values.ElementAt(i);
                     Renderer.DrawPlayer(currentPlayer, spriteBatch, assets);
                 }
             }
@@ -179,36 +185,46 @@ namespace Block2D.Client
             }
         }
 
-        public void Connect(string ip, ushort port)
+        public static void Connect(string ip, ushort port)
         {
-            if (!_canConnect)
+            if (!_instance._canConnect)
             {
                 return;
             }
 
-            _client.Connect($"{ip}:{port}");
-            State = ClientState.Multiplayer;
+            _instance._client.Connect($"{ip}:{port}");
+            _instance.State = ClientState.Multiplayer;
         }
 
-        public void Disconnect()
+        public static void Disconnect()
         {
-            _client.Disconnect();
+            _instance._client.Disconnect();
         }
 
-        public void LocalConnect()
+        public static void LocalConnect()
         {
-            if (!_canConnect)
+            if (!_instance._canConnect)
             {
                 return;
             }
 
-            _client.Connect($"{ip}:{port}");
-            State = ClientState.Singleplayer;
+            _instance._client.Connect($"{ip}:{port}");
+            _instance.State = ClientState.Singleplayer;
         }
 
-        public void Send(Message message)
+        public static string GetTileName(ushort id)
         {
-            _client.Send(message);
+            return _instance.GEtTileName(id);
+        }
+
+        public static void Send(Message message)
+        {
+            _instance._client.Send(message);
+        }
+
+        public static ClientMain GetInstance()
+        {
+            return _instance;
         }
     }
 }

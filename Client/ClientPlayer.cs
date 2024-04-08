@@ -10,7 +10,7 @@ namespace Block2D.Client
     {
         public bool IsLocal
         {
-            get => _id == Main.Client.LocalPlayer.ID;
+            get => _id == ClientMain.LocalPlayer.ID;
         }
 
         public ushort ID
@@ -103,7 +103,7 @@ namespace Block2D.Client
                 for (int y = _hitbox.Top; y <= _hitbox.Bottom; y++)
                 {
                     Point currentPosition = new(x >> 4, y >> 4);
-                    if (Main.Client.World.TryGetTile(currentPosition, out ClientTile tile))
+                    if (ClientMain.World.TryGetTile(currentPosition, out ClientTile tile))
                     {
                         if (tile.Collidable)
                         {
