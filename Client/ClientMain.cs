@@ -18,9 +18,9 @@ using RectangleF = MonoGame.Extended.RectangleF;
 
 namespace Block2D.Client
 {
-    public class ClientMain : World
+    public class ClientMain : WorldData
     {
-        public static ClientWorld World
+        public static ClientWorld CurrentWorld
         {
             get => _instance._currentWorld ?? null;
         }
@@ -29,7 +29,7 @@ namespace Block2D.Client
 
         public static ClientPlayer LocalPlayer
         {
-            get => World.GetPlayerFromId(_instance._client.Id);
+            get => CurrentWorld.GetPlayerFromId(_instance._client.Id);
         }
 
         public static ushort ID
@@ -54,31 +54,28 @@ namespace Block2D.Client
             get => !_client.IsConnected && !_client.IsConnecting && !InWorld;
         }
 
-        private readonly Riptide.Client _client;
         private ClientWorld _currentWorld;
+        private readonly Riptide.Client _client;
+        private readonly WorldRenderer _worldRenderer;
         private const string ip = "127.0.0.1";
         private const ushort port = 7777;
         private const Keys DEBUG_KEY = Keys.F3;
         private static ClientMain _instance;
 
-        public ClientMain()
+        private ClientMain()
         {
-            LoadedTiles = new();
             DebugMenu = new();
+            _worldRenderer = new();
             _client = new();
             _client.Connected += OnConnect;
             _client.Disconnected += OnDisconnect;
             DebugMode = false;
-            NextTileIdToLoad = 0;
         }
 
         //do all client initializing here
         public static void Initialize(GameWindow window, GraphicsDevice graphicsDevice)
         {
-            if (_instance == null)
-            {
-                _instance = new();
-            }
+            _instance ??= new();
 
             _instance.State = ClientState.Initializing;
             BoxingViewportAdapter viewportAdapter = new(window, graphicsDevice, 800, 480);
@@ -170,7 +167,7 @@ namespace Block2D.Client
                 RectangleF viewRect = Camera.BoundingRectangle;
                 viewRect.Inflate(CC.TILE_SIZE, CC.TILE_SIZE);
 
-                Renderer.DrawChunks(_instance._currentWorld.Chunks.Values.ToArray(), spriteBatch, viewRect);
+                _instance._worldRenderer.DrawChunks(_instance._currentWorld.Chunks.Values.ToArray(), spriteBatch, viewRect);
 
                 for (int i = 0; i < _instance._currentWorld.Players.Count; i++)
                 {

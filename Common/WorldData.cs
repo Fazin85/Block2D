@@ -4,10 +4,16 @@ using Block2D.Modding;
 
 namespace Block2D.Common
 {
-    public abstract class World
+    public abstract class WorldData
     {
         public Dictionary<string, ushort> LoadedTiles;
         protected ushort NextTileIdToLoad;
+
+        protected WorldData()
+        {
+            LoadedTiles = new();
+            NextTileIdToLoad = 0;
+        }
 
         protected void LoadTiles()
         {

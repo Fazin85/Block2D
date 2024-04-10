@@ -40,7 +40,7 @@ namespace Block2D.Client.Networking
             Vector2 position = message.GetVector2();
             ushort id = message.GetUShort();
 
-            if (ClientMain.World.Players.TryGetValue(id, out ClientPlayer player))
+            if (ClientMain.CurrentWorld.Players.TryGetValue(id, out ClientPlayer player))
             {
                 if (id == ClientMain.ID)
                 {
@@ -60,7 +60,7 @@ namespace Block2D.Client.Networking
 
             ClientPlayer newPlayer = new(id, name) { Position = position, };
 
-            ClientMain.World.AddPlayer(newPlayer);
+            ClientMain.CurrentWorld.AddPlayer(newPlayer);
 
             if (ClientMain.ID == id)
             {
@@ -94,11 +94,11 @@ namespace Block2D.Client.Networking
                 ClientChunk newChunk = new(position, ClientMain.GetInstance());
 
                 newChunk.SetSection(decompressedTiles, offset);
-                ClientMain.World.TryAddChunk(newChunk);
+                ClientMain.CurrentWorld.TryAddChunk(newChunk);
             }
             else
             {
-                if (ClientMain.World.GetChunkLoaded(position, out ClientChunk chunk))
+                if (ClientMain.CurrentWorld.GetChunkLoaded(position, out ClientChunk chunk))
                 {
                     if (offset == chunk.ReceivedSections + 1 && offset < 4)
                     {

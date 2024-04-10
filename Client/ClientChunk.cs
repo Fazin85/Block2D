@@ -10,9 +10,9 @@ namespace Block2D.Common
         public byte ReceivedSections { get; private set; }
         public Point Position { get; private set; }
         private readonly ClientTile[,] _tiles;
-        private readonly World _world;
+        private readonly WorldData _world;
 
-        public ClientChunk(Point position, World world)
+        public ClientChunk(Point position, WorldData world)
         {
             Position = position;
             ReceivedSections = 0;

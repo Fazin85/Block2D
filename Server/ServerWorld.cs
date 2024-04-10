@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace Block2D.Server
 {
-    public class ServerWorld : World
+    public class ServerWorld : WorldData
     {
         public bool IsLoaded { get; }
 
@@ -34,8 +34,6 @@ namespace Block2D.Server
 
         public ServerWorld(string name)
         {
-            LoadedTiles = new();
-            NextTileIdToLoad = 0;
             Name = name; //must do this beforce creating directories
             CreateNeededDirectories();
             Dimensions = new();

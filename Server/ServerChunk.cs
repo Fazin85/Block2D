@@ -17,9 +17,9 @@ namespace Block2D.Server
 
         private readonly ServerTile[,] _tiles;
         private readonly string _dimensionId;
-        private readonly World _world;
+        private readonly WorldData _world;
 
-        public ServerChunk(Point position, string dimensionId, World world)
+        public ServerChunk(Point position, string dimensionId, WorldData world)
         {
             _tiles = new ServerTile[CC.CHUNK_SIZE, CC.CHUNK_SIZE];
             LoadAmount = ChunkLoadAmount.Unloaded;

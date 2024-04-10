@@ -21,7 +21,7 @@ namespace Block2D.Server.WorldGen
         public void GenerateChunk(
             Point chunkPosition,
             string dimensionId,
-            World world,
+            WorldData world,
             out ServerChunk chunk
         )
         {
