@@ -37,13 +37,13 @@ namespace Block2D.Server
 
             if (position.X >= CC.CHUNK_SIZE || position.X < 0)
             {
-                Main.Logger.Fatal("(SERVER): Position X is out of bounds");
+                InternalServer.LogWarning("Position X is out of bounds");
                 return;
             }
 
             if (position.Y >= CC.CHUNK_SIZE || position.Y < 0)
             {
-                Main.Logger.Fatal("(SERVER): Position Y is out of bounds");
+                InternalServer.LogWarning("Position Y is out of bounds");
                 return;
             }
 
@@ -59,12 +59,12 @@ namespace Block2D.Server
         {
             if (position.X >= CC.CHUNK_SIZE || position.X < 0)
             {
-                Main.Logger.Fatal("(SERVER): Position X is out of bounds");
+                InternalServer.LogWarning("Position X is out of bounds");
             }
 
             if (position.Y >= CC.CHUNK_SIZE || position.Y < 0)
             {
-                Main.Logger.Fatal("(SERVER): Position Y is out of bounds");
+                InternalServer.LogWarning("Position Y is out of bounds");
             }
 
             return _tiles[position.X, position.Y];

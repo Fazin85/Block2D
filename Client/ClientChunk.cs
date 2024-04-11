@@ -29,13 +29,13 @@ namespace Block2D.Common
 
             if (position.X >= CC.CHUNK_SIZE || position.X < 0)
             {
-                Main.Logger.Fatal("(CLIENT): Position X is out of bounds");
+                ClientMain.LogFatal("Position X is out of bounds");
                 return;
             }
 
             if (position.Y >= CC.CHUNK_SIZE || position.Y < 0)
             {
-                Main.Logger.Fatal("(CLIENT): Position Y is out of bounds");
+                ClientMain.LogFatal("Position Y is out of bounds");
                 return;
             }
 
@@ -50,13 +50,13 @@ namespace Block2D.Common
         {
             if (position.X >= CC.CHUNK_SIZE || position.X < 0)
             {
-                Main.Logger.Fatal("(CLIENT): Position X is out of bounds");
+                ClientMain.LogFatal("Position X is out of bounds");
                 return new();
             }
 
             if (position.Y >= CC.CHUNK_SIZE || position.Y < 0)
             {
-                Main.Logger.Fatal("(CLIENT): Position Y is out of bounds");
+                ClientMain.LogFatal("Position Y is out of bounds");
                 return new();
             }
 

@@ -1,7 +1,9 @@
-﻿using System.Threading;
-using Block2D.Common;
+﻿using Block2D.Common;
+using NLog;
 using Riptide;
 using Riptide.Utils;
+using System;
+using System.Threading;
 
 namespace Block2D.Server
 {
@@ -17,14 +19,19 @@ namespace Block2D.Server
             get => _world;
         }
 
+        private readonly ServerLogger _logger;
+
         public ServerState State { get; private set; }
 
         private Riptide.Server _server;
         private ServerWorld _world;
+        private static InternalServer _instance;
 
         public InternalServer()
         {
             State = ServerState.Inactive;
+            _instance = this;
+            _logger = new();
         }
 
         public void Run()
@@ -61,7 +68,7 @@ namespace Block2D.Server
 
             _server = new Riptide.Server();
 
-            RiptideLogger.Initialize(Main.Logger.Info, false);
+            RiptideLogger.Initialize(_instance._logger.LogInfo, false);
 
             _server.Start(7777, maxClientCount);
             _server.ClientConnected += OnClientConnected;
@@ -94,6 +101,26 @@ namespace Block2D.Server
         public void Stop()
         {
             _server.Stop();
+        }
+
+        public static void LogInfo(string message)
+        {
+            _instance._logger.LogInfo(message);
+        }
+
+        public static void LogWarning(string message)
+        {
+            _instance._logger.LogWarning(message);
+        }
+
+        public static void LogWarning(Exception exception)
+        {
+            _instance._logger.LogWarning(exception.Message);
+        }
+
+        public static void LogFatal(string message)
+        {
+            _instance._logger.LogFatal(message);
         }
     }
 }

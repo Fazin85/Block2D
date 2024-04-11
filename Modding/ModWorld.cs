@@ -11,6 +11,13 @@ namespace Block2D.Modding
             get => Main.InternalServer.World.Name;
         }
 
+        private readonly Mod _mod;
+
+        public ModWorld(Mod mod)
+        {
+            _mod = mod;
+        }
+
         public bool TryGetTile(int x, int y, string dimensionId, out ServerTile tile)
         {
             Point position = new Point(x, y).ToChunkCoords();
@@ -21,7 +28,7 @@ namespace Block2D.Modding
             }
             else
             {
-                Main.Logger.Fatal("Tried To Get Tile In A Chunk That Doesn't Exist. " + position.ToString());
+                _mod.Logger.LogFatal("Tried To Get Tile In A Chunk That Doesn't Exist. " + position.ToString());
                 return false;
             }
         }

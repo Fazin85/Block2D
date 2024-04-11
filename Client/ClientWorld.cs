@@ -49,7 +49,7 @@ namespace Block2D.Client
         {
             if (id == ClientMain.LocalPlayer.ID)
             {
-                Main.Logger.Warn("Tried To Remove Local Player");
+                ClientMain.LogWarning("Tried To Remove Local Player");
                 return false;
             }
 
@@ -60,7 +60,7 @@ namespace Block2D.Client
             }
             catch (Exception e)
             {
-                Main.Logger.Warn(e);
+                ClientMain.LogWarning(e);
             }
             return false;
         }
@@ -71,7 +71,7 @@ namespace Block2D.Client
             {
                 return player;
             }
-            Main.Logger.Warn("Could Not Find Player With ID: " + id);
+            ClientMain.LogWarning("Could Not Find Player With ID: " + id);
             return null;
         }
 

@@ -1,5 +1,4 @@
-﻿using Block2D.Common;
-using MoonSharp.Interpreter;
+﻿using MoonSharp.Interpreter;
 using System.IO;
 
 namespace Block2D.Modding.ContentLoaders
@@ -38,7 +37,7 @@ namespace Block2D.Modding.ContentLoaders
             string[] files = Directory.GetFiles(FilesPath);
             if (files.Length == 0)
             {
-                Main.Logger.Warn("There Are No Files To Get!");
+                ModLoader.LogWarning("There Are No Files To Get.");
                 return null;
             }
             return files;

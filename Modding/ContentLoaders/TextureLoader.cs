@@ -34,7 +34,7 @@ namespace Block2D.Modding.ContentLoaders
                 }
 
                 Script script = new();
-                Main.SetupScript(script);
+                Main.SetupScript(script, Mod, true);
 
                 script.DoFile(textureFilePaths[i]);
                 DynValue nameVal = script.Call(script.Globals["GetName"]);

@@ -84,7 +84,7 @@ namespace Block2D.Server
             }
 
             Players.Add(player.ID, player);
-            Main.Logger.Info("(SERVER): " + player.Name + " Joined The Game");
+            InternalServer.LogInfo(player.Name + " Joined The Game");
         }
 
         private void CreateNeededDirectories()
@@ -108,7 +108,7 @@ namespace Block2D.Server
             }
             catch (Exception e)
             {
-                Main.Logger.Warn(e);
+                InternalServer.LogWarning(e);
             }
             return false;
         }
@@ -117,7 +117,7 @@ namespace Block2D.Server
         {
             if (!LoadedTiles.ContainsKey(name))
             {
-                Main.Logger.Warn("Tried To Get Tile That Doesn't Exist.");
+                InternalServer.LogWarning("Tried To Get Tile That Doesn't Exist.");
             }
 
             return LoadedTiles[name];
@@ -146,7 +146,7 @@ namespace Block2D.Server
             }
             else
             {
-                Main.Logger.Warn("Tried To Set Tile In A Chunk That Doesn't Exist.");
+                InternalServer.LogWarning("Tried To Set Tile In A Chunk That Doesn't Exist.");
             }
         }
 

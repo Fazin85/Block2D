@@ -1,5 +1,4 @@
-﻿using Block2D.Common;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 
 namespace Block2D.Modding
@@ -21,7 +20,7 @@ namespace Block2D.Modding
             mod = null;
             if (!_mods.ContainsKey(modName))
             {
-                Main.Logger.Warn("Tried To Get A Mod That Doesn't Exist!");
+                ModLoader.LogWarning("Tried To Get A Mod That Doesn't Exist.");
                 return false;
             }
             mod = _mods[modName];
@@ -32,7 +31,7 @@ namespace Block2D.Modding
         {
             if (!mod.Loaded)
             {
-                Main.Logger.Warn("Tried To Add An Unloaded Mod!");
+                ModLoader.LogWarning("Tried To Add An Unloaded Mod.");
                 return;
             }
             _mods.Add(mod.DisplayName, mod);
@@ -42,20 +41,20 @@ namespace Block2D.Modding
         {
             if (!_mods.ContainsKey(modName))
             {
-                Main.Logger.Warn("Tried To Remove A Mod That Doesn't Exist!");
+                ModLoader.LogWarning("Tried To Remove A Mod That Doesn't Exist.");
                 return;
             }
 
             _mods[modName].UnloadContent();
             _mods.Remove(modName);
-            Main.Logger.Info("Removed Mod: " + modName);
+            ModLoader.LogInfo("Removed Mod: " + modName);
         }
 
         public void UnloadAndRemoveAllMods()
         {
             if (_mods.Count == 0)
             {
-                Main.Logger.Warn("Tried To Unload Mods, But None Are Loaded!");
+                ModLoader.LogWarning("Tried To Unload Mods, But None Are Loaded.");
                 return;
             }
 

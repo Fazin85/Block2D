@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using Block2D.Common;
+﻿using Block2D.Common;
 using Block2D.Modding.DataStructures;
 using MoonSharp.Interpreter;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Block2D.Modding
 {
@@ -10,14 +11,18 @@ namespace Block2D.Modding
     {
         private readonly ModManager _modManager;
         private bool _forceQuit;
+        private readonly ModloaderLogger _logger;
+        private static ModLoader _instance;
 
         protected ModContent LoadedContent;
 
         public List<Mod> LoadedMods { get; private set; }
 
-        public ModLoader()
+        protected ModLoader()
         {
+            _instance = this;
             _modManager = new();
+            _logger = new();
             _forceQuit = false;
             LoadedContent = new();
             LoadedMods = new();
@@ -27,7 +32,7 @@ namespace Block2D.Modding
         {
             if (_forceQuit)
             {
-                Main.Logger.Fatal("(MODLOADER): Terminating Modloader.");
+                _instance._logger.LogInfo("Terminating Modloader.");
                 return;
             }
 
@@ -35,7 +40,7 @@ namespace Block2D.Modding
 
             if (modDirectories.Length == 0)
             {
-                Main.Logger.Info("(MODLOADER): No Mods Detected, Skipping Mod Loading Process.");
+                _instance._logger.LogInfo("No Mods Detected, Skipping Mod Loading Process.");
                 return;
             }
 
@@ -43,7 +48,7 @@ namespace Block2D.Modding
             {
                 if (_forceQuit)
                 {
-                    Main.Logger.Fatal("(MODLOADER): Terminating Modloader.");
+                    _instance._logger.LogFatal("Terminating Modloader.");
                     return;
                 }
 
@@ -55,7 +60,7 @@ namespace Block2D.Modding
         {
             if (_forceQuit)
             {
-                Main.Logger.Fatal("(MODLOADER): Terminating Modloader.");
+                _instance._logger.LogFatal("Terminating Modloader.");
                 return;
             }
 
@@ -67,7 +72,7 @@ namespace Block2D.Modding
             }
 
             Script script = new();
-            Main.SetupScript(script);
+            Main.SetupScript(script, null, false);
             script.DoFile(modDirectory.FullName + "/Mod.lua");
 
             DynValue modNameFromFileVal = script.Call(script.Globals["GetModName"]);
@@ -80,7 +85,7 @@ namespace Block2D.Modding
 
             if (modNameFromFile.Length == 0 || modVersion.Length == 0)
             {
-                Main.Logger.Warn("(MODLOADER): Tried To Load A Corrupted Mod.");
+                _instance._logger.LogWarning("Tried To Load A Corrupted Mod.");
                 return;
             }
 
@@ -95,7 +100,7 @@ namespace Block2D.Modding
             mod.LoadContent(LoadedContent);
             _modManager.AddMod(mod);
             LoadedMods.Add(mod);
-            Main.Logger.Info("(MODLOADER): Loaded Mod: " + mod.DisplayName);
+            _instance._logger.LogInfo("Loaded Mod: " + mod.DisplayName);
         }
 
         public void UnloadMod(string modName)
@@ -115,7 +120,7 @@ namespace Block2D.Modding
 
             if (!flag)
             {
-                Main.Logger.Fatal("(MODLOADER): Failed To Unload Mod: " + modName);
+                _instance._logger.LogFatal("Failed To Unload Mod: " + modName);
                 Main.ShouldExit = true;
             }
         }
@@ -130,7 +135,27 @@ namespace Block2D.Modding
         {
             _forceQuit = true;
             UnloadAllMods();
-            Main.Logger.Fatal("(MODLOADER): Force Quit Modloader Due To Broken Mod.");
+            _instance._logger.LogFatal("Force Quit Modloader Due To Broken Mod.");
+        }
+
+        public static void LogInfo(string message)
+        {
+            _instance._logger.LogInfo(message);
+        }
+
+        public static void LogWarning(string message)
+        {
+            _instance._logger.LogWarning(message);
+        }
+
+        public static void LogWarning(Exception exception)
+        {
+            _instance._logger.LogWarning(exception.Message);
+        }
+
+        public static void LogFatal(string message)
+        {
+            _instance._logger.LogFatal(message);
         }
     }
 }

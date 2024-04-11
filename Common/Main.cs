@@ -1,7 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Threading;
-using Block2D.Client;
+﻿using Block2D.Client;
 using Block2D.Modding;
 using Block2D.Server;
 using Microsoft.Xna.Framework;
@@ -12,7 +9,9 @@ using NLog;
 using NLog.Config;
 using NLog.Targets;
 using Steamworks;
-using Version = System.Version;
+using System;
+using System.IO;
+using System.Threading;
 
 namespace Block2D.Common
 {
@@ -54,15 +53,9 @@ namespace Block2D.Common
 
         public static bool ShouldExit { get; set; }
 
-        public static readonly Logger Logger = LogManager.GetCurrentClassLogger();
-
-        public static Script Lua { get; private set; }
-
         public static KeyboardState KeyboardState { get; private set; }
 
         public static KeyboardState LastKeyboardState { get; private set; }
-
-        public static Version Version { get; private set; }
 
         public const string GameName = "Block2D";
 
@@ -81,13 +74,11 @@ namespace Block2D.Common
             _internalServerThread = new(InternalServer.Run);
             _graphics = new(this);
             Random = new(0);
-            Version = new(0, 1);
             _assetManager = new(Content);
             _windowSizeBeingChanged = false;
             Content.RootDirectory = "Content";
             OfflineMode = false;
             IsMouseVisible = true;
-            Lua = new();
             Window.AllowUserResizing = true;
         }
 
@@ -97,16 +88,14 @@ namespace Block2D.Common
 
             ClientMain.Initialize(Window, GraphicsDevice);
 
-            SetupLua();
-
             if (!SteamAPI.Init())
             {
                 OfflineMode = true;
-                Logger.Warn("(CLIENT): Failed To Connect To Steam.");
+                ClientMain.LogWarning("Failed To Connect To Steam.");
             }
             else
             {
-                Logger.Info("(CLIENT): Successfully Connected To Steam.");
+                ClientMain.LogInfo("Successfully Connected To Steam.");
             }
 
             base.Initialize();
@@ -130,7 +119,7 @@ namespace Block2D.Common
 
             HandleGenericInput();
 
-            ClientMain.Tick(gameTime);
+            ClientMain.Update(gameTime);
 
             if (ShouldExit)
             {
@@ -230,23 +219,21 @@ namespace Block2D.Common
             UserData.RegisterType<ServerTile>();
         }
 
-        public static void SetupScript(Script script)
+        public static void SetupScript(Script script, Mod mod, bool setupLogger)
         {
             DynValue keyboardState = UserData.Create(KeyboardState);
             DynValue lastKeyboardState = UserData.Create(LastKeyboardState);
-            DynValue logger = UserData.Create(Logger);
-            DynValue modWorld = UserData.Create(new ModWorld());
+            DynValue modWorld = UserData.Create(new ModWorld(mod));
 
             script.Globals.Set("keyboardState", keyboardState);
             script.Globals.Set("lastKeyboardState", lastKeyboardState);
-            script.Globals.Set("logger", logger);
             script.Globals.Set("world", modWorld);
-        }
 
-        private void SetupLua()
-        {
-            RegisterTypes();
-            SetupScript(Lua);
+            if (setupLogger)
+            {
+                DynValue logger = UserData.Create(mod.Logger);
+                script.Globals.Set("logger", logger);
+            }
         }
 
         public static GraphicsDevice GetGraphicsDevice() => _instance.GraphicsDevice;

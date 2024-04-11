@@ -37,6 +37,8 @@ namespace Block2D.Client
             get => _instance._client.Id;
         }
 
+        private readonly ClientLogger _logger;
+
         public static bool DebugMode { get; set; }
 
         public bool InWorld { get; private set; }
@@ -66,6 +68,7 @@ namespace Block2D.Client
         {
             DebugMenu = new();
             _worldRenderer = new();
+            _logger = new();
             _client = new();
             _client.Connected += OnConnect;
             _client.Disconnected += OnDisconnect;
@@ -133,7 +136,7 @@ namespace Block2D.Client
             _instance.InWorld = true;
         }
 
-        public static void Tick(GameTime gameTime)
+        public static void Update(GameTime gameTime)
         {
             if (
                 Main.KeyboardState.IsKeyDown(DEBUG_KEY) && Main.LastKeyboardState.IsKeyUp(DEBUG_KEY)
@@ -217,6 +220,26 @@ namespace Block2D.Client
         public static void Send(Message message)
         {
             _instance._client.Send(message);
+        }
+
+        public static void LogInfo(string message)
+        {
+            _instance._logger.LogInfo(message);
+        }
+
+        public static void LogWarning(string message)
+        {
+            _instance._logger.LogWarning(message);
+        }
+
+        public static void LogWarning(Exception exception)
+        {
+            _instance._logger.LogWarning(exception.Message);
+        }
+
+        public static void LogFatal(string message)
+        {
+            _instance._logger.LogFatal(message);
         }
 
         public static ClientMain GetInstance()

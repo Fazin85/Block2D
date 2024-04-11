@@ -34,7 +34,7 @@ namespace Block2D.Modding.ContentLoaders
                 }
 
                 Script script = new();
-                Main.SetupScript(script);
+                Main.SetupScript(script, Mod, true);
 
                 script.DoFile(tileFilePaths[i]);
                 SetScript(script);
@@ -50,7 +50,7 @@ namespace Block2D.Modding.ContentLoaders
                 }
                 else
                 {
-                    Main.Logger.Fatal("(MODLOADER): Could Not Find Function GetTextureName In " + tileFilePaths[i]);
+                    ModLoader.LogFatal("Could Not Find Function GetTextureName In " + tileFilePaths[i]);
                     continue;
                 }
 
@@ -63,7 +63,7 @@ namespace Block2D.Modding.ContentLoaders
                 }
                 else
                 {
-                    Main.Logger.Fatal("(MODLOADER): Could Not Find Function GetSoundEffectName In " + tileFilePaths[i]);
+                    ModLoader.LogFatal("Could Not Find Function GetSoundEffectName In " + tileFilePaths[i]);
                     continue;
                 }
 
