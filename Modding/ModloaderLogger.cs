@@ -4,8 +4,7 @@ namespace Block2D.Modding
 {
     public class ModloaderLogger : Block2DLogger
     {
-        public ModloaderLogger() : base("MODLOADER")
-        {
-        }
+        public ModloaderLogger()
+            : base("MODLOADER") { }
     }
 }

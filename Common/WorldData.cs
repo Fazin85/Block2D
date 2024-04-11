@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Block2D.Modding;
+using System.Collections.Generic;
 using System.Linq;
-using Block2D.Modding;
 
 namespace Block2D.Common
 {

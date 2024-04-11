@@ -23,6 +23,8 @@ namespace Block2D.Modding
 
         static Mod()
         {
+            Base ??= new("base", "base", "1.0");
+
             Base.Logger ??= new("BASE");
         }
 

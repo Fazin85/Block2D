@@ -1,7 +1,5 @@
 ﻿using Block2D.Common;
-using NLog;
 using Riptide;
-using Riptide.Utils;
 using System;
 using System.Threading;
 
@@ -67,8 +65,6 @@ namespace Block2D.Server
             }
 
             _server = new Riptide.Server();
-
-            RiptideLogger.Initialize(_instance._logger.LogInfo, false);
 
             _server.Start(7777, maxClientCount);
             _server.ClientConnected += OnClientConnected;

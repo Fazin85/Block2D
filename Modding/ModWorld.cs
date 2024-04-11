@@ -28,7 +28,9 @@ namespace Block2D.Modding
             }
             else
             {
-                _mod.Logger.LogFatal("Tried To Get Tile In A Chunk That Doesn't Exist. " + position.ToString());
+                _mod.Logger.LogFatal(
+                    "Tried To Get Tile In A Chunk That Doesn't Exist. " + position.ToString()
+                );
                 return false;
             }
         }

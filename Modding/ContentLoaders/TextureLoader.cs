@@ -8,7 +8,8 @@ namespace Block2D.Modding.ContentLoaders
 {
     public class TextureLoader : ContentLoader
     {
-        public TextureLoader(Mod mod) : base(mod)
+        public TextureLoader(Mod mod)
+            : base(mod)
         {
             FilesPath = Main.ModsDirectory + "/" + Mod.InternalName + "/TextureData";
         }
@@ -21,7 +22,7 @@ namespace Block2D.Modding.ContentLoaders
                 return false;
             }
 
-            GraphicsDevice graphicsDevice = Main.GetGraphicsDevice();
+            GraphicsDevice graphicsDevice = Main.GraphicsDevice;
             List<ModTexture> textureList = new();
 
             string[] textureFilePaths = GetFilePaths();

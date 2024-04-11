@@ -8,6 +8,7 @@ using MoonSharp.Interpreter;
 using NLog;
 using NLog.Config;
 using NLog.Targets;
+using Riptide.Utils;
 using Steamworks;
 using System;
 using System.IO;
@@ -47,6 +48,11 @@ namespace Block2D.Common
             get => _instance._assetManager;
         }
 
+        public static new GraphicsDevice GraphicsDevice
+        {
+            get => _instance._game.GraphicsDevice;
+        }
+
         public static bool OfflineMode { get; private set; }
 
         public static Random Random { get; private set; }
@@ -58,6 +64,11 @@ namespace Block2D.Common
         public static KeyboardState LastKeyboardState { get; private set; }
 
         public const string GameName = "Block2D";
+
+        private Game _game
+        {
+            get => _instance;
+        }
 
         private SpriteBatch _spriteBatch;
         private readonly GraphicsDeviceManager _graphics;
@@ -85,6 +96,10 @@ namespace Block2D.Common
         protected override void Initialize()
         {
             InitializeLogger();
+
+            RiptideLogger.Initialize(DefaultLogger.Instance.RiptideLog, false);
+
+            RegisterTypes();
 
             ClientMain.Initialize(Window, GraphicsDevice);
 
@@ -214,7 +229,7 @@ namespace Block2D.Common
         private void RegisterTypes()
         {
             UserData.RegisterType<KeyboardState>();
-            UserData.RegisterType<Logger>();
+            UserData.RegisterType<ModLogger>();
             UserData.RegisterType<ModWorld>();
             UserData.RegisterType<ServerTile>();
         }
@@ -235,8 +250,6 @@ namespace Block2D.Common
                 script.Globals.Set("logger", logger);
             }
         }
-
-        public static GraphicsDevice GetGraphicsDevice() => _instance.GraphicsDevice;
 
         private static void InitializeLogger()
         {

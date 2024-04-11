@@ -40,7 +40,7 @@ namespace Block2D.Common
         {
             return new Point { X = (point.X >> 6) * 64, Y = (point.Y >> 6) * 64 };
         }
-        
+
         public static int GetIndexFromPosition(this Point p)
         {
             return CC.CHUNK_SIZE * p.X + p.Y;
@@ -126,7 +126,7 @@ namespace Block2D.Common
                 }
             }
         }
-        
+
         public static Vector2 GetIntersectionDepth(this Rectangle rectA, Rectangle rectB)
         {
             // Calculate half sizes.

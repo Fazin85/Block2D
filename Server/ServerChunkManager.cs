@@ -2,7 +2,6 @@
 using Block2D.Server.WorldGen;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Block2D.Server
 {

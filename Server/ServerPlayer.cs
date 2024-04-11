@@ -1,5 +1,4 @@
-﻿using Block2D.Common;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Block2D.Server
 {
@@ -33,7 +32,7 @@ namespace Block2D.Server
         {
             get => _id;
         }
-        
+
         private Vector2 _position;
         private Vector2 _velocity;
         private int _health;

@@ -13,6 +13,11 @@ namespace Block2D.Common
             _logger = LogManager.GetCurrentClassLogger();
         }
 
+        public void RiptideLog(string message)
+        {
+            _logger.Info(message);
+        }
+
         public void LogInfo(string message)
         {
             _logger.Info("(" + _loggerName + "): " + message);

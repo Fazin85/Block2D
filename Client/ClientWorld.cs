@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using Block2D.Client.Networking;
+﻿using Block2D.Client.Networking;
 using Block2D.Common;
 using Microsoft.Xna.Framework;
+using System;
+using System.Collections.Generic;
 
 namespace Block2D.Client
 {

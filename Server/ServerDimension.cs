@@ -3,14 +3,14 @@
     public class ServerDimension
     {
         public ServerChunkManager ChunkManager { get; private set; }
-        
+
         public string Name { get; private set; }
 
         public int MaxChunksX { get; private set; }
 
         public int MaxChunksY { get; private set; }
 
-        public int MaxEntitys {  get; private set; }
+        public int MaxEntitys { get; private set; }
 
         public int MaxDroppedItems { get; private set; }
 
