@@ -14,7 +14,7 @@ namespace Block2D.Server
         {
             if (Tickable && Main.Random.Next(160) == 0)
             {
-                string name = Main.InternalServer.World.GetTileName(ID);
+                string name = InternalServer.World.GetTileName(ID);
                 ModTile tile = Main.AssetManager.GetTile(name);
 
                 tile.TileCode.Call(tile.TileCode.Globals["Tick"], x, y, dimensionId);

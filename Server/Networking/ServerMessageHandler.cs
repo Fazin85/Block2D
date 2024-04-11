@@ -13,13 +13,13 @@ namespace Block2D.Server.Networking
 
             ServerPlayer newPlayer = new(fromClientId, -Vector2.UnitY * 16, 20, clientPlayerName);
 
-            foreach (ServerPlayer otherPlayer in Main.InternalServer.World.Players.Values)
+            foreach (ServerPlayer otherPlayer in InternalServer.World.Players.Values)
             {
-                Main.InternalServer.Send(CreateSpawnMessage(otherPlayer), fromClientId);
+                InternalServer.Send(CreateSpawnMessage(otherPlayer), fromClientId);
             }
 
-            Main.InternalServer.World.AddPlayer(newPlayer);
-            Main.InternalServer.SendToAll(CreateSpawnMessage(newPlayer));
+            InternalServer.World.AddPlayer(newPlayer);
+            InternalServer.SendToAll(CreateSpawnMessage(newPlayer));
         }
 
         public static Message CreateSpawnMessage(ServerPlayer player)
@@ -33,7 +33,7 @@ namespace Block2D.Server.Networking
 
         public static void SendPositions()
         {
-            foreach (ServerPlayer player in Main.InternalServer.World.Players.Values)
+            foreach (ServerPlayer player in InternalServer.World.Players.Values)
             {
                 Message message = Message.Create(
                     MessageSendMode.Unreliable,
@@ -41,7 +41,7 @@ namespace Block2D.Server.Networking
                 );
                 message.AddVector2(player.Position);
                 message.AddUShort(player.ID);
-                Main.InternalServer.SendToAll(message);
+                InternalServer.SendToAll(message);
             }
         }
 
@@ -49,9 +49,7 @@ namespace Block2D.Server.Networking
         public static void ReceivePosition(ushort fromClientId, Message message)
         {
             Vector2 position = message.GetVector2();
-            if (
-                Main.InternalServer.World.Players.TryGetValue(fromClientId, out ServerPlayer player)
-            )
+            if (InternalServer.World.Players.TryGetValue(fromClientId, out ServerPlayer player))
             {
                 player.Position = position;
             }
@@ -64,8 +62,8 @@ namespace Block2D.Server.Networking
             string playerDimension = message.GetString();
 
             if (
-                Main
-                    .InternalServer.World.Dimensions[playerDimension]
+                InternalServer
+                    .World.Dimensions[playerDimension]
                     .ChunkManager.GetOrTryAddChunk(position, playerDimension, out ServerChunk chunk)
             )
             {
@@ -83,7 +81,7 @@ namespace Block2D.Server.Networking
                     byte[] bytesToSend = tileBytes.Compress();
 
                     newMessage.AddBytes(bytesToSend);
-                    Main.InternalServer.Send(newMessage, fromClientId);
+                    InternalServer.Send(newMessage, fromClientId);
                 }
             }
         }

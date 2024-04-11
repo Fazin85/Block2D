@@ -12,17 +12,11 @@ using Riptide.Utils;
 using Steamworks;
 using System;
 using System.IO;
-using System.Threading;
 
 namespace Block2D.Common
 {
     public class Main : Game
     {
-        public static InternalServer InternalServer
-        {
-            get => _instance._internalServer;
-        }
-
         public static string AppDataDirectory
         {
             get => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -73,16 +67,12 @@ namespace Block2D.Common
         private SpriteBatch _spriteBatch;
         private readonly GraphicsDeviceManager _graphics;
         private readonly AssetManager _assetManager;
-        private readonly InternalServer _internalServer;
-        private readonly Thread _internalServerThread;
         private static Main _instance;
         private bool _windowSizeBeingChanged;
 
         public Main()
         {
             _instance = this;
-            _internalServer = new();
-            _internalServerThread = new(InternalServer.Run);
             _graphics = new(this);
             Random = new(0);
             _assetManager = new(Content);
@@ -163,9 +153,9 @@ namespace Block2D.Common
         {
             ClientMain.Disconnect();
 
-            if (_internalServer.IsRunning)
+            if (InternalServer.IsRunning)
             {
-                _internalServer.Stop();
+                InternalServer.Stop();
             }
 
             base.OnExiting(sender, args);
@@ -195,7 +185,7 @@ namespace Block2D.Common
 
             if (KeyboardState.IsKeyDown(Keys.G) && LastKeyboardState.IsKeyUp(Keys.G))
             {
-                _internalServerThread.Start();
+                InternalServer.Start();
             }
 
             if (KeyboardState.IsKeyDown(Keys.F11) && LastKeyboardState.IsKeyUp(Keys.F11))

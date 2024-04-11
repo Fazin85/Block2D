@@ -7,32 +7,42 @@ namespace Block2D.Server
 {
     public class InternalServer
     {
-        public bool IsRunning
+        public static bool IsRunning
         {
-            get => _server != null && _server.IsRunning;
+            get => _instance._server != null && _instance._server.IsRunning;
         }
 
-        public ServerWorld World
-        {
-            get => _world;
-        }
-
-        private readonly ServerLogger _logger;
+        public static ServerWorld World { get; private set; }
 
         public ServerState State { get; private set; }
 
+        private readonly ServerLogger _logger;
+
         private Riptide.Server _server;
-        private ServerWorld _world;
+        private static Thread _executionThread;
         private static InternalServer _instance;
 
-        public InternalServer()
+        private InternalServer()
         {
             State = ServerState.Inactive;
             _instance = this;
             _logger = new();
         }
 
-        public void Run()
+        public static void Start()
+        {
+            if (_instance != null)
+            {
+                return;
+            }
+
+            _instance = new();
+
+            _executionThread = new(_instance.Run);
+            _executionThread.Start();
+        }
+
+        private void Run()
         {
             Setup(20);
 
@@ -41,7 +51,7 @@ namespace Block2D.Server
                 if (_server.IsRunning)
                 {
                     //do ticking stuff here
-                    _world.Tick();
+                    World.Update();
 
                     _server.Update();
                 }
@@ -70,9 +80,9 @@ namespace Block2D.Server
             _server.ClientConnected += OnClientConnected;
             _server.ClientDisconnected += OnClientDisconnected;
 
-            _world = new("DevWorld");
+            World = new("DevWorld");
 
-            _world.LoadContent();
+            World.LoadContent();
 
             State = ServerState.Loaded;
         }
@@ -81,22 +91,22 @@ namespace Block2D.Server
 
         private void OnClientDisconnected(object sender, ServerDisconnectedEventArgs args)
         {
-            _world.RemovePlayer(args.Client.Id);
+            World.RemovePlayer(args.Client.Id);
         }
 
-        public void Send(Message message, ushort toClientId)
+        public static void Send(Message message, ushort toClientId)
         {
-            _server.Send(message, toClientId);
+            _instance._server.Send(message, toClientId);
         }
 
-        public void SendToAll(Message message)
+        public static void SendToAll(Message message)
         {
-            _server.SendToAll(message);
+            _instance._server.SendToAll(message);
         }
 
-        public void Stop()
+        public static void Stop()
         {
-            _server.Stop();
+            _instance._server.Stop();
         }
 
         public static void LogInfo(string message)

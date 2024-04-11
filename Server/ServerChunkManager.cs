@@ -1,5 +1,4 @@
-﻿using Block2D.Common;
-using Block2D.Server.WorldGen;
+﻿using Block2D.Server.WorldGen;
 using Microsoft.Xna.Framework;
 using System.Collections.Generic;
 
@@ -33,7 +32,7 @@ namespace Block2D.Server
                 _generator.GenerateChunk(
                     position,
                     dimensionId,
-                    Main.InternalServer.World,
+                    InternalServer.World,
                     out chunk
                 );
                 return Chunks.TryAdd(chunk.Position, chunk);

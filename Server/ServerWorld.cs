@@ -54,7 +54,7 @@ namespace Block2D.Server
             LoadTiles();
         }
 
-        public void Tick()
+        public void Update()
         {
             _currentTick++;
 
