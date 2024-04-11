@@ -59,6 +59,8 @@ namespace Block2D.Common
 
         public const string GameName = "Block2D";
 
+        public ClientMain Client { get; private set; }
+
         private Game _game
         {
             get => _instance;
@@ -76,6 +78,7 @@ namespace Block2D.Common
             _graphics = new(this);
             Random = new(0);
             _assetManager = new(Content);
+            Client = new();
             _windowSizeBeingChanged = false;
             Content.RootDirectory = "Content";
             OfflineMode = false;
@@ -91,16 +94,16 @@ namespace Block2D.Common
 
             RegisterTypes();
 
-            ClientMain.Initialize(Window, GraphicsDevice);
+            Client.Initialize(Window, GraphicsDevice);
 
             if (!SteamAPI.Init())
             {
                 OfflineMode = true;
-                ClientMain.LogWarning("Failed To Connect To Steam.");
+                Client.LogWarning("Failed To Connect To Steam.");
             }
             else
             {
-                ClientMain.LogInfo("Successfully Connected To Steam.");
+                Client.LogInfo("Successfully Connected To Steam.");
             }
 
             base.Initialize();
@@ -112,7 +115,7 @@ namespace Block2D.Common
 
             AssetManager.LoadContent();
 
-            ClientMain.LoadContent(this, _spriteBatch);
+            Client.LoadContent(this, _spriteBatch);
 
             Window.ClientSizeChanged += OnClientSizeChanged();
         }
@@ -124,7 +127,7 @@ namespace Block2D.Common
 
             HandleGenericInput();
 
-            ClientMain.Update(gameTime);
+            Client.Update(gameTime);
 
             if (ShouldExit)
             {
@@ -140,7 +143,7 @@ namespace Block2D.Common
 
             _spriteBatch.Begin(transformMatrix: ClientMain.Camera.GetViewMatrix());
 
-            ClientMain.Draw(_spriteBatch, AssetManager);
+            Client.Draw(_spriteBatch, AssetManager);
 
             _spriteBatch.End();
 
@@ -151,7 +154,7 @@ namespace Block2D.Common
 
         protected override void OnExiting(object sender, EventArgs args)
         {
-            ClientMain.Disconnect();
+            Client.Disconnect();
 
             if (InternalServer.IsRunning)
             {
@@ -207,7 +210,7 @@ namespace Block2D.Common
 
             if (KeyboardState.IsKeyDown(Keys.H))
             {
-                ClientMain.LocalConnect();
+                Client.LocalConnect();
             }
         }
 

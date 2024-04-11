@@ -54,7 +54,7 @@ namespace Block2D.Client
                             continue;
                         }
 
-                        string currentTileName = ClientMain.GetTileName(currentTile.ID);
+                        string currentTileName = ClientMain.GetInstance().GetTileName(currentTile.ID);
 
                         if (currentTileName != TileID.AIR)
                         {
@@ -78,7 +78,7 @@ namespace Block2D.Client
                 {
                     spriteBatch.DrawRectangle(currentChunkRect, Color.Red);
 
-                    ClientMain.DebugMenu.ChunksToRenderCount = chunksToRenderCount;
+                    ClientMain.GetInstance().DebugMenu.ChunksToRenderCount = chunksToRenderCount;
                 }
             }
         }

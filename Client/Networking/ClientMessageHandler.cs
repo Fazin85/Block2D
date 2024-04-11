@@ -64,7 +64,7 @@ namespace Block2D.Client.Networking
 
             if (ClientMain.ID == id)
             {
-                ClientMain.OnJoinWorld();
+                ClientMain.GetInstance().OnJoinWorld();
                 RequestChunk(Point.Zero);
                 RequestChunk(new(64, 0));
                 RequestChunk(new(64, -64));
@@ -106,7 +106,7 @@ namespace Block2D.Client.Networking
                     }
                     else
                     {
-                        ClientMain.LogWarning("Received Corrupted Chunk Data.");
+                        ClientMain.GetInstance().LogWarning("Received Corrupted Chunk Data.");
                     }
                 }
             }

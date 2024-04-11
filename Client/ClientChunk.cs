@@ -29,13 +29,13 @@ namespace Block2D.Common
 
             if (position.X >= CC.CHUNK_SIZE || position.X < 0)
             {
-                ClientMain.LogFatal("Position X is out of bounds");
+                ClientMain.GetInstance().LogFatal("Position X is out of bounds");
                 return;
             }
 
             if (position.Y >= CC.CHUNK_SIZE || position.Y < 0)
             {
-                ClientMain.LogFatal("Position Y is out of bounds");
+                ClientMain.GetInstance().LogFatal("Position Y is out of bounds");
                 return;
             }
 
@@ -50,13 +50,13 @@ namespace Block2D.Common
         {
             if (position.X >= CC.CHUNK_SIZE || position.X < 0)
             {
-                ClientMain.LogFatal("Position X is out of bounds");
+                ClientMain.GetInstance().LogFatal("Position X is out of bounds");
                 return new();
             }
 
             if (position.Y >= CC.CHUNK_SIZE || position.Y < 0)
             {
-                ClientMain.LogFatal("Position Y is out of bounds");
+                ClientMain.GetInstance().LogFatal("Position Y is out of bounds");
                 return new();
             }
 
@@ -72,7 +72,7 @@ namespace Block2D.Common
                     {
                         Point pos = new(i / CC.CHUNK_SIZE, i % CC.CHUNK_SIZE);
 
-                        string tileName = ClientMain.GetTileName(blocks[i]);
+                        string tileName = ClientMain.GetInstance().GetTileName(blocks[i]);
                         SetTile(pos, tileName);
                     }
                     break;
@@ -80,7 +80,7 @@ namespace Block2D.Common
                     for (int i = SECTION_SIZE; i < SECTION_SIZE * 2; i++)
                     {
                         Point pos = new(i / CC.CHUNK_SIZE, i % CC.CHUNK_SIZE);
-                        string tileName = ClientMain.GetTileName(blocks[i - SECTION_SIZE]);
+                        string tileName = ClientMain.GetInstance().GetTileName(blocks[i - SECTION_SIZE]);
                         SetTile(pos, tileName);
                     }
                     break;
@@ -88,7 +88,7 @@ namespace Block2D.Common
                     for (int i = SECTION_SIZE * 2; i < SECTION_SIZE * 3; i++)
                     {
                         Point pos = new(i / CC.CHUNK_SIZE, i % CC.CHUNK_SIZE);
-                        string tileName = ClientMain.GetTileName(blocks[i - (SECTION_SIZE * 2)]);
+                        string tileName = ClientMain.GetInstance().GetTileName(blocks[i - (SECTION_SIZE * 2)]);
                         SetTile(pos, tileName);
                     }
                     break;
@@ -96,7 +96,7 @@ namespace Block2D.Common
                     for (int i = SECTION_SIZE * 3; i < SECTION_SIZE * 4; i++)
                     {
                         Point pos = new(i / CC.CHUNK_SIZE, i % CC.CHUNK_SIZE);
-                        string tileName = ClientMain.GetTileName(blocks[i - (SECTION_SIZE * 3)]);
+                        string tileName = ClientMain.GetInstance().GetTileName(blocks[i - (SECTION_SIZE * 3)]);
                         SetTile(pos, tileName);
                     }
                     break;
