@@ -10,12 +10,19 @@ namespace Block2D.Server
         public bool TileEntity { get; private set; }
         public bool Collidable { get; private set; }
 
+        private readonly ServerChunk _containerChunk;
+
+        public ServerTile(ServerChunk chunk)
+        {
+            _containerChunk = chunk;
+        }
+
         public readonly void Tick(int x, int y, string dimensionId)
         {
             if (Tickable && Main.Random.Next(160) == 0)
             {
-                string name = InternalServer.World.GetTileName(ID);
-                ModTile tile = Main.AssetManager.GetTile(name);
+                string name = _containerChunk.Server.World.GetTileName(ID);
+                ModTile tile = _containerChunk.Server.AssetManager.GetTile(name);
 
                 tile.TileCode.Call(tile.TileCode.Globals["Tick"], x, y, dimensionId);
             }

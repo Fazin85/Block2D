@@ -14,9 +14,9 @@
 
         public int MaxDroppedItems { get; private set; }
 
-        public ServerDimension(string name, int seed, int maxChunksX, int maxChunksY, int maxEntites, int maxDroppedItems)
+        public ServerDimension(InternalServer server, string name, int seed, int maxChunksX, int maxChunksY, int maxEntites, int maxDroppedItems)
         {
-            ChunkManager = new(name, seed);
+            ChunkManager = new(server, name, seed);
             Name = name;
             MaxChunksX = maxChunksX;
             MaxChunksY = maxChunksY;

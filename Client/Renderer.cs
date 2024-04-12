@@ -1,5 +1,4 @@
-﻿using Block2D.Common;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 
@@ -10,7 +9,7 @@ namespace Block2D.Client
         public static void DrawPlayer(
             ClientPlayer player,
             SpriteBatch spriteBatch,
-            AssetManager assets
+            ClientAssetManager assets
         )
         {
             spriteBatch.Draw(assets.GetPlayerTexture(), player.Position, Color.White);

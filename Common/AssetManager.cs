@@ -1,52 +1,28 @@
 ﻿using Block2D.Modding;
 using Block2D.Modding.DataStructures;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 
 namespace Block2D.Common
 {
-    public class AssetManager : ModLoader
+    public abstract class AssetManager : ModLoader
     {
-        private readonly ContentManager _contentManager;
-        private Texture2D _playerTexture;
-        private readonly Dictionary<string, Texture2D> _textures;
-        public SpriteFont Font { get; private set; }
+        protected Dictionary<string, Texture2D> Textures { get; private set; }
 
-        public AssetManager(ContentManager contentManager)
+        public AssetManager()
             : base()
         {
-            _contentManager = contentManager;
-            _textures = new();
+            Textures = [];
         }
 
-        public void LoadContent()
+        public virtual void LoadContent()
         {
-            Font = _contentManager.Load<SpriteFont>("gamefont");
-
-            LoadPlayerTextures();
-
             LoadAllMods();
 
             foreach (ModTexture tex in LoadedContent.Textures.Values)
             {
-                _textures.Add(tex.Name, tex.Texture);
+                Textures.Add(tex.Name, tex.Texture);
             }
-        }
-
-        public void LoadPlayerTextures()
-        {
-            _playerTexture = _contentManager.Load<Texture2D>("Player_Texture");
-        }
-
-        public Texture2D GetPlayerTexture()
-        {
-            return _playerTexture;
-        }
-
-        public Texture2D GetTexture(string textureName)
-        {
-            return _textures[textureName];
         }
 
         public ModTile GetTile(string tileName)

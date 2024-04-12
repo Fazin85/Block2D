@@ -32,7 +32,7 @@ namespace Block2D.Modding.ContentLoaders
                 }
 
                 Script script = new();
-                Main.SetupScript(script, Mod, true);
+                Main.SetupScript(script, Mod, true, ProgramSide.Both);
 
                 ModItem item = new();
 

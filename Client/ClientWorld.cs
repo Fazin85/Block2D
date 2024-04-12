@@ -1,11 +1,12 @@
 ﻿using Block2D.Common;
+using Block2D.Server;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
 namespace Block2D.Client
 {
-    public class ClientWorld
+    public class ClientWorld : WorldData
     {
         public Dictionary<ushort, ClientPlayer> Players { get; private set; }
 
@@ -14,11 +15,14 @@ namespace Block2D.Client
         private long _tickCounter;
         private readonly Client _client;
 
-        public ClientWorld(Client client)
+        public ClientWorld(AssetManager assetManager, Client client)
+            : base(assetManager, ProgramSide.Client)
         {
-            Chunks = new();
-            Players = new();
+            Chunks = [];
+            Players = [];
             _client = client;
+
+            LoadTiles();
         }
 
         public void Tick(GameTime gameTime)
@@ -110,6 +114,19 @@ namespace Block2D.Client
             }
             tile = new();
             return false;
+        }
+
+        /// <summary>
+        /// throws NotImplementedException.
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        public override bool GetChunkLoaded(
+            string dimensionID,
+            Point chunkPosition,
+            out ServerChunk chunk
+        )
+        {
+            throw new NotImplementedException();
         }
     }
 }

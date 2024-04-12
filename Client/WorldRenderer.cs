@@ -63,13 +63,13 @@ namespace Block2D.Client
                             continue;
                         }
 
-                        string currentTileName = _client.GetTileName(currentTile.ID);
+                        string currentTileName = _client.CurrentWorld.GetTileName(currentTile.ID);
 
                         if (currentTileName != TileID.AIR)
                         {
-                            ModTile tile = Main.AssetManager.GetTile(currentTileName);
+                            ModTile tile = _client.AssetManager.GetTile(currentTileName);
                             spriteBatch.Draw(
-                                Main.AssetManager.GetTexture(currentTileName),
+                                _client.AssetManager.GetTexture(currentTileName),
                                 positionToDrawBlock,
                                 null,
                                 tile.DrawColor,

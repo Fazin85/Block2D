@@ -32,7 +32,7 @@ namespace Block2D.Modding.ContentLoaders
                 }
 
                 Script script = new();
-                Main.SetupScript(script, Mod, true);
+                Main.SetupScript(script, Mod, true, ProgramSide.Both);
 
                 script.DoFile(soundFilePaths[i]);
 
@@ -50,7 +50,8 @@ namespace Block2D.Modding.ContentLoaders
                         "Sound Effect Name Length Or FilePath Length Was Zero.\nBroken Sound Effect Path: "
                             + soundFilePaths[i]
                     );
-                    Main.ForceQuitModloader();
+                    //Main.ForceQuitModloader();
+                    Main.ShouldExit = true;
                     return false;
                 }
 

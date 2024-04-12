@@ -38,11 +38,6 @@ namespace Block2D.Common
             get => GameAppDataDirectory + "/Worlds";
         }
 
-        public static AssetManager AssetManager
-        {
-            get => _instance._assetManager;
-        }
-
         public static new GraphicsDevice GraphicsDevice
         {
             get => _instance._game.GraphicsDevice;
@@ -71,7 +66,7 @@ namespace Block2D.Common
         private KeyboardState _lastKeyboardState;
         private SpriteBatch _spriteBatch;
         private readonly GraphicsDeviceManager _graphics;
-        private readonly AssetManager _assetManager;
+        private InternalServer _internalServer;
         private static Main _instance;
         private bool _windowSizeBeingChanged;
 
@@ -82,8 +77,8 @@ namespace Block2D.Common
             _instance = this;
             _graphics = new(this);
             Random = new(0);
-            _assetManager = new(Content);
-            Client = new();
+            Client = new(Content);
+            _internalServer = new();
             _windowSizeBeingChanged = false;
             Content.RootDirectory = "Content";
             OfflineMode = false;
@@ -93,25 +88,31 @@ namespace Block2D.Common
 
         #region public methods
 
-        public static void ForceQuitModloader()
-        {
-            _instance._assetManager.ForceQuit();
-        }
-
-        public static void SetupScript(Script script, Mod mod, bool setupLogger)
+        public static void SetupScript(Script script, Mod mod, bool setupLogger, ProgramSide side)
         {
             DynValue keyboardState = UserData.Create(_instance._keyboardState);
             DynValue lastKeyboardState = UserData.Create(_instance._lastKeyboardState);
-            DynValue modWorld = UserData.Create(new ModWorld(mod));
 
             script.Globals.Set("keyboardState", keyboardState);
             script.Globals.Set("lastKeyboardState", lastKeyboardState);
-            script.Globals.Set("world", modWorld);
 
             if (setupLogger)
             {
                 DynValue logger = UserData.Create(mod.Logger);
                 script.Globals.Set("logger", logger);
+
+                DynValue modWorld = null;
+
+                if (side == ProgramSide.Client || side == ProgramSide.Both)
+                {
+                    modWorld = UserData.Create(new ModWorld(_instance.Client.CurrentWorld, mod));
+                }
+                if (side == ProgramSide.Server || side == ProgramSide.Both)
+                {
+                    modWorld = UserData.Create(new ModWorld(_instance._internalServer.World, mod));
+                }
+
+                script.Globals.Set("world", modWorld);
             }
         }
 
@@ -146,8 +147,6 @@ namespace Block2D.Common
         {
             _spriteBatch = new(GraphicsDevice);
 
-            AssetManager.LoadContent();
-
             Client.LoadContent(this, _spriteBatch);
 
             Window.ClientSizeChanged += OnClientSizeChanged();
@@ -174,7 +173,7 @@ namespace Block2D.Common
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            Client.Draw(_spriteBatch, AssetManager);
+            Client.Draw(_spriteBatch);
 
             //Client.UI.Draw(gameTime, _spriteBatch);
 
@@ -185,10 +184,7 @@ namespace Block2D.Common
         {
             Client.Disconnect();
 
-            if (InternalServer.IsRunning)
-            {
-                InternalServer.Stop();
-            }
+            _internalServer.Exit();
 
             base.OnExiting(sender, args);
         }
@@ -221,7 +217,7 @@ namespace Block2D.Common
 
             if (_keyboardState.IsKeyDown(Keys.G) && _lastKeyboardState.IsKeyUp(Keys.G))
             {
-                InternalServer.Start();
+                _internalServer.Start();
             }
 
             if (_keyboardState.IsKeyDown(Keys.F11) && _lastKeyboardState.IsKeyUp(Keys.F11))

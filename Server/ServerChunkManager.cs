@@ -13,18 +13,20 @@ namespace Block2D.Server
         public Dictionary<Point, ServerChunk> Chunks { get; private set; }
 
         private readonly TerrainGenerator _generator;
+        private readonly ServerWorld _world;
 
-        public ServerChunkManager(string dimensionName, int seed)
+        public ServerChunkManager(InternalServer server, string dimensionName, int seed)
         {
-            Chunks = new();
-            _generator = new(dimensionName, seed);
+            _world = server.World;
+            Chunks = [];
+            _generator = new(dimensionName, seed, server);
         }
 
         public bool GetOrTryAddChunk(Point position, string dimensionId, out ServerChunk chunk)
         {
-            if (Chunks.ContainsKey(position))
+            if (Chunks.TryGetValue(position, out ServerChunk value))
             {
-                chunk = Chunks[position];
+                chunk = value;
                 return true;
             }
             else
@@ -32,7 +34,6 @@ namespace Block2D.Server
                 _generator.GenerateChunk(
                     position,
                     dimensionId,
-                    InternalServer.World,
                     out chunk
                 );
                 return Chunks.TryAdd(chunk.Position, chunk);

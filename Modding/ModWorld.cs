@@ -8,21 +8,23 @@ namespace Block2D.Modding
     {
         public string Name
         {
-            get => InternalServer.World.Name;
+            get => _world.Name;
         }
 
         private readonly Mod _mod;
+        private static WorldData _world;
 
-        public ModWorld(Mod mod)
+        public ModWorld(WorldData world, Mod mod)
         {
             _mod = mod;
+            _world = world;
         }
 
         public bool TryGetTile(int x, int y, string dimensionId, out ServerTile tile)
         {
             Point position = new Point(x, y).ToChunkCoords();
 
-            if (InternalServer.World.TryGetTile(dimensionId, new(x, y), out tile))
+            if (_world.TryGetTile(dimensionId, new(x, y), out tile))
             {
                 return true;
             }
@@ -37,7 +39,7 @@ namespace Block2D.Modding
 
         public void SetTile(string dimensionId, int x, int y, string id)
         {
-            InternalServer.World.SetTile(dimensionId, new(x, y), id);
+            _world.SetTile(dimensionId, new(x, y), id);
         }
     }
 }

@@ -10,22 +10,23 @@ namespace Block2D.Server.WorldGen
         private readonly string _dimensionToGenerate;
         private readonly int _seed;
         private readonly Noise Noise;
+        private readonly InternalServer _internalServer;
 
-        public TerrainGenerator(string dimensionToGenerate, int seed)
+        public TerrainGenerator(string dimensionToGenerate, int seed, InternalServer internalServer)
         {
             _dimensionToGenerate = dimensionToGenerate;
             _seed = seed;
             Noise = new() { Seed = seed };
+            _internalServer = internalServer;
         }
 
         public void GenerateChunk(
             Point chunkPosition,
             string dimensionId,
-            WorldData world,
             out ServerChunk chunk
         )
         {
-            chunk = new(chunkPosition, dimensionId, world);
+            chunk = new(chunkPosition, dimensionId, _internalServer);
 
             if (chunkPosition.Y == 0)
             {

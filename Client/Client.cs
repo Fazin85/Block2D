@@ -1,6 +1,7 @@
 ﻿using Block2D.Client.Networking;
 using Block2D.Common;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MLEM.Font;
@@ -18,7 +19,7 @@ using RectangleF = MonoGame.Extended.RectangleF;
 
 namespace Block2D.Client
 {
-    public class Client : WorldData
+    public class Client
     {
         #region public variables
 
@@ -31,6 +32,8 @@ namespace Block2D.Client
         {
             get => CurrentWorld.GetPlayerFromId(_client.Id);
         }
+
+        public ClientAssetManager AssetManager { get; private set; }
 
         public ushort ID
         {
@@ -71,8 +74,9 @@ namespace Block2D.Client
 
         #endregion
 
-        public Client()
+        public Client(ContentManager contentManager)
         {
+            AssetManager = new(contentManager);
             DebugMenu = new();
             _worldRenderer = new(this);
             MessageHandler = new(this);
@@ -108,21 +112,20 @@ namespace Block2D.Client
                 Username = SteamFriends.GetPersonaName();
             }
 
+            AssetManager.LoadContent();
+
             MlemPlatform.Current = new MlemPlatform.DesktopGl<TextInputEventArgs>(
                 (w, c) => w.TextInput += c
             );
 
             var style = new UntexturedStyle(spriteBatch)
             {
-                Font = new GenericSpriteFont(Main.AssetManager.Font)
+                Font = new GenericSpriteFont(AssetManager.Font)
             };
 
             UI = new UiSystem(game, style);
             var panel = new Panel(Anchor.Center, size: new(100, 100), positionOffset: Vector2.Zero);
             UI.Add("Panel", panel);
-
-            //load tiles
-            LoadTiles();
         }
 
         public void OnJoinWorld()
@@ -130,11 +133,13 @@ namespace Block2D.Client
             InWorld = true;
         }
 
-        public void Update(KeyboardState keyboard, KeyboardState lastKeyboardState, GameTime gameTime)
+        public void Update(
+            KeyboardState keyboard,
+            KeyboardState lastKeyboardState,
+            GameTime gameTime
+        )
         {
-            if (
-                keyboard.IsKeyDown(DEBUG_KEY) && lastKeyboardState.IsKeyUp(DEBUG_KEY)
-            )
+            if (keyboard.IsKeyDown(DEBUG_KEY) && lastKeyboardState.IsKeyUp(DEBUG_KEY))
             {
                 DebugMenu.Reset();
                 DebugMode = !DebugMode;
@@ -157,7 +162,7 @@ namespace Block2D.Client
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, AssetManager assets)
+        public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(transformMatrix: Camera.GetViewMatrix());
 
@@ -167,7 +172,7 @@ namespace Block2D.Client
                 viewRect.Inflate(CC.TILE_SIZE, CC.TILE_SIZE);
 
                 _worldRenderer.DrawChunks(
-                    _currentWorld.Chunks.Values.ToArray(),
+                    [.. _currentWorld.Chunks.Values],
                     spriteBatch,
                     viewRect,
                     DebugMode
@@ -176,13 +181,13 @@ namespace Block2D.Client
                 for (int i = 0; i < _currentWorld.Players.Count; i++)
                 {
                     ClientPlayer currentPlayer = _currentWorld.Players.Values.ElementAt(i);
-                    Renderer.DrawPlayer(currentPlayer, spriteBatch, assets);
+                    Renderer.DrawPlayer(currentPlayer, spriteBatch, AssetManager);
                 }
             }
 
             if (DebugMode)
             {
-                DebugMenu.Draw(spriteBatch, assets.Font, Camera.Position, Color.White);
+                DebugMenu.Draw(spriteBatch, AssetManager.Font, Camera.Position, Color.White);
             }
 
             spriteBatch.End();
@@ -246,7 +251,7 @@ namespace Block2D.Client
 
         private void OnConnect(object sender, EventArgs e)
         {
-            _currentWorld = new(this);
+            _currentWorld = new(AssetManager, this);
             DebugMenu.Reset();
             MessageHandler.PlayerJoin();
         }

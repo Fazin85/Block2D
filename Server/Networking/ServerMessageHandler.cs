@@ -6,20 +6,26 @@ namespace Block2D.Server.Networking
 {
     public class ServerMessageHandler
     {
-        [MessageHandler((ushort)ServerMessageID.HandlePlayerJoin)]
-        public static void HandlePlayerJoin(ushort fromClientId, Message message)
+        private readonly InternalServer _server;
+
+        public ServerMessageHandler(InternalServer server)
+        {
+            _server = server;
+        }
+
+        public void HandlePlayerJoin(ushort fromClientId, Message message)
         {
             string clientPlayerName = message.GetString();
 
             ServerPlayer newPlayer = new(fromClientId, -Vector2.UnitY * 16, 20, clientPlayerName);
 
-            foreach (ServerPlayer otherPlayer in InternalServer.World.Players.Values)
+            foreach (ServerPlayer otherPlayer in _server.World.Players.Values)
             {
-                InternalServer.Send(CreateSpawnMessage(otherPlayer), fromClientId);
+                _server.Send(CreateSpawnMessage(otherPlayer), fromClientId);
             }
 
-            InternalServer.World.AddPlayer(newPlayer);
-            InternalServer.SendToAll(CreateSpawnMessage(newPlayer));
+            _server.World.AddPlayer(newPlayer);
+            _server.SendToAll(CreateSpawnMessage(newPlayer));
         }
 
         public static Message CreateSpawnMessage(ServerPlayer player)
@@ -31,9 +37,9 @@ namespace Block2D.Server.Networking
             return message;
         }
 
-        public static void SendPositions()
+        public void SendPositions()
         {
-            foreach (ServerPlayer player in InternalServer.World.Players.Values)
+            foreach (ServerPlayer player in _server.World.Players.Values)
             {
                 Message message = Message.Create(
                     MessageSendMode.Unreliable,
@@ -41,28 +47,26 @@ namespace Block2D.Server.Networking
                 );
                 message.AddVector2(player.Position);
                 message.AddUShort(player.ID);
-                InternalServer.SendToAll(message);
+                _server.SendToAll(message);
             }
         }
 
-        [MessageHandler((ushort)ServerMessageID.ReceivePosition)]
-        public static void ReceivePosition(ushort fromClientId, Message message)
+        public void ReceivePosition(ushort fromClientId, Message message)
         {
             Vector2 position = message.GetVector2();
-            if (InternalServer.World.Players.TryGetValue(fromClientId, out ServerPlayer player))
+            if (_server.World.Players.TryGetValue(fromClientId, out ServerPlayer player))
             {
                 player.Position = position;
             }
         }
 
-        [MessageHandler((ushort)ServerMessageID.HandleChunkRequest)]
-        public static void HandleChunkRequest(ushort fromClientId, Message message)
+        public void HandleChunkRequest(ushort fromClientId, Message message)
         {
             Point position = message.GetPoint();
             string playerDimension = message.GetString();
 
             if (
-                InternalServer
+                _server
                     .World.Dimensions[playerDimension]
                     .ChunkManager.GetOrTryAddChunk(position, playerDimension, out ServerChunk chunk)
             )
@@ -81,7 +85,7 @@ namespace Block2D.Server.Networking
                     byte[] bytesToSend = tileBytes.Compress();
 
                     newMessage.AddBytes(bytesToSend);
-                    InternalServer.Send(newMessage, fromClientId);
+                    _server.Send(newMessage, fromClientId);
                 }
             }
         }

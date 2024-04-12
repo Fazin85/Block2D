@@ -12,7 +12,7 @@ namespace Block2D.Server.IO
             Point regionPos = chunk.Position.GetRegionPos();
 
             string path =
-                InternalServer.World.ChunkDataPath
+                chunk.Server.World.ChunkDataPath
                 + "/r"
                 + regionPos.X.ToString()
                 + "."

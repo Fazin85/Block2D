@@ -72,7 +72,7 @@ namespace Block2D.Modding
             }
 
             Script script = new();
-            Main.SetupScript(script, null, false);
+            Main.SetupScript(script, null, false, ProgramSide.None);
             script.DoFile(modDirectory.FullName + "/Mod.lua");
 
             DynValue modNameFromFileVal = script.Call(script.Globals["GetModName"]);

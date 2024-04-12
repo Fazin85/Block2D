@@ -14,42 +14,42 @@ namespace Block2D.Server
         }
 
         public Point Position { get; private set; }
+        public InternalServer Server { get; private set; }
 
         private readonly ServerTile[,] _tiles;
         private readonly string _dimensionId;
-        private readonly WorldData _world;
 
-        public ServerChunk(Point position, string dimensionId, WorldData world)
+        public ServerChunk(Point position, string dimensionId, InternalServer server)
         {
             _tiles = new ServerTile[CC.CHUNK_SIZE, CC.CHUNK_SIZE];
             LoadAmount = ChunkLoadAmount.Unloaded;
             Position = position;
             _dimensionId = dimensionId;
-            _world = world;
+            Server = server;
         }
 
         public void SetTile(Point position, string tileName)
         {
-            if (!_world.LoadedTiles.ContainsKey(tileName))
+            if (!Server.World.LoadedTiles.ContainsKey(tileName))
             {
                 return;
             }
 
             if (position.X >= CC.CHUNK_SIZE || position.X < 0)
             {
-                InternalServer.LogWarning("Position X is out of bounds");
+                Server.LogWarning("Position X is out of bounds");
                 return;
             }
 
             if (position.Y >= CC.CHUNK_SIZE || position.Y < 0)
             {
-                InternalServer.LogWarning("Position Y is out of bounds");
+                Server.LogWarning("Position Y is out of bounds");
                 return;
             }
 
-            ushort id = _world.LoadedTiles[tileName];
+            ushort id = Server.World.LoadedTiles[tileName];
 
-            ModTile tile = Main.AssetManager.GetTile(tileName);
+            ModTile tile = Server.AssetManager.GetTile(tileName);
 
             //TODO add tileEntitys
             _tiles[position.X, position.Y].Set(id, tile.Tickable, false, tile.Collidable);
@@ -59,12 +59,12 @@ namespace Block2D.Server
         {
             if (position.X >= CC.CHUNK_SIZE || position.X < 0)
             {
-                InternalServer.LogWarning("Position X is out of bounds");
+                Server.LogWarning("Position X is out of bounds");
             }
 
             if (position.Y >= CC.CHUNK_SIZE || position.Y < 0)
             {
-                InternalServer.LogWarning("Position Y is out of bounds");
+                Server.LogWarning("Position Y is out of bounds");
             }
 
             return _tiles[position.X, position.Y];
