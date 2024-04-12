@@ -21,7 +21,7 @@ namespace Block2D.Client
     public class Client : WorldData
     {
         #region public variables
-        
+
         public ClientWorld CurrentWorld
         {
             get => _currentWorld ?? null;
@@ -36,8 +36,6 @@ namespace Block2D.Client
         {
             get => _client.Id;
         }
-
-        private readonly ClientLogger _logger;
 
         public bool DebugMode { get; set; }
         public string Username { get; private set; }
@@ -64,6 +62,7 @@ namespace Block2D.Client
         }
 
         private ClientWorld _currentWorld;
+        private readonly ClientLogger _logger;
         private readonly Riptide.Client _client;
         private readonly WorldRenderer _worldRenderer;
         private const string ip = "127.0.0.1";
