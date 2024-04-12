@@ -130,10 +130,10 @@ namespace Block2D.Client
             InWorld = true;
         }
 
-        public void Update(GameTime gameTime)
+        public void Update(KeyboardState keyboard, KeyboardState lastKeyboardState, GameTime gameTime)
         {
             if (
-                Main.KeyboardState.IsKeyDown(DEBUG_KEY) && Main.LastKeyboardState.IsKeyUp(DEBUG_KEY)
+                keyboard.IsKeyDown(DEBUG_KEY) && lastKeyboardState.IsKeyUp(DEBUG_KEY)
             )
             {
                 DebugMenu.Reset();

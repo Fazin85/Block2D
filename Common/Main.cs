@@ -1,5 +1,4 @@
-﻿using Block2D.Client;
-using Block2D.Modding;
+﻿using Block2D.Modding;
 using Block2D.Server;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,6 +16,8 @@ namespace Block2D.Common
 {
     public class Main : Game
     {
+        #region public variables
+
         public static string AppDataDirectory
         {
             get => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
@@ -53,24 +54,28 @@ namespace Block2D.Common
 
         public static bool ShouldExit { get; set; }
 
-        public static KeyboardState KeyboardState { get; private set; }
-
-        public static KeyboardState LastKeyboardState { get; private set; }
-
         public const string GameName = "Block2D";
 
         public Client.Client Client { get; private set; }
+
+        #endregion
+
+        #region private variables
 
         private Game _game
         {
             get => _instance;
         }
 
+        private KeyboardState _keyboardState;
+        private KeyboardState _lastKeyboardState;
         private SpriteBatch _spriteBatch;
         private readonly GraphicsDeviceManager _graphics;
         private readonly AssetManager _assetManager;
         private static Main _instance;
         private bool _windowSizeBeingChanged;
+
+        #endregion
 
         public Main()
         {
@@ -85,6 +90,34 @@ namespace Block2D.Common
             IsMouseVisible = true;
             Window.AllowUserResizing = true;
         }
+
+        #region public methods
+
+        public static void ForceQuitModloader()
+        {
+            _instance._assetManager.ForceQuit();
+        }
+
+        public static void SetupScript(Script script, Mod mod, bool setupLogger)
+        {
+            DynValue keyboardState = UserData.Create(_instance._keyboardState);
+            DynValue lastKeyboardState = UserData.Create(_instance._lastKeyboardState);
+            DynValue modWorld = UserData.Create(new ModWorld(mod));
+
+            script.Globals.Set("keyboardState", keyboardState);
+            script.Globals.Set("lastKeyboardState", lastKeyboardState);
+            script.Globals.Set("world", modWorld);
+
+            if (setupLogger)
+            {
+                DynValue logger = UserData.Create(mod.Logger);
+                script.Globals.Set("logger", logger);
+            }
+        }
+
+        #endregion
+
+        #region protected methods
 
         protected override void Initialize()
         {
@@ -111,7 +144,7 @@ namespace Block2D.Common
 
         protected override void LoadContent()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new(GraphicsDevice);
 
             AssetManager.LoadContent();
 
@@ -122,12 +155,12 @@ namespace Block2D.Common
 
         protected override void Update(GameTime gameTime)
         {
-            LastKeyboardState = KeyboardState;
-            KeyboardState = Keyboard.GetState();
+            _lastKeyboardState = _keyboardState;
+            _keyboardState = Keyboard.GetState();
 
             HandleGenericInput();
 
-            Client.Update(gameTime);
+            Client.Update(_keyboardState, _lastKeyboardState, gameTime);
 
             if (ShouldExit)
             {
@@ -160,6 +193,10 @@ namespace Block2D.Common
             base.OnExiting(sender, args);
         }
 
+        #endregion
+
+        #region private methods
+
         private EventHandler<EventArgs> OnClientSizeChanged()
         {
             _windowSizeBeingChanged = !_windowSizeBeingChanged;
@@ -178,16 +215,16 @@ namespace Block2D.Common
         {
             if (
                 GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed
-                || KeyboardState.IsKeyDown(Keys.Escape)
+                || _keyboardState.IsKeyDown(Keys.Escape)
             )
                 ShouldExit = true;
 
-            if (KeyboardState.IsKeyDown(Keys.G) && LastKeyboardState.IsKeyUp(Keys.G))
+            if (_keyboardState.IsKeyDown(Keys.G) && _lastKeyboardState.IsKeyUp(Keys.G))
             {
                 InternalServer.Start();
             }
 
-            if (KeyboardState.IsKeyDown(Keys.F11) && LastKeyboardState.IsKeyUp(Keys.F11))
+            if (_keyboardState.IsKeyDown(Keys.F11) && _lastKeyboardState.IsKeyUp(Keys.F11))
             {
                 if (_graphics.IsFullScreen)
                 {
@@ -204,16 +241,13 @@ namespace Block2D.Common
                 _graphics.ApplyChanges();
             }
 
-            if (KeyboardState.IsKeyDown(Keys.H))
+            if (_keyboardState.IsKeyDown(Keys.H))
             {
                 Client.LocalConnect();
             }
         }
 
-        public static void ForceQuitModloader()
-        {
-            _instance._assetManager.ForceQuit();
-        }
+
 
         private void RegisterTypes()
         {
@@ -221,23 +255,6 @@ namespace Block2D.Common
             UserData.RegisterType<ModLogger>();
             UserData.RegisterType<ModWorld>();
             UserData.RegisterType<ServerTile>();
-        }
-
-        public static void SetupScript(Script script, Mod mod, bool setupLogger)
-        {
-            DynValue keyboardState = UserData.Create(KeyboardState);
-            DynValue lastKeyboardState = UserData.Create(LastKeyboardState);
-            DynValue modWorld = UserData.Create(new ModWorld(mod));
-
-            script.Globals.Set("keyboardState", keyboardState);
-            script.Globals.Set("lastKeyboardState", lastKeyboardState);
-            script.Globals.Set("world", modWorld);
-
-            if (setupLogger)
-            {
-                DynValue logger = UserData.Create(mod.Logger);
-                script.Globals.Set("logger", logger);
-            }
         }
 
         private static void InitializeLogger()
@@ -272,5 +289,7 @@ namespace Block2D.Common
 
             LogManager.Configuration = config;
         }
+
+        #endregion
     }
 }
