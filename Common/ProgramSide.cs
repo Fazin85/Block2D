@@ -4,7 +4,5 @@
     {
         Client,
         Server,
-        Both,
-        None
     }
 }

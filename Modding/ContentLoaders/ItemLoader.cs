@@ -22,7 +22,7 @@ namespace Block2D.Modding.ContentLoaders
             }
 
             string[] itemFilePaths = GetFilePaths();
-            List<ModItem> modItemList = new();
+            List<ModItem> modItemList = [];
 
             for (int i = 0; i < itemFilePaths.Length; i++)
             {
@@ -32,7 +32,7 @@ namespace Block2D.Modding.ContentLoaders
                 }
 
                 Script script = new();
-                Main.SetupScript(script, Mod, true, ProgramSide.Both);
+                Main.SetupScript(script, Mod, true, ProgramSide.Server);
 
                 ModItem item = new();
 

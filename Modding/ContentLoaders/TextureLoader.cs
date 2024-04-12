@@ -23,7 +23,7 @@ namespace Block2D.Modding.ContentLoaders
             }
 
             GraphicsDevice graphicsDevice = Main.GraphicsDevice;
-            List<ModTexture> textureList = new();
+            List<ModTexture> textureList = [];
 
             string[] textureFilePaths = GetFilePaths();
 
@@ -35,7 +35,7 @@ namespace Block2D.Modding.ContentLoaders
                 }
 
                 Script script = new();
-                Main.SetupScript(script, Mod, true, ProgramSide.Both);
+                Main.SetupScript(script, Mod, true, ProgramSide.Server);
 
                 script.DoFile(textureFilePaths[i]);
                 DynValue nameVal = script.Call(script.Globals["GetName"]);

@@ -10,9 +10,9 @@ namespace Block2D.Modding.DataStructures
 
         public ModContent()
         {
-            Tiles = new();
-            SoundEffects = new();
-            Textures = new();
+            Tiles = [];
+            SoundEffects = [];
+            Textures = [];
         }
     }
 }

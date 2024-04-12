@@ -34,8 +34,8 @@ namespace Block2D.Server
         {
             Name = name; //must do this beforce creating directories
             CreateNeededDirectories();
-            Dimensions = new();
-            Players = new();
+            Dimensions = [];
+            Players = [];
             _currentTick = 0;
             _server = server;
 

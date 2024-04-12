@@ -25,7 +25,7 @@ namespace Block2D.Modding
             _logger = new();
             _forceQuit = false;
             LoadedContent = new();
-            LoadedMods = new();
+            LoadedMods = [];
         }
 
         protected void LoadAllMods()
@@ -72,7 +72,7 @@ namespace Block2D.Modding
             }
 
             Script script = new();
-            Main.SetupScript(script, null, false, ProgramSide.None);
+            Main.SetupScript(script, null, false, ProgramSide.Server);
             script.DoFile(modDirectory.FullName + "/Mod.lua");
 
             DynValue modNameFromFileVal = script.Call(script.Globals["GetModName"]);

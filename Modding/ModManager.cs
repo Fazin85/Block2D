@@ -12,7 +12,7 @@ namespace Block2D.Modding
 
         public ModManager()
         {
-            _mods = new();
+            _mods = [];
         }
 
         public bool TryGetMod(string modName, out Mod mod)

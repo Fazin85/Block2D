@@ -22,7 +22,7 @@ namespace Block2D.Modding.ContentLoaders
             }
 
             string[] soundFilePaths = GetFilePaths();
-            List<ModSoundEffect> modSoundEffectsList = new();
+            List<ModSoundEffect> modSoundEffectsList = [];
 
             for (int i = 0; i < soundFilePaths.Length; i++)
             {
@@ -32,7 +32,7 @@ namespace Block2D.Modding.ContentLoaders
                 }
 
                 Script script = new();
-                Main.SetupScript(script, Mod, true, ProgramSide.Both);
+                Main.SetupScript(script, Mod, true, ProgramSide.Server);
 
                 script.DoFile(soundFilePaths[i]);
 

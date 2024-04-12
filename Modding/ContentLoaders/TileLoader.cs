@@ -24,7 +24,7 @@ namespace Block2D.Modding.ContentLoaders
             }
 
             string[] tileFilePaths = GetFilePaths();
-            List<ModTile> modTileList = new();
+            List<ModTile> modTileList = [];
 
             for (int i = 0; i < tileFilePaths.Length; i++)
             {
@@ -34,7 +34,7 @@ namespace Block2D.Modding.ContentLoaders
                 }
 
                 Script script = new();
-                Main.SetupScript(script, Mod, true, ProgramSide.Both);
+                Main.SetupScript(script, Mod, true, ProgramSide.Server);
 
                 script.DoFile(tileFilePaths[i]);
                 SetScript(script);

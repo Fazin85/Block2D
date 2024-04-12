@@ -36,7 +36,7 @@ namespace Block2D.Server.IO
                 Directory.CreateDirectory(path);
             }
 
-            List<ushort> tileIds = new();
+            List<ushort> tileIds = [];
 
             for (int x = 0; x < CC.CHUNK_SIZE; x++)
             {

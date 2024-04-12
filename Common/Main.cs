@@ -103,11 +103,11 @@ namespace Block2D.Common
 
                 DynValue modWorld = null;
 
-                if (side == ProgramSide.Client || side == ProgramSide.Both)
+                if (side == ProgramSide.Client)
                 {
                     modWorld = UserData.Create(new ModWorld(_instance.Client.CurrentWorld, mod));
                 }
-                if (side == ProgramSide.Server || side == ProgramSide.Both)
+                else
                 {
                     modWorld = UserData.Create(new ModWorld(_instance._internalServer.World, mod));
                 }
