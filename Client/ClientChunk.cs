@@ -10,36 +10,36 @@ namespace Block2D.Common
         public byte ReceivedSections { get; private set; }
         public Point Position { get; private set; }
         private readonly ClientTile[,] _tiles;
-        private readonly WorldData _world;
+        private readonly Client.Client _client;
 
-        public ClientChunk(Point position, WorldData world)
+        public ClientChunk(Point position, Client.Client client)
         {
             Position = position;
             ReceivedSections = 0;
-            _world = world;
+            _client = client;
             _tiles = new ClientTile[CC.CHUNK_SIZE, CC.CHUNK_SIZE];
         }
 
         public void SetTile(Point position, string tileName)
         {
-            if (!_world.LoadedTiles.ContainsKey(tileName))
+            if (!_client.LoadedTiles.ContainsKey(tileName))
             {
                 return;
             }
 
             if (position.X >= CC.CHUNK_SIZE || position.X < 0)
             {
-                ClientMain.GetInstance().LogFatal("Position X is out of bounds");
+                _client.LogFatal("Position X is out of bounds");
                 return;
             }
 
             if (position.Y >= CC.CHUNK_SIZE || position.Y < 0)
             {
-                ClientMain.GetInstance().LogFatal("Position Y is out of bounds");
+                _client.LogFatal("Position Y is out of bounds");
                 return;
             }
 
-            ushort id = _world.LoadedTiles[tileName];
+            ushort id = _client.LoadedTiles[tileName];
 
             ModTile tile = Main.AssetManager.GetTile(tileName);
 
@@ -50,13 +50,13 @@ namespace Block2D.Common
         {
             if (position.X >= CC.CHUNK_SIZE || position.X < 0)
             {
-                ClientMain.GetInstance().LogFatal("Position X is out of bounds");
+                _client.LogFatal("Position X is out of bounds");
                 return new();
             }
 
             if (position.Y >= CC.CHUNK_SIZE || position.Y < 0)
             {
-                ClientMain.GetInstance().LogFatal("Position Y is out of bounds");
+                _client.LogFatal("Position Y is out of bounds");
                 return new();
             }
 
@@ -72,7 +72,7 @@ namespace Block2D.Common
                     {
                         Point pos = new(i / CC.CHUNK_SIZE, i % CC.CHUNK_SIZE);
 
-                        string tileName = ClientMain.GetInstance().GetTileName(blocks[i]);
+                        string tileName = _client.GetTileName(blocks[i]);
                         SetTile(pos, tileName);
                     }
                     break;
@@ -80,7 +80,7 @@ namespace Block2D.Common
                     for (int i = SECTION_SIZE; i < SECTION_SIZE * 2; i++)
                     {
                         Point pos = new(i / CC.CHUNK_SIZE, i % CC.CHUNK_SIZE);
-                        string tileName = ClientMain.GetInstance().GetTileName(blocks[i - SECTION_SIZE]);
+                        string tileName = _client.GetTileName(blocks[i - SECTION_SIZE]);
                         SetTile(pos, tileName);
                     }
                     break;
@@ -88,7 +88,7 @@ namespace Block2D.Common
                     for (int i = SECTION_SIZE * 2; i < SECTION_SIZE * 3; i++)
                     {
                         Point pos = new(i / CC.CHUNK_SIZE, i % CC.CHUNK_SIZE);
-                        string tileName = ClientMain.GetInstance().GetTileName(blocks[i - (SECTION_SIZE * 2)]);
+                        string tileName = _client.GetTileName(blocks[i - (SECTION_SIZE * 2)]);
                         SetTile(pos, tileName);
                     }
                     break;
@@ -96,7 +96,7 @@ namespace Block2D.Common
                     for (int i = SECTION_SIZE * 3; i < SECTION_SIZE * 4; i++)
                     {
                         Point pos = new(i / CC.CHUNK_SIZE, i % CC.CHUNK_SIZE);
-                        string tileName = ClientMain.GetInstance().GetTileName(blocks[i - (SECTION_SIZE * 3)]);
+                        string tileName = _client.GetTileName(blocks[i - (SECTION_SIZE * 3)]);
                         SetTile(pos, tileName);
                     }
                     break;

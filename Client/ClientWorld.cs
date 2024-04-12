@@ -1,5 +1,4 @@
-﻿using Block2D.Client.Networking;
-using Block2D.Common;
+﻿using Block2D.Common;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -13,11 +12,13 @@ namespace Block2D.Client
         public Dictionary<Point, ClientChunk> Chunks { get; private set; }
 
         private long _tickCounter;
+        private readonly Client _client;
 
-        public ClientWorld()
+        public ClientWorld(Client client)
         {
             Chunks = new();
             Players = new();
+            _client = client;
         }
 
         public void Tick(GameTime gameTime)
@@ -26,9 +27,9 @@ namespace Block2D.Client
             {
                 currentPlayer.Tick(gameTime);
 
-                if (_tickCounter % 3 == 0 && currentPlayer.ID == ClientMain.ID) //must be local player
+                if (_tickCounter % 3 == 0 && currentPlayer.ID == _client.ID) //must be local player
                 {
-                    ClientMessageHandler.SendPosition(currentPlayer.Position);
+                    _client.MessageHandler.SendPosition(currentPlayer.Position);
                 }
             }
 
@@ -47,9 +48,9 @@ namespace Block2D.Client
 
         public bool RemovePlayer(ushort id)
         {
-            if (id == ClientMain.LocalPlayer.ID)
+            if (id == _client.ID)
             {
-                ClientMain.GetInstance().LogWarning("Tried To Remove Local Player");
+                _client.LogWarning("Tried To Remove Local Player");
                 return false;
             }
 
@@ -60,7 +61,7 @@ namespace Block2D.Client
             }
             catch (Exception e)
             {
-                ClientMain.GetInstance().LogWarning(e);
+                _client.LogWarning(e);
             }
             return false;
         }
@@ -71,7 +72,7 @@ namespace Block2D.Client
             {
                 return player;
             }
-            ClientMain.GetInstance().LogWarning("Could Not Find Player With ID: " + id);
+            _client.LogWarning("Could Not Find Player With ID: " + id);
             return null;
         }
 

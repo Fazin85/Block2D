@@ -10,7 +10,7 @@ namespace Block2D.Client
     {
         public bool IsLocal
         {
-            get => ID == ClientMain.LocalPlayer.ID;
+            get => ID == _client.ID;
         }
 
         public string Dimension
@@ -37,9 +37,11 @@ namespace Block2D.Client
         private Rectangle _hitbox;
         private readonly int _health;
         private readonly string _dimension = DimensionID.OVERWORLD;
+        private readonly Client _client;
 
-        public ClientPlayer(ushort id, string name)
+        public ClientPlayer(Client client, ushort id, string name)
         {
+            _client = client;
             ID = id;
             _dimension = DimensionID.OVERWORLD;
             _hitbox = new(Position.ToPoint(), new(16, 16));
@@ -98,7 +100,7 @@ namespace Block2D.Client
                 for (int y = _hitbox.Top; y <= _hitbox.Bottom; y++)
                 {
                     Point currentPosition = new(x >> 4, y >> 4);
-                    if (ClientMain.CurrentWorld.TryGetTile(currentPosition, out ClientTile tile))
+                    if (_client.CurrentWorld.TryGetTile(currentPosition, out ClientTile tile))
                     {
                         if (tile.Collidable)
                         {

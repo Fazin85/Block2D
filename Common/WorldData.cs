@@ -29,7 +29,7 @@ namespace Block2D.Common
             }
         }
 
-        protected string GEtTileName(ushort id)
+        public string GetTileName(ushort id)
         {
             var reversed = LoadedTiles.ToDictionary(x => x.Value, x => x.Key);
             return reversed[id];

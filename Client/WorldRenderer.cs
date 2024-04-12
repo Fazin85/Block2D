@@ -9,10 +9,19 @@ namespace Block2D.Client
 {
     public class WorldRenderer
     {
+        private readonly Client _client;
+
+        public WorldRenderer(Client client)
+        {
+            _client = client;
+        }
+
         public void DrawChunks(
             ClientChunk[] chunksToDraw,
             SpriteBatch spriteBatch,
-            RectangleF viewport
+            RectangleF viewport,
+            bool debugMode
+
         )
         {
             int chunksToRenderCount = 0;
@@ -54,7 +63,7 @@ namespace Block2D.Client
                             continue;
                         }
 
-                        string currentTileName = ClientMain.GetInstance().GetTileName(currentTile.ID);
+                        string currentTileName = _client.GetTileName(currentTile.ID);
 
                         if (currentTileName != TileID.AIR)
                         {
@@ -74,11 +83,11 @@ namespace Block2D.Client
                     }
                 }
 
-                if (ClientMain.DebugMode)
+                if (debugMode)
                 {
                     spriteBatch.DrawRectangle(currentChunkRect, Color.Red);
 
-                    ClientMain.GetInstance().DebugMenu.ChunksToRenderCount = chunksToRenderCount;
+                    _client.DebugMenu.ChunksToRenderCount = chunksToRenderCount;
                 }
             }
         }

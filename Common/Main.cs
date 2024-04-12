@@ -59,7 +59,7 @@ namespace Block2D.Common
 
         public const string GameName = "Block2D";
 
-        public ClientMain Client { get; private set; }
+        public Client.Client Client { get; private set; }
 
         private Game _game
         {
@@ -141,11 +141,7 @@ namespace Block2D.Common
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            _spriteBatch.Begin(transformMatrix: ClientMain.Camera.GetViewMatrix());
-
             Client.Draw(_spriteBatch, AssetManager);
-
-            _spriteBatch.End();
 
             //Client.UI.Draw(gameTime, _spriteBatch);
 

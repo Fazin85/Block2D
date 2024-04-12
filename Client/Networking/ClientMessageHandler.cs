@@ -6,43 +6,49 @@ namespace Block2D.Client.Networking
 {
     public class ClientMessageHandler
     {
-        public static void PlayerJoin()
+        private readonly Client _client;
+
+        public ClientMessageHandler(Client client)
         {
-            Message message = Message.Create(MessageSendMode.Reliable, ClientMessageID.PlayerJoin);
-            message.AddString(ClientMain.Username);
-            ClientMain.Send(message);
+            _client = client;
         }
 
-        public static void RequestChunk(Point position)
+        public void PlayerJoin()
+        {
+            Message message = Message.Create(MessageSendMode.Reliable, ClientMessageID.PlayerJoin);
+            message.AddString(_client.Username);
+            _client.Send(message);
+        }
+
+        public void RequestChunk(Point position)
         {
             Message message = Message.Create(
                 MessageSendMode.Unreliable,
                 ClientMessageID.SendChunkRequest
             );
             message.AddPoint(position);
-            message.AddString(ClientMain.LocalPlayer.Dimension);
-            ClientMain.Send(message);
+            message.AddString(_client.LocalPlayer.Dimension);
+            _client.Send(message);
         }
 
-        public static void SendPosition(Vector2 position)
+        public void SendPosition(Vector2 position)
         {
             Message message = Message.Create(
                 MessageSendMode.Unreliable,
                 ClientMessageID.SendPosition
             );
             message.AddVector2(position);
-            ClientMain.Send(message);
+            _client.Send(message);
         }
 
-        [MessageHandler((ushort)ClientMessageID.ReceivePosition)]
-        private static void HandlePosition(Message message)
+        public void ReceivePosition(Message message)
         {
             Vector2 position = message.GetVector2();
             ushort id = message.GetUShort();
 
-            if (ClientMain.CurrentWorld.Players.TryGetValue(id, out ClientPlayer player))
+            if (_client.CurrentWorld.Players.TryGetValue(id, out ClientPlayer player))
             {
-                if (id == ClientMain.ID)
+                if (id == _client.ID)
                 {
                     return;
                 }
@@ -51,20 +57,19 @@ namespace Block2D.Client.Networking
             }
         }
 
-        [MessageHandler((ushort)ClientMessageID.HandlePlayerSpawn)]
-        public static void PlayerJoin(Message message)
+        public void HandlePlayerSpawn(Message message)
         {
             string name = message.GetString();
             Vector2 position = message.GetVector2();
             ushort id = message.GetUShort();
 
-            ClientPlayer newPlayer = new(id, name) { Position = position, };
+            ClientPlayer newPlayer = new(_client, id, name) { Position = position, };
 
-            ClientMain.CurrentWorld.AddPlayer(newPlayer);
+            _client.CurrentWorld.AddPlayer(newPlayer);
 
-            if (ClientMain.ID == id)
+            if (_client.ID == id)
             {
-                ClientMain.GetInstance().OnJoinWorld();
+                _client.OnJoinWorld();
                 RequestChunk(Point.Zero);
                 RequestChunk(new(64, 0));
                 RequestChunk(new(64, -64));
@@ -72,15 +77,14 @@ namespace Block2D.Client.Networking
             }
         }
 
-        [MessageHandler((ushort)ClientMessageID.ReceiveChunk)]
-        public static void ReceiveChunk(Message message)
+        public void ReceiveChunk(Message message)
         {
             Point position = message.GetPoint();
             string dimension = message.GetString();
             byte offset = message.GetByte();
             byte[] compressedTiles = message.GetBytes();
 
-            if (dimension != ClientMain.LocalPlayer.Dimension)
+            if (dimension != _client.LocalPlayer.Dimension)
             {
                 return;
             }
@@ -91,14 +95,14 @@ namespace Block2D.Client.Networking
 
             if (offset == 0)
             {
-                ClientChunk newChunk = new(position, ClientMain.GetInstance());
+                ClientChunk newChunk = new(position, _client);
 
                 newChunk.SetSection(decompressedTiles, offset);
-                ClientMain.CurrentWorld.TryAddChunk(newChunk);
+                _client.CurrentWorld.TryAddChunk(newChunk);
             }
             else
             {
-                if (ClientMain.CurrentWorld.GetChunkLoaded(position, out ClientChunk chunk))
+                if (_client.CurrentWorld.GetChunkLoaded(position, out ClientChunk chunk))
                 {
                     if (offset == chunk.ReceivedSections + 1 && offset < 4)
                     {
@@ -106,7 +110,7 @@ namespace Block2D.Client.Networking
                     }
                     else
                     {
-                        ClientMain.GetInstance().LogWarning("Received Corrupted Chunk Data.");
+                        _client.LogWarning("Received Corrupted Chunk Data.");
                     }
                 }
             }

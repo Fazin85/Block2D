@@ -18,29 +18,31 @@ using RectangleF = MonoGame.Extended.RectangleF;
 
 namespace Block2D.Client
 {
-    public class ClientMain : WorldData
+    public class Client : WorldData
     {
-        public static ClientWorld CurrentWorld
+        #region public variables
+        
+        public ClientWorld CurrentWorld
         {
-            get => _instance._currentWorld ?? null;
+            get => _currentWorld ?? null;
         }
 
-        public static ClientPlayer LocalPlayer
+        public ClientPlayer LocalPlayer
         {
-            get => CurrentWorld.GetPlayerFromId(_instance._client.Id);
+            get => CurrentWorld.GetPlayerFromId(_client.Id);
         }
 
-        public static ushort ID
+        public ushort ID
         {
-            get => _instance._client.Id;
+            get => _client.Id;
         }
 
         private readonly ClientLogger _logger;
 
-        public static bool DebugMode { get; set; }
-        public static string Username { get; private set; }
+        public bool DebugMode { get; set; }
+        public string Username { get; private set; }
 
-        public static OrthographicCamera Camera { get; private set; }
+        public OrthographicCamera Camera { get; private set; }
 
         public UiSystem UI { get; private set; }
 
@@ -49,6 +51,12 @@ namespace Block2D.Client
         public bool InWorld { get; private set; }
 
         public ClientState State { get; private set; }
+
+        public ClientMessageHandler MessageHandler { get; private set; }
+
+        #endregion
+
+        #region private variables
 
         private bool _canConnect
         {
@@ -61,19 +69,23 @@ namespace Block2D.Client
         private const string ip = "127.0.0.1";
         private const ushort port = 7777;
         private const Keys DEBUG_KEY = Keys.F3;
-        private static ClientMain _instance;
 
-        public ClientMain()
+        #endregion
+
+        public Client()
         {
-            _instance = this;
             DebugMenu = new();
-            _worldRenderer = new();
+            _worldRenderer = new(this);
+            MessageHandler = new(this);
             _logger = new();
             _client = new();
+            _client.MessageReceived += OnMessageReceived;
             _client.Connected += OnConnect;
             _client.Disconnected += OnDisconnect;
             DebugMode = false;
         }
+
+        #region public methods
 
         //do all client initializing here
         public void Initialize(GameWindow window, GraphicsDevice graphicsDevice)
@@ -114,21 +126,6 @@ namespace Block2D.Client
             LoadTiles();
         }
 
-        private void OnConnect(object sender, EventArgs e)
-        {
-            _currentWorld = new();
-            DebugMenu.Reset();
-            ClientMessageHandler.PlayerJoin();
-        }
-
-        private void OnDisconnect(object sender, EventArgs e)
-        {
-            State = ClientState.MainMenu;
-            InWorld = false;
-            DebugMenu.Reset();
-            _currentWorld = null;
-        }
-
         public void OnJoinWorld()
         {
             InWorld = true;
@@ -163,12 +160,19 @@ namespace Block2D.Client
 
         public void Draw(SpriteBatch spriteBatch, AssetManager assets)
         {
+            spriteBatch.Begin(transformMatrix: Camera.GetViewMatrix());
+
             if (InWorld)
             {
                 RectangleF viewRect = Camera.BoundingRectangle;
                 viewRect.Inflate(CC.TILE_SIZE, CC.TILE_SIZE);
 
-                _worldRenderer.DrawChunks(_currentWorld.Chunks.Values.ToArray(), spriteBatch, viewRect);
+                _worldRenderer.DrawChunks(
+                    _currentWorld.Chunks.Values.ToArray(),
+                    spriteBatch,
+                    viewRect,
+                    DebugMode
+                );
 
                 for (int i = 0; i < _currentWorld.Players.Count; i++)
                 {
@@ -181,6 +185,8 @@ namespace Block2D.Client
             {
                 DebugMenu.Draw(spriteBatch, assets.Font, Camera.Position, Color.White);
             }
+
+            spriteBatch.End();
         }
 
         public void Connect(string ip, ushort port)
@@ -190,7 +196,7 @@ namespace Block2D.Client
                 return;
             }
 
-            _client.Connect($"{ip}:{port}");
+            _client.Connect($"{ip}:{port}", useMessageHandlers: false);
             State = ClientState.Multiplayer;
         }
 
@@ -206,18 +212,13 @@ namespace Block2D.Client
                 return;
             }
 
-            _client.Connect($"{ip}:{port}");
+            _client.Connect($"{ip}:{port}", useMessageHandlers: false);
             State = ClientState.Singleplayer;
         }
 
-        public string GetTileName(ushort id)
+        public void Send(Message message)
         {
-            return GEtTileName(id);
-        }
-
-        public static void Send(Message message)
-        {
-            _instance._client.Send(message);
+            _client.Send(message);
         }
 
         public void LogInfo(string message)
@@ -240,9 +241,41 @@ namespace Block2D.Client
             _logger.LogFatal(message);
         }
 
-        public static ClientMain GetInstance()
+        #endregion
+
+        #region private methods
+
+        private void OnConnect(object sender, EventArgs e)
         {
-            return _instance;
+            _currentWorld = new(this);
+            DebugMenu.Reset();
+            MessageHandler.PlayerJoin();
         }
+
+        private void OnDisconnect(object sender, EventArgs e)
+        {
+            State = ClientState.MainMenu;
+            InWorld = false;
+            DebugMenu.Reset();
+            _currentWorld = null;
+        }
+
+        private void OnMessageReceived(object sender, MessageReceivedEventArgs e)
+        {
+            switch (e.MessageId)
+            {
+                case (ushort)ClientMessageID.ReceivePosition:
+                    MessageHandler.ReceivePosition(e.Message);
+                    break;
+                case (ushort)ClientMessageID.HandlePlayerSpawn:
+                    MessageHandler.HandlePlayerSpawn(e.Message);
+                    break;
+                case (ushort)ClientMessageID.ReceiveChunk:
+                    MessageHandler.ReceiveChunk(e.Message);
+                    break;
+            }
+        }
+
+        #endregion
     }
 }

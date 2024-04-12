@@ -123,11 +123,6 @@ namespace Block2D.Server
             return LoadedTiles[name];
         }
 
-        public string GetTileName(ushort id)
-        {
-            return GEtTileName(id);
-        }
-
         public bool GetChunkLoaded(string dimensionID, Point chunkPosition, out ServerChunk chunk)
         {
             return Dimensions[dimensionID]
