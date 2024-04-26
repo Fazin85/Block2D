@@ -16,5 +16,10 @@ namespace Block2D.Client
 
             return false;
         }
+
+        public static bool IsNumber(this Keys key)
+        {
+            return IsNumber(key, out _);
+        }
     }
 }
