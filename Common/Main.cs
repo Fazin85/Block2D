@@ -77,7 +77,7 @@ namespace Block2D.Common
             _instance = this;
             _graphics = new(this);
             Random = new(0);
-            Client = new(Content);
+            Client = new(Window, Content);
             _internalServer = new();
             _windowSizeBeingChanged = false;
             Content.RootDirectory = "Content";
@@ -173,7 +173,7 @@ namespace Block2D.Common
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            Client.Draw(_spriteBatch);
+            Client.Draw(_spriteBatch, Window);
 
             //Client.UI.Draw(gameTime, _spriteBatch);
 
@@ -184,7 +184,7 @@ namespace Block2D.Common
         {
             Client.Disconnect();
 
-            _internalServer.Exit();
+            _internalServer?.Exit();
 
             base.OnExiting(sender, args);
         }

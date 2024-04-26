@@ -41,7 +41,7 @@ namespace Block2D.Server
 
         public void Exit()
         {
-            if (_server.IsRunning)
+            if (IsRunning)
             {
                 Stop();
             }

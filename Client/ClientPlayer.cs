@@ -106,6 +106,7 @@ namespace Block2D.Client
                         {
                             Rectangle currentTileRect =
                                 new(new(currentPosition.X * CC.TILE_SIZE, currentPosition.Y * CC.TILE_SIZE), new(CC.TILE_SIZE, CC.TILE_SIZE));
+
                             if (_hitbox.Intersects(currentTileRect))
                             {
                                 Vector2 depth = Helper.GetIntersectionDepth(

@@ -22,7 +22,7 @@ namespace Block2D.Common
 
         public void SetTile(Point position, string tileName)
         {
-            if (!_client.CurrentWorld.LoadedTiles.ContainsKey(tileName))
+            if (!_client.CurrentWorld.LoadedTiles.TryGetValue(tileName, out ushort id))
             {
                 return;
             }
@@ -38,8 +38,6 @@ namespace Block2D.Common
                 _client.LogFatal("Position Y is out of bounds");
                 return;
             }
-
-            ushort id = _client.CurrentWorld.LoadedTiles[tileName];
 
             ModTile tile = _client.AssetManager.GetTile(tileName);
 

@@ -55,6 +55,8 @@ namespace Block2D.Client
 
         public ClientMessageHandler MessageHandler { get; private set; }
 
+        public Chat Chat { get; private set; }
+
         #endregion
 
         #region private variables
@@ -74,12 +76,13 @@ namespace Block2D.Client
 
         #endregion
 
-        public Client(ContentManager contentManager)
+        public Client(GameWindow window, ContentManager contentManager)
         {
             AssetManager = new(contentManager);
             DebugMenu = new();
             _worldRenderer = new(this);
             MessageHandler = new(this);
+            Chat = new(window);
             _logger = new();
             _client = new();
             _client.MessageReceived += OnMessageReceived;
@@ -147,7 +150,7 @@ namespace Block2D.Client
 
             _client.Update();
 
-            if (InWorld)
+            if (InWorld && !Chat.IsOpen)
             {
                 _currentWorld.Tick(gameTime);
 
@@ -162,7 +165,7 @@ namespace Block2D.Client
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GameWindow window)
         {
             spriteBatch.Begin(transformMatrix: Camera.GetViewMatrix());
 
@@ -184,6 +187,10 @@ namespace Block2D.Client
                     Renderer.DrawPlayer(currentPlayer, spriteBatch, AssetManager);
                 }
             }
+
+            Vector2 chatDrawPosition = new(Camera.Position.X, Camera.Position.Y + Camera.BoundingRectangle.Height - 28);
+
+            Chat.Draw(spriteBatch, AssetManager, chatDrawPosition);
 
             if (DebugMode)
             {
