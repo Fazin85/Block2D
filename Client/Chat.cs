@@ -1,12 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 
 namespace Block2D.Client
 {
     public class Chat
     {
-        public bool IsOpen;
+        public bool IsOpen { get; private set; }
 
         private string _currentText;
 
@@ -16,8 +17,16 @@ namespace Block2D.Client
             _currentText = string.Empty;
         }
 
-        public void Draw(SpriteBatch spriteBatch, ClientAssetManager assetManager, Vector2 position)
+        public void Draw(SpriteBatch spriteBatch, ClientAssetManager assetManager, Vector2 position, RectangleF cameraBounds)
         {
+            if (!IsOpen)
+            {
+                return;
+            }
+
+            RectangleF chatBackgroundRectangle = new(position.ToPoint() + new Point(0, 8), new(cameraBounds.Width, 18));
+
+            spriteBatch.DrawRectangle(chatBackgroundRectangle, Color.White);
             spriteBatch.DrawString(assetManager.Font, _currentText, position, Color.White);
         }
 
@@ -38,18 +47,22 @@ namespace Block2D.Client
 
             if (IsValidKey(args.Key) && shouldAddKey)
             {
+                string textToAdd = string.Empty;
+
                 if (args.Key == Keys.Space)
                 {
-                    _currentText += " ";
+                    textToAdd = " ";
                 }
                 else if (args.Key.IsNumber(out int number))
                 {
-                    _currentText += number.ToString();
+                    textToAdd = number.ToString();
                 }
                 else
                 {
-                    _currentText += args.Key.ToString();
+                    textToAdd = args.Key.ToString();
                 }
+
+                _currentText += textToAdd;
             }
 
             if (args.Key == Keys.Back)

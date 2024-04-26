@@ -190,7 +190,7 @@ namespace Block2D.Client
 
             Vector2 chatDrawPosition = new(Camera.Position.X, Camera.Position.Y + Camera.BoundingRectangle.Height - 28);
 
-            Chat.Draw(spriteBatch, AssetManager, chatDrawPosition);
+            Chat.Draw(spriteBatch, AssetManager, chatDrawPosition, Camera.BoundingRectangle);
 
             if (DebugMode)
             {

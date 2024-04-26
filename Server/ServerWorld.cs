@@ -61,15 +61,18 @@ namespace Block2D.Server
             {
                 _server.MessageHandler.SendPositions();
 
-                foreach (var dim in Dimensions.Values)
+                foreach (ServerDimension dim in Dimensions.Values)
                 {
-                    foreach (
+                    if (dim.ChunkManager.Chunks.Count > 0)
+                    {
+                        foreach (
                         var chunk in dim.ChunkManager.Chunks.Values.Where(c =>
                             c.LoadAmount != ChunkLoadAmount.Unloaded
                         )
                     )
-                    {
-                        chunk.Tick();
+                        {
+                            chunk.Tick();
+                        }
                     }
                 }
             }

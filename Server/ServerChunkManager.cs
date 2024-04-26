@@ -6,10 +6,6 @@ namespace Block2D.Server
 {
     public class ServerChunkManager
     {
-        public int ChunkCount
-        {
-            get => Chunks.Count;
-        }
         public Dictionary<Point, ServerChunk> Chunks { get; private set; }
 
         private readonly TerrainGenerator _generator;
