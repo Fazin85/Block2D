@@ -1,5 +1,6 @@
 ﻿using Block2D.Modding;
 using Block2D.Server;
+using Block2D.Server.Commands;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -11,6 +12,7 @@ using Riptide.Utils;
 using Steamworks;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace Block2D.Common
 {
@@ -150,6 +152,20 @@ namespace Block2D.Common
             Client.LoadContent(this, _spriteBatch);
 
             Window.ClientSizeChanged += OnClientSizeChanged();
+
+            ChatCommandParser parser = new();
+
+            var command = parser.RegisterCommand("print", CommandArgsType.Integer, PermissionLevel.Default);
+
+            parser.SetAction("print", new((value) =>
+            {
+                _internalServer.LogInfo(int.Parse(value).ToString());
+            }));
+
+            if (parser.TryParseMessage("print", PermissionLevel.Default, out var command1))
+            {
+                command1.Action.Invoke("1");
+            }
         }
 
         protected override void Update(GameTime gameTime)

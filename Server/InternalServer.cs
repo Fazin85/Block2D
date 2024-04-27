@@ -13,6 +13,8 @@ namespace Block2D.Server
             get => _server != null && _server.IsRunning;
         }
 
+        public ServerLogger Logger { get; private set; }
+
         public ServerWorld World { get; private set; }
 
         public ServerState State { get; private set; }

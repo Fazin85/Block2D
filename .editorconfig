@@ -37,6 +37,9 @@ dotnet_diagnostic.IDE0051.severity = none
 # IDE0290: Use primary constructor
 dotnet_diagnostic.IDE0290.severity = none
 
+# CA1305: Specify IFormatProvider
+dotnet_diagnostic.CA1305.severity = none
+
 [*.{cs,vb}]
 #### Naming styles ####
 

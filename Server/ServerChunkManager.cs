@@ -1,5 +1,6 @@
 ﻿using Block2D.Server.WorldGen;
 using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 
 namespace Block2D.Server
@@ -9,11 +10,11 @@ namespace Block2D.Server
         public Dictionary<Point, ServerChunk> Chunks { get; private set; }
 
         private readonly TerrainGenerator _generator;
-        private readonly ServerWorld _world;
+        private readonly InternalServer _server;
 
         public ServerChunkManager(InternalServer server, string dimensionName, int seed)
         {
-            _world = server.World;
+            _server = server;
             Chunks = [];
             _generator = new(dimensionName, seed, server);
         }
