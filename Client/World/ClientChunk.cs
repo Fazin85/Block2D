@@ -1,8 +1,8 @@
-﻿using Block2D.Client;
+﻿using Block2D.Common;
 using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework;
 
-namespace Block2D.Common
+namespace Block2D.Client.World
 {
     public class ClientChunk
     {
@@ -10,9 +10,9 @@ namespace Block2D.Common
         public byte ReceivedSections { get; private set; }
         public Point Position { get; private set; }
         private readonly ClientTile[,] _tiles;
-        private readonly Client.Client _client;
+        private readonly Client _client;
 
-        public ClientChunk(Point position, Client.Client client)
+        public ClientChunk(Point position, Client client)
         {
             Position = position;
             ReceivedSections = 0;
@@ -86,7 +86,7 @@ namespace Block2D.Common
                     for (int i = SECTION_SIZE * 2; i < SECTION_SIZE * 3; i++)
                     {
                         Point pos = new(i / CC.CHUNK_SIZE, i % CC.CHUNK_SIZE);
-                        string tileName = _client.CurrentWorld.GetTileName(blocks[i - (SECTION_SIZE * 2)]);
+                        string tileName = _client.CurrentWorld.GetTileName(blocks[i - SECTION_SIZE * 2]);
                         SetTile(pos, tileName);
                     }
                     break;
@@ -94,7 +94,7 @@ namespace Block2D.Common
                     for (int i = SECTION_SIZE * 3; i < SECTION_SIZE * 4; i++)
                     {
                         Point pos = new(i / CC.CHUNK_SIZE, i % CC.CHUNK_SIZE);
-                        string tileName = _client.CurrentWorld.GetTileName(blocks[i - (SECTION_SIZE * 3)]);
+                        string tileName = _client.CurrentWorld.GetTileName(blocks[i - SECTION_SIZE * 3]);
                         SetTile(pos, tileName);
                     }
                     break;

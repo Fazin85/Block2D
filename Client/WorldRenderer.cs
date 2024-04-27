@@ -1,4 +1,5 @@
-﻿using Block2D.Common;
+﻿using Block2D.Client.World;
+using Block2D.Common;
 using Block2D.Common.ID;
 using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework;

@@ -1,5 +1,5 @@
 ﻿using Block2D.Common;
-using Block2D.Server;
+using Block2D.Server.World;
 using Microsoft.Xna.Framework;
 
 namespace Block2D.Modding

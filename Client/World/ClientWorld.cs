@@ -1,10 +1,10 @@
 ﻿using Block2D.Common;
-using Block2D.Server;
+using Block2D.Server.World;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace Block2D.Client
+namespace Block2D.Client.World
 {
     public class ClientWorld : WorldData
     {

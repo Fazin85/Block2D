@@ -1,9 +1,9 @@
-﻿using Block2D.Server.WorldGen;
+﻿using Block2D.Server.World.Generation;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 
-namespace Block2D.Server
+namespace Block2D.Server.World
 {
     public class ServerChunkManager
     {

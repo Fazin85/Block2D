@@ -1,4 +1,4 @@
-﻿namespace Block2D.Server
+﻿namespace Block2D.Server.World
 {
     public enum ChunkLoadAmount
     {

@@ -2,7 +2,7 @@
 using Block2D.Modding.DataStructures;
 using Microsoft.Xna.Framework;
 
-namespace Block2D.Server
+namespace Block2D.Server.World
 {
     public class ServerChunk
     {

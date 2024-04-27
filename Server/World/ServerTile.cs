@@ -1,7 +1,7 @@
 ﻿using Block2D.Common;
 using Block2D.Modding.DataStructures;
 
-namespace Block2D.Server
+namespace Block2D.Server.World
 {
     public struct ServerTile
     {

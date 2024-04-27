@@ -1,4 +1,5 @@
 ﻿using Block2D.Client.Networking;
+using Block2D.Client.World;
 using Block2D.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;

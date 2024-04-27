@@ -3,7 +3,7 @@ using Block2D.Common.ID;
 using Microsoft.Xna.Framework;
 using Simplex;
 
-namespace Block2D.Server.WorldGen
+namespace Block2D.Server.World.Generation
 {
     public class TerrainGenerator
     {

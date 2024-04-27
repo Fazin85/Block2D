@@ -1,4 +1,4 @@
-﻿using Block2D.Server;
+﻿using Block2D.Server.World;
 using Microsoft.Xna.Framework;
 using System;
 using System.IO;

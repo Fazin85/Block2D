@@ -1,4 +1,4 @@
-﻿namespace Block2D.Client
+﻿namespace Block2D.Client.World
 {
     public struct ClientTile
     {

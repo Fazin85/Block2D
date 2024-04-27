@@ -1,6 +1,6 @@
 using Block2D.Common;
 
-namespace Block2D.Server
+namespace Block2D.Server.World
 {
     public struct ChunkSectionData
     {

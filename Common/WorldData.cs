@@ -1,6 +1,7 @@
 ﻿using Block2D.Client;
 using Block2D.Modding;
 using Block2D.Server;
+using Block2D.Server.World;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
