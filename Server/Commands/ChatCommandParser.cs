@@ -12,7 +12,7 @@ namespace Block2D.Server.Commands
             Commands = [];
         }
 
-        public Command RegisterCommand(string commandName, CommandArgsType argsType, PermissionLevel requiredPermissionLevel)
+        public void RegisterCommand(string commandName, CommandArgsType argsType, PermissionLevel requiredPermissionLevel)
         {
             Command command = new()
             {
@@ -23,7 +23,6 @@ namespace Block2D.Server.Commands
             };
 
             Commands.Add(commandName, command);
-            return command;
         }
 
         public void SetAction(string commandName, Action<string> task)
@@ -36,7 +35,7 @@ namespace Block2D.Server.Commands
         public bool TryParseMessage(string message, PermissionLevel playerPermissionLevel, out Command command)
         {
             command = default;
-            
+
             string commandName = GetCommandFirst(message);
 
             if (!Commands.TryGetValue(commandName, out Command value))
@@ -56,10 +55,10 @@ namespace Block2D.Server.Commands
 
         public bool TryExecuteCommand(string commandName, string args, PermissionLevel playerPermissionLevel)
         {
-            if(TryParseMessage(commandName, playerPermissionLevel, out Command command))
+            if (TryParseMessage(commandName, playerPermissionLevel, out Command command))
             {
                 command.Action.Invoke(args);
-                
+
                 return true;
             }
 
