@@ -83,6 +83,7 @@ namespace Block2D.Client
             _worldRenderer = new(this);
             MessageHandler = new(this);
             Chat = new(window);
+            Chat.TextSubmitted += MessageHandler.TextSubmitted;
             _logger = new();
             _client = new();
             _client.MessageReceived += OnMessageReceived;

@@ -154,5 +154,13 @@ namespace Block2D.Common
             float depthY = distanceY > 0 ? minDistanceY - distanceY : -minDistanceY - distanceY;
             return new Vector2(depthX, depthY);
         }
+
+        public static Vector2 Parse(string str)
+        {
+            int index = str.IndexOf(' ');
+            string x = str.Remove(index, str.Length - index);
+            string y = str.Remove(0, x.Length);
+            return new Vector2(int.Parse(x), int.Parse(y));
+        }
     }
 }

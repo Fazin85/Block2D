@@ -1,6 +1,5 @@
 ﻿using Block2D.Modding;
 using Block2D.Server;
-using Block2D.Server.Commands;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -12,7 +11,6 @@ using Riptide.Utils;
 using Steamworks;
 using System;
 using System.IO;
-using System.Threading.Tasks;
 
 namespace Block2D.Common
 {

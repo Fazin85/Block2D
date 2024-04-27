@@ -7,6 +7,7 @@
         SendChunk,
         PlayerSpawn,
         ReceivePosition,
-        SendPosition
+        SendPosition,
+        ReceiveChatMessage
     }
 }

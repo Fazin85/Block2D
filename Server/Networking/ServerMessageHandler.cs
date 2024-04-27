@@ -1,4 +1,5 @@
 ﻿using Block2D.Common;
+using Block2D.Server.Commands;
 using Microsoft.Xna.Framework;
 using Riptide;
 
@@ -7,17 +8,33 @@ namespace Block2D.Server.Networking
     public class ServerMessageHandler
     {
         private readonly InternalServer _server;
+        private readonly ChatCommandParser _commandParser;
 
         public ServerMessageHandler(InternalServer server)
         {
             _server = server;
+            _commandParser = new(server.Logger);
+        }
+
+        public void HandleChatMessage(ushort fromClientId, Message message)
+        {
+            string text = message.GetString();
+
+            if (text[0] == '/')
+            {
+                _commandParser.TryExecuteCommand(text, _server.World.Players[fromClientId], true);
+            }
+            else
+            {
+
+            }
         }
 
         public void HandlePlayerJoin(ushort fromClientId, Message message)
         {
             string clientPlayerName = message.GetString();
 
-            ServerPlayer newPlayer = new(fromClientId, -Vector2.UnitY * 16, 20, clientPlayerName);
+            ServerPlayer newPlayer = new(fromClientId, -Vector2.UnitY * CC.TILE_SIZE, 20, clientPlayerName, PermissionLevel.Default);
 
             foreach (ServerPlayer otherPlayer in _server.World.Players.Values)
             {
@@ -81,8 +98,7 @@ namespace Block2D.Server.Networking
                     newMessage.AddString(playerDimension);
                     newMessage.AddByte(i);
 
-                    byte[] tileBytes = chunk.Sections[i].Tiles.ToByteArray();
-                    byte[] bytesToSend = tileBytes.Compress();
+                    byte[] bytesToSend = chunk.Sections[i].Tiles.ToByteArray().Compress();
 
                     newMessage.AddBytes(bytesToSend);
                     _server.Send(newMessage, fromClientId);

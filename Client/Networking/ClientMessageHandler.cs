@@ -13,6 +13,13 @@ namespace Block2D.Client.Networking
             _client = client;
         }
 
+        public void TextSubmitted(string text)
+        {
+            Message message = Message.Create(MessageSendMode.Reliable, ClientMessageID.SendChatMessage);
+            message.AddString(text);
+            _client.Send(message);
+        }
+
         public void PlayerJoin()
         {
             Message message = Message.Create(MessageSendMode.Reliable, ClientMessageID.PlayerJoin);

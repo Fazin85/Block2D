@@ -6,6 +6,7 @@
         Double,
         Float,
         Byte,
-        String
+        String,
+        Vector2
     }
 }

@@ -23,15 +23,14 @@ namespace Block2D.Server
 
         public ServerAssetManager AssetManager { get; private set; }
 
-        private readonly ServerLogger _logger;
         private Riptide.Server _server;
         private Thread _executionThread;
 
         public InternalServer()
         {
             State = ServerState.Inactive;
+            Logger = new();
             MessageHandler = new(this);
-            _logger = new();
             AssetManager = new();
         }
 
@@ -68,22 +67,22 @@ namespace Block2D.Server
 
         public void LogInfo(string message)
         {
-            _logger.LogInfo(message);
+            Logger.LogInfo(message);
         }
 
         public void LogWarning(string message)
         {
-            _logger.LogWarning(message);
+            Logger.LogWarning(message);
         }
 
         public void LogWarning(Exception exception)
         {
-            _logger.LogWarning(exception.Message);
+            Logger.LogWarning(exception.Message);
         }
 
         public void LogFatal(string message)
         {
-            _logger.LogFatal(message);
+            Logger.LogFatal(message);
         }
 
         private void Run()
@@ -147,6 +146,9 @@ namespace Block2D.Server
                     break;
                 case (ushort)ServerMessageID.HandleChunkRequest:
                     MessageHandler.HandleChunkRequest(e.FromConnection.Id, e.Message);
+                    break;
+                case (ushort)ServerMessageID.ReceiveChatMessage:
+                    MessageHandler.HandleChatMessage(e.FromConnection.Id, e.Message);
                     break;
             }
         }

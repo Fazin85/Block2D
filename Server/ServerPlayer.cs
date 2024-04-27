@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Block2D.Server.Commands;
+using Microsoft.Xna.Framework;
 
 namespace Block2D.Server
 {
@@ -33,18 +34,21 @@ namespace Block2D.Server
             get => _id;
         }
 
+        public PermissionLevel PermissionLevel { get; set; }
+
         private Vector2 _position;
         private Vector2 _velocity;
         private int _health;
         private string _name;
         private readonly ushort _id;
 
-        public ServerPlayer(ushort id, Vector2 position, int health, string name)
+        public ServerPlayer(ushort id, Vector2 position, int health, string name, PermissionLevel permissions)
         {
             _id = id;
             _position = position;
             _health = health;
             _name = name;
+            PermissionLevel = permissions;
         }
 
         public void Tick()

@@ -5,8 +5,12 @@ using MonoGame.Extended;
 
 namespace Block2D.Client
 {
+    public delegate void TextSubmitted(string text);
+
     public class Chat
     {
+        public event TextSubmitted TextSubmitted;
+
         public bool IsOpen { get; private set; }
 
         private string _currentText;
@@ -45,11 +49,15 @@ namespace Block2D.Client
                 return;
             }
 
-            if (IsValidKey(args.Key) && shouldAddKey)
+            if ((IsValidKey(args.Key) || args.Character == '/') && shouldAddKey)
             {
                 string textToAdd = string.Empty;
 
-                if (args.Key == Keys.Space)
+                if (args.Character == '/')
+                {
+                    textToAdd = args.Character.ToString();
+                }
+                else if (args.Key == Keys.Space)
                 {
                     textToAdd = " ";
                 }
@@ -76,6 +84,7 @@ namespace Block2D.Client
             if (args.Key == Keys.Enter && IsOpen)
             {
                 IsOpen = false;
+                TextSubmitted.Invoke(_currentText);
                 _currentText = string.Empty;
             }
         }
