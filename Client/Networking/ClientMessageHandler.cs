@@ -4,7 +4,6 @@ using Block2D.Common;
 using Microsoft.Xna.Framework;
 using Riptide;
 using Steamworks;
-using System.Collections.Generic;
 
 namespace Block2D.Client.Networking
 {
@@ -95,15 +94,7 @@ namespace Block2D.Client.Networking
 
             _client.PlayerListUI.AddPlayer(entry);
 
-            Dictionary<string, short> clientPings = [];
-
-            foreach (ClientPlayer player in _client.CurrentWorld.Players.Values)
-            {
-                clientPings.Add(player.Name, player.Ping);
-                _client.Logger.LogInfo(player.Ping.ToString());
-            }
-
-            _client.PlayerListUI.Update(clientPings);
+            _client.PlayerListUI.Update([.. _client.CurrentWorld.Players.Values]);
 
             if (_client.ID == id)
             {

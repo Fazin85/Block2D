@@ -44,20 +44,16 @@ namespace Block2D.Client.UI
             }
         }
 
-        public void Update(Dictionary<string, short> playerPings)
+        public void Update(ClientPlayer[] players)
         {
-            foreach (var player in _playerList)
+            for (int i = 0; i < players.Length; i++)
             {
-                string name = player.Key;
+                PlayerListEntry e = _playerList[players[i].Name];
 
-                PlayerListEntry e = _playerList[name];
-                e.Ping = playerPings[name];
+                e.Ping = players[i].Ping;
+                e.Texture ??= LoadPlayerProfilePicture(players[i].SteamID);
 
-                if (e.Texture == null)
-                {
-                    e.Texture = LoadPlayerProfilePicture(player.Value.SteamID);
-                }
-                _playerList[name] = e;
+                _playerList[players[i].Name] = e;
             }
         }
 
