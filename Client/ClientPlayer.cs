@@ -14,6 +14,8 @@ namespace Block2D.Client
             get => ID == _client.ID;
         }
 
+        public bool OfflineMode { get; private set; }
+
         public string Dimension
         {
             get => _dimension;
@@ -23,6 +25,8 @@ namespace Block2D.Client
         {
             get => _hitbox;
         }
+
+        public ulong SteamID { get; private set; }
 
         public Vector2 Position { get; set; }
         public Vector2 PreviousPosition { get; private set; }
@@ -40,13 +44,15 @@ namespace Block2D.Client
         private readonly string _dimension = DimensionID.OVERWORLD;
         private readonly Client _client;
 
-        public ClientPlayer(Client client, ushort id, string name)
+        public ClientPlayer(Client client, ushort id, string name, bool offlineMode, ulong steamID)
         {
             _client = client;
             ID = id;
             _dimension = DimensionID.OVERWORLD;
             _hitbox = new(Position.ToPoint(), new(16, 16));
             Name = name;
+            OfflineMode = offlineMode;
+            SteamID = steamID;
         }
 
         public void Tick(GameTime gameTime)

@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
 
-namespace Block2D.Client
+namespace Block2D.Client.UI
 {
     public delegate void TextSubmitted(string text);
 

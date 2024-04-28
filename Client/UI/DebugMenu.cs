@@ -1,7 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Block2D.Client
+namespace Block2D.Client.UI
 {
     public class DebugMenu
     {
