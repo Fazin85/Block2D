@@ -86,7 +86,7 @@ namespace Block2D.Server.World
             }
 
             Players.Add(player.ID, player);
-            _server.LogInfo(player.Name + " Joined The Game");
+            _server.Logger.LogInfo(player.Name + " Joined The Game");
         }
 
         private void CreateNeededDirectories()
@@ -110,7 +110,7 @@ namespace Block2D.Server.World
             }
             catch (Exception e)
             {
-                _server.LogWarning(e);
+                _server.Logger.LogWarning(e.Message);
             }
             return false;
         }
@@ -119,7 +119,7 @@ namespace Block2D.Server.World
         {
             if (!LoadedTiles.ContainsKey(name))
             {
-                _server.LogWarning("Tried To Get Tile That Doesn't Exist.");
+                _server.Logger.LogWarning("Tried To Get Tile That Doesn't Exist.");
             }
 
             return LoadedTiles[name];

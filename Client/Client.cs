@@ -58,6 +58,8 @@ namespace Block2D.Client
 
         public Chat Chat { get; private set; }
 
+        public ClientLogger Logger { get; private set; }
+
         #endregion
 
         #region private variables
@@ -68,7 +70,6 @@ namespace Block2D.Client
         }
 
         private ClientWorld _currentWorld;
-        private readonly ClientLogger _logger;
         private readonly Riptide.Client _client;
         private readonly WorldRenderer _worldRenderer;
         private const string ip = "127.0.0.1";
@@ -85,7 +86,7 @@ namespace Block2D.Client
             MessageHandler = new(this);
             Chat = new(window);
             Chat.TextSubmitted += MessageHandler.TextSubmitted;
-            _logger = new();
+            Logger = new();
             _client = new();
             _client.MessageReceived += OnMessageReceived;
             _client.Connected += OnConnect;
@@ -167,7 +168,7 @@ namespace Block2D.Client
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameWindow window)
+        public void Draw(SpriteBatch spriteBatch)
         {
             spriteBatch.Begin(transformMatrix: Camera.GetViewMatrix());
 
@@ -232,26 +233,6 @@ namespace Block2D.Client
         public void Send(Message message)
         {
             _client.Send(message);
-        }
-
-        public void LogInfo(string message)
-        {
-            _logger.LogInfo(message);
-        }
-
-        public void LogWarning(string message)
-        {
-            _logger.LogWarning(message);
-        }
-
-        public void LogWarning(Exception exception)
-        {
-            _logger.LogWarning(exception.Message);
-        }
-
-        public void LogFatal(string message)
-        {
-            _logger.LogFatal(message);
         }
 
         #endregion

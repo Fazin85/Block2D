@@ -24,6 +24,8 @@ namespace Block2D.Server
 
         public ServerAssetManager AssetManager { get; private set; }
 
+        public bool ShouldExit { get; private set; }
+
         private Riptide.Server _server;
         private Thread _executionThread;
 
@@ -45,6 +47,7 @@ namespace Block2D.Server
         {
             if (IsRunning)
             {
+                ShouldExit = true;
                 Stop();
             }
         }
@@ -66,31 +69,11 @@ namespace Block2D.Server
             AssetManager.UnloadAllMods();
         }
 
-        public void LogInfo(string message)
-        {
-            Logger.LogInfo(message);
-        }
-
-        public void LogWarning(string message)
-        {
-            Logger.LogWarning(message);
-        }
-
-        public void LogWarning(Exception exception)
-        {
-            Logger.LogWarning(exception.Message);
-        }
-
-        public void LogFatal(string message)
-        {
-            Logger.LogFatal(message);
-        }
-
         private void Run()
         {
             Setup(20);
 
-            while (!Main.ShouldExit)
+            while (!ShouldExit)
             {
                 if (_server.IsRunning)
                 {

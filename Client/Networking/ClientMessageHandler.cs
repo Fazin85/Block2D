@@ -118,7 +118,7 @@ namespace Block2D.Client.Networking
                     }
                     else
                     {
-                        _client.LogWarning("Received Corrupted Chunk Data.");
+                        _client.Logger.LogWarning("Received Corrupted Chunk Data.");
                     }
                 }
             }

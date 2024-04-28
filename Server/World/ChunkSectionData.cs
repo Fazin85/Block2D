@@ -24,13 +24,13 @@ namespace Block2D.Server.World
             ChunkSectionData d3 = new(b5, 2);
             ChunkSectionData d4 = new(b6, 3);
 
-            ChunkSectionData[] sections = new ChunkSectionData[CC.CHUNK_SECTION_COUNT]
-            {
+            ChunkSectionData[] sections =
+            [
                 d1,
                 d2,
                 d3,
                 d4
-            };
+            ];
 
             return sections;
         }

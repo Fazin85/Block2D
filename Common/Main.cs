@@ -134,11 +134,11 @@ namespace Block2D.Common
             if (!SteamAPI.Init())
             {
                 OfflineMode = true;
-                Client.LogWarning("Failed To Connect To Steam.");
+                Client.Logger.LogWarning("Failed To Connect To Steam.");
             }
             else
             {
-                Client.LogInfo("Successfully Connected To Steam.");
+                Client.Logger.LogInfo("Successfully Connected To Steam.");
             }
 
             base.Initialize();
@@ -174,7 +174,7 @@ namespace Block2D.Common
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            Client.Draw(_spriteBatch, Window);
+            Client.Draw(_spriteBatch);
 
             //Client.UI.Draw(gameTime, _spriteBatch);
 

@@ -14,7 +14,7 @@ namespace Block2D.Server.Networking
         public ServerMessageHandler(InternalServer server)
         {
             _server = server;
-            _commandParser = new(server.Logger);
+            _commandParser = new(server);
         }
 
         public void HandleChatMessage(ushort fromClientId, Message message)
@@ -35,7 +35,7 @@ namespace Block2D.Server.Networking
         {
             string clientPlayerName = message.GetString();
 
-            ServerPlayer newPlayer = new(fromClientId, -Vector2.UnitY * CC.TILE_SIZE, 20, clientPlayerName, PermissionLevel.Default);
+            ServerPlayer newPlayer = new(fromClientId, -Vector2.UnitY * CC.TILE_SIZE, 20, clientPlayerName, PermissionLevel.SuperUser);//TODO: MAKE PLAYER NOT A SUPERUSER
 
             foreach (ServerPlayer otherPlayer in _server.World.Players.Values)
             {

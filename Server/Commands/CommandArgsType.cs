@@ -2,6 +2,7 @@
 {
     public enum CommandArgsType
     {
+        None,
         Integer,
         Double,
         Float,
