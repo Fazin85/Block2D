@@ -34,6 +34,10 @@ namespace Block2D.Server
             get => _id;
         }
 
+        public ulong SteamID { get; private set; }
+
+        public bool OfflineMode { get; private set; }
+
         public PermissionLevel PermissionLevel { get; set; }
 
         private Vector2 _position;
@@ -42,13 +46,15 @@ namespace Block2D.Server
         private string _name;
         private readonly ushort _id;
 
-        public ServerPlayer(ushort id, Vector2 position, int health, string name, PermissionLevel permissions)
+        public ServerPlayer(ushort id, Vector2 position, int health, string name, PermissionLevel permissions, ulong steamID, bool offlineMode)
         {
             _id = id;
             _position = position;
             _health = health;
             _name = name;
             PermissionLevel = permissions;
+            SteamID = steamID;
+            OfflineMode = offlineMode;
         }
 
         public void Tick()

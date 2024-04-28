@@ -16,7 +16,7 @@ using MonoGame.Extended.ViewportAdapters;
 using Riptide;
 using Steamworks;
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using RectangleF = MonoGame.Extended.RectangleF;
 
 namespace Block2D.Client
@@ -61,6 +61,8 @@ namespace Block2D.Client
 
         public ClientLogger Logger { get; private set; }
 
+        public PlayerListUI PlayerListUI { get; private set; }
+
         #endregion
 
         #region private variables
@@ -88,6 +90,7 @@ namespace Block2D.Client
             Chat = new(window);
             Chat.TextSubmitted += MessageHandler.TextSubmitted;
             Logger = new();
+            PlayerListUI = new(AssetManager, Logger);
             _client = new();
             _client.MessageReceived += OnMessageReceived;
             _client.Connected += OnConnect;
@@ -169,7 +172,7 @@ namespace Block2D.Client
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public void Draw(SpriteBatch spriteBatch, GameWindow window)
         {
             spriteBatch.Begin(transformMatrix: Camera.GetViewMatrix());
 
@@ -185,9 +188,8 @@ namespace Block2D.Client
                     DebugMode
                 );
 
-                for (int i = 0; i < _currentWorld.Players.Count; i++)
+                foreach (ClientPlayer currentPlayer in _currentWorld.Players.Values)
                 {
-                    ClientPlayer currentPlayer = _currentWorld.Players.Values.ElementAt(i);
                     Renderer.DrawPlayer(currentPlayer, spriteBatch, AssetManager);
                 }
             }
@@ -195,6 +197,8 @@ namespace Block2D.Client
             Vector2 chatDrawPosition = new(Camera.Position.X, Camera.Position.Y + Camera.BoundingRectangle.Height - 28);
 
             Chat.Draw(spriteBatch, AssetManager, chatDrawPosition, Camera.BoundingRectangle);
+
+            PlayerListUI.Draw(spriteBatch, Camera.Position, window.ClientBounds.Width);
 
             if (DebugMode)
             {
@@ -260,10 +264,10 @@ namespace Block2D.Client
             switch (e.MessageId)
             {
                 case (ushort)ClientMessageID.ReceivePosition:
-                    MessageHandler.ReceivePosition(e.Message);
+                    MessageHandler.ReceivePosition(e.Message, e.FromConnection.SmoothRTT);
                     break;
                 case (ushort)ClientMessageID.HandlePlayerSpawn:
-                    MessageHandler.HandlePlayerSpawn(e.Message);
+                    MessageHandler.HandlePlayerSpawn(e.Message, e.FromConnection.SmoothRTT);
                     break;
                 case (ushort)ClientMessageID.ReceiveChunk:
                     MessageHandler.ReceiveChunk(e.Message);

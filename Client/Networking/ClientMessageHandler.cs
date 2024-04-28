@@ -1,7 +1,10 @@
-﻿using Block2D.Client.World;
+﻿using Block2D.Client.UI;
+using Block2D.Client.World;
 using Block2D.Common;
 using Microsoft.Xna.Framework;
 using Riptide;
+using Steamworks;
+using System.Collections.Generic;
 
 namespace Block2D.Client.Networking
 {
@@ -25,6 +28,8 @@ namespace Block2D.Client.Networking
         {
             Message message = Message.Create(MessageSendMode.Reliable, ClientMessageID.PlayerJoin);
             message.AddString(_client.Username);
+            message.AddULong(Main.OfflineMode ? 0 : SteamUser.GetSteamID().m_SteamID);
+            message.AddBool(Main.OfflineMode);
             _client.Send(message);
         }
 
@@ -49,7 +54,7 @@ namespace Block2D.Client.Networking
             _client.Send(message);
         }
 
-        public void ReceivePosition(Message message)
+        public void ReceivePosition(Message message, short ping)
         {
             Vector2 position = message.GetVector2();
             ushort id = message.GetUShort();
@@ -61,19 +66,44 @@ namespace Block2D.Client.Networking
                     return;
                 }
 
+                player.Ping = ping;
                 player.Position = position;
             }
         }
 
-        public void HandlePlayerSpawn(Message message)
+        public void HandlePlayerSpawn(Message message, short connectionPing)
         {
             string name = message.GetString();
             Vector2 position = message.GetVector2();
             ushort id = message.GetUShort();
+            ulong steamID = message.GetULong();
+            bool offlineMode = message.GetBool();
 
-            ClientPlayer newPlayer = new(_client, id, name) { Position = position, };
+            ClientPlayer newPlayer = new(_client, id, name, offlineMode, steamID)
+            {
+                Position = position
+            };
 
             _client.CurrentWorld.AddPlayer(newPlayer);
+
+            PlayerListEntry entry = new()
+            {
+                SteamID = steamID,
+                Name = name,
+                Ping = connectionPing
+            };
+
+            _client.PlayerListUI.AddPlayer(entry);
+
+            Dictionary<string, short> clientPings = [];
+
+            foreach (ClientPlayer player in _client.CurrentWorld.Players.Values)
+            {
+                clientPings.Add(player.Name, player.Ping);
+                _client.Logger.LogInfo(player.Ping.ToString());
+            }
+
+            _client.PlayerListUI.Update(clientPings);
 
             if (_client.ID == id)
             {

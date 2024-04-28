@@ -174,7 +174,7 @@ namespace Block2D.Common
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            Client.Draw(_spriteBatch);
+            Client.Draw(_spriteBatch, Window);
 
             //Client.UI.Draw(gameTime, _spriteBatch);
 

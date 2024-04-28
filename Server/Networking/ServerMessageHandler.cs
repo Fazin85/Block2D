@@ -34,8 +34,10 @@ namespace Block2D.Server.Networking
         public void HandlePlayerJoin(ushort fromClientId, Message message)
         {
             string clientPlayerName = message.GetString();
+            ulong steamID = message.GetULong();
+            bool offlineMode = message.GetBool();
 
-            ServerPlayer newPlayer = new(fromClientId, -Vector2.UnitY * CC.TILE_SIZE, 20, clientPlayerName, PermissionLevel.SuperUser);//TODO: MAKE PLAYER NOT A SUPERUSER
+            ServerPlayer newPlayer = new(fromClientId, -Vector2.UnitY * CC.TILE_SIZE, 20, clientPlayerName, PermissionLevel.SuperUser, steamID, offlineMode);//TODO: MAKE PLAYER NOT A SUPERUSER
 
             foreach (ServerPlayer otherPlayer in _server.World.Players.Values)
             {
@@ -52,6 +54,8 @@ namespace Block2D.Server.Networking
             message.AddString(player.Name);
             message.AddVector2(player.Position);
             message.AddUShort(player.ID);
+            message.AddULong(player.SteamID);
+            message.AddBool(player.OfflineMode);
             return message;
         }
 

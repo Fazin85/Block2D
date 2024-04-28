@@ -27,6 +27,7 @@ namespace Block2D.Client
         }
 
         public ulong SteamID { get; private set; }
+        public short Ping { get; set; }
 
         public Vector2 Position { get; set; }
         public Vector2 PreviousPosition { get; private set; }
