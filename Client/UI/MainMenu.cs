@@ -1,4 +1,5 @@
 ﻿using Block2D.Common;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Myra;
 using Myra.Graphics2D.UI;
@@ -9,34 +10,30 @@ namespace Block2D.Client.UI
     {
         private readonly Button _quitButton;
         private readonly Button _singlePlayerButton;
-        private readonly Grid _grid;
+        private readonly Panel _panel;
         private readonly Desktop _desktop;
+
+        //+ IS DOWN
 
         public MainMenu(Main main)
         {
             MyraEnvironment.Game = main;
 
-            _grid = new Grid()
-            {
-                RowSpacing = 8,
-                ColumnSpacing = 8,
-            };
-
-            _grid.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
-            _grid.ColumnsProportions.Add(new Proportion(ProportionType.Auto));
-            _grid.RowsProportions.Add(new Proportion(ProportionType.Auto));
-            _grid.RowsProportions.Add(new Proportion(ProportionType.Auto));
+            _panel = new();
 
             _quitButton = new Button()
             {
-                Width = 128,
+                Width = 256,
                 Height = 32,
-                HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Bottom,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Top = -32,
 
                 Content = new Label()
                 {
                     Text = "Quit",
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
                 }
             };
 
@@ -45,19 +42,20 @@ namespace Block2D.Client.UI
                 Main.ShouldExit = true;
             };
 
-            _grid.Widgets.Add(_quitButton);
+            _panel.Widgets.Add(_quitButton);
 
             _singlePlayerButton = new Button()
             {
-                Width = 128,
+                Width = 256,
                 Height = 32,
-                Top = 20,
+                VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
-                VerticalAlignment = VerticalAlignment.Bottom,
 
                 Content = new Label()
                 {
                     Text = "Single Player",
+                    VerticalAlignment = VerticalAlignment.Center,
+                    HorizontalAlignment = HorizontalAlignment.Center,
                 }
             };
 
@@ -66,16 +64,30 @@ namespace Block2D.Client.UI
                 main.StartSinglePlayer();
             };
 
-            _grid.Widgets.Add(_singlePlayerButton);
+            _panel.Widgets.Add(_singlePlayerButton);
 
             _desktop = new()
             {
-                Root = _grid
+                Root = _panel
             };
         }
 
         public void Draw(SpriteBatch spriteBatch, ClientAssetManager assetManager)
         {
+            spriteBatch.Begin();
+
+            for (int x = 0; x < Main.GraphicsDevice.PresentationParameters.BackBufferWidth + (CC.TILE_SIZE * 4); x += CC.TILE_SIZE)
+            {
+                for (int y = 0; y < Main.GraphicsDevice.PresentationParameters.BackBufferHeight + (CC.TILE_SIZE * 4); y += CC.TILE_SIZE)
+                {
+                    Vector2 position = new(x, y);
+
+                    spriteBatch.Draw(assetManager.GetTexture("Stone"), position, Color.White);
+                }
+            }
+
+            spriteBatch.End();
+
             _desktop.Render();
         }
 

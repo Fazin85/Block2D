@@ -64,7 +64,10 @@ namespace Block2D.Client
 
         public EventHandler OnJoinWorld;
 
-        public bool InMainMenu { get; private set; }
+        public bool InMainMenu
+        {
+            get => State == ClientState.MainMenu;
+        }
 
         #endregion
 
@@ -102,7 +105,6 @@ namespace Block2D.Client
             _client.Disconnected += OnDisconnect;
             DebugMode = false;
             OnJoinWorld += OnEnterWorld;
-            InMainMenu = true;
         }
 
         #region public methods
@@ -132,6 +134,8 @@ namespace Block2D.Client
             }
 
             AssetManager.LoadContent();
+
+            State = ClientState.MainMenu;
         }
 
         public void Update(
@@ -268,7 +272,6 @@ namespace Block2D.Client
         private void OnEnterWorld(object sender, EventArgs e)
         {
             InWorld = true;
-            InMainMenu = false;
         }
 
         private void OnConnect(object sender, EventArgs e)
