@@ -48,6 +48,15 @@ namespace Block2D.Server.Networking
             _server.SendToAll(CreateSpawnMessage(newPlayer));
         }
 
+        public void HandlePlayerDisconnect(ushort fromClientId)
+        {
+            _server.World.RemovePlayer(fromClientId);
+
+            Message m = Message.Create(MessageSendMode.Reliable, ServerMessageID.SendPlayerDisconnect);
+            m.AddUShort(fromClientId);
+            _server.SendToAll(m);
+        }
+
         public static Message CreateSpawnMessage(ServerPlayer player)
         {
             Message message = Message.Create(MessageSendMode.Reliable, ServerMessageID.PlayerSpawn);

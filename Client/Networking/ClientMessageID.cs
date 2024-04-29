@@ -8,6 +8,8 @@
         HandlePlayerSpawn,
         SendPosition,
         ReceivePosition,
-        SendChatMessage
+        SendChatMessage,
+        SendDisconnect,
+        ReceiveDisconnect
     }
 }

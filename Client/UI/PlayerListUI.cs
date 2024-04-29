@@ -1,6 +1,7 @@
 ﻿using Block2D.Common;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using Steamworks;
 using System.Collections.Generic;
 
@@ -10,13 +11,13 @@ namespace Block2D.Client.UI
     {
         private readonly Dictionary<string, PlayerListEntry> _playerList;
         private readonly ClientAssetManager _assetManager;
-        private readonly ClientLogger _logger;
+        private readonly Client _client;
 
-        public PlayerListUI(ClientAssetManager assetManager, ClientLogger logger)
+        public PlayerListUI(Client client)
         {
             _playerList = [];
-            _assetManager = assetManager;
-            _logger = logger;
+            _assetManager = client.AssetManager;
+            _client = client;
         }
 
         public void AddPlayer(PlayerListEntry playerEntry)
@@ -29,23 +30,42 @@ namespace Block2D.Client.UI
             _playerList.Remove(playerName);
         }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 cameraPos, int windowWidth)
+        public void RemovePlayer(ushort id)
         {
-            int yOffset = 0;
+            _playerList.Remove(_client.CurrentWorld.Players[id].Name);
+        }
 
-            foreach (var item in _playerList.Values)
+        public void Draw(SpriteBatch spriteBatch, Vector2 cameraPos, int windowWidth, KeyboardState keyboard)
+        {
+            if (keyboard.IsKeyDown(Keys.Tab))
             {
-                if (item.Texture == null)
-                {
-                    break;
-                }
+                const int fontSize = 22;
+                int yOffset = 0;
+                Vector2 iconOffset = new(64, -4);
+                Vector2 xOffset = new(-32, 0);
 
-                spriteBatch.Draw(item.Texture, cameraPos, Color.White);
+                foreach (var item in _playerList.Values)
+                {
+                    if (item.Texture == null)
+                    {
+                        break;
+                    }
+
+                    Vector2 position = new(windowWidth, yOffset);
+
+                    spriteBatch.Draw(item.Texture, cameraPos + position - iconOffset, null, Color.White, 0, Vector2.Zero, 0.35f, SpriteEffects.None, 0);//draw icon
+                    spriteBatch.DrawString(_assetManager.Font, item.Name, cameraPos + position + xOffset + new Vector2(2, 0), Color.White);//draw username
+                    spriteBatch.DrawString(_assetManager.Font, item.Ping.ToString(), cameraPos + position + xOffset + new Vector2(fontSize * item.Name.Length / 2, 0), Color.White);//draw ping
+
+                    yOffset += 32;
+                }
             }
         }
 
-        public void Update(ClientPlayer[] players)
+        public void Update()
         {
+            ClientPlayer[] players = [.. _client.CurrentWorld.Players.Values];
+
             for (int i = 0; i < players.Length; i++)
             {
                 PlayerListEntry e = _playerList[players[i].Name];

@@ -16,14 +16,17 @@ using MonoGame.Extended.ViewportAdapters;
 using Riptide;
 using Steamworks;
 using System;
-using System.Collections.Generic;
 using RectangleF = MonoGame.Extended.RectangleF;
 
 namespace Block2D.Client
 {
+    public delegate void OnJoinWorld();
+
     public class Client
     {
         #region public variables
+
+        public const int MAX_USERNAME_LENGTH = 16;
 
         public ClientWorld CurrentWorld
         {
@@ -63,6 +66,8 @@ namespace Block2D.Client
 
         public PlayerListUI PlayerListUI { get; private set; }
 
+        public event OnJoinWorld OnJoinWorld;
+
         #endregion
 
         #region private variables
@@ -78,6 +83,7 @@ namespace Block2D.Client
         private const string ip = "127.0.0.1";
         private const ushort port = 7777;
         private const Keys DEBUG_KEY = Keys.F3;
+        private long _uiUpdateTime;
 
         #endregion
 
@@ -90,12 +96,13 @@ namespace Block2D.Client
             Chat = new(window);
             Chat.TextSubmitted += MessageHandler.TextSubmitted;
             Logger = new();
-            PlayerListUI = new(AssetManager, Logger);
+            PlayerListUI = new(this);
             _client = new();
             _client.MessageReceived += OnMessageReceived;
             _client.Connected += OnConnect;
             _client.Disconnected += OnDisconnect;
             DebugMode = false;
+            OnJoinWorld += OnEnterWorld;
         }
 
         #region public methods
@@ -138,17 +145,14 @@ namespace Block2D.Client
             UI.Add("Panel", panel);
         }
 
-        public void OnJoinWorld()
-        {
-            InWorld = true;
-        }
-
         public void Update(
             KeyboardState keyboard,
             KeyboardState lastKeyboardState,
             GameTime gameTime
         )
         {
+            _uiUpdateTime++;
+
             if (keyboard.IsKeyDown(DEBUG_KEY) && lastKeyboardState.IsKeyUp(DEBUG_KEY))
             {
                 DebugMenu.Reset();
@@ -162,6 +166,11 @@ namespace Block2D.Client
                 _currentWorld.Tick(gameTime);
 
                 Camera.LookAt(LocalPlayer.Position);
+
+                if (_uiUpdateTime == 60)
+                {
+                    PlayerListUI.Update();
+                }
             }
 
             UI.Update(gameTime);
@@ -172,7 +181,7 @@ namespace Block2D.Client
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameWindow window)
+        public void Draw(SpriteBatch spriteBatch, GameWindow window, KeyboardState keyboard)
         {
             spriteBatch.Begin(transformMatrix: Camera.GetViewMatrix());
 
@@ -198,7 +207,7 @@ namespace Block2D.Client
 
             Chat.Draw(spriteBatch, AssetManager, chatDrawPosition, Camera.BoundingRectangle);
 
-            PlayerListUI.Draw(spriteBatch, Camera.Position, window.ClientBounds.Width);
+            PlayerListUI.Draw(spriteBatch, Camera.Position, Main.GraphicsDevice.PresentationParameters.BackBufferWidth / 2, keyboard);
 
             if (DebugMode)
             {
@@ -221,6 +230,8 @@ namespace Block2D.Client
 
         public void Disconnect()
         {
+            MessageHandler.SendDisconnect();
+
             _client.Disconnect();
         }
 
@@ -240,9 +251,19 @@ namespace Block2D.Client
             _client.Send(message);
         }
 
+        public void InvokeJoinWorld()
+        {
+            OnJoinWorld.Invoke();
+        }
+
         #endregion
 
         #region private methods
+
+        private void OnEnterWorld()
+        {
+            InWorld = true;
+        }
 
         private void OnConnect(object sender, EventArgs e)
         {
@@ -271,6 +292,9 @@ namespace Block2D.Client
                     break;
                 case (ushort)ClientMessageID.ReceiveChunk:
                     MessageHandler.ReceiveChunk(e.Message);
+                    break;
+                case (ushort)ClientMessageID.ReceiveDisconnect:
+                    MessageHandler.HandlePlayerDisconnect(e.Message);
                     break;
             }
         }

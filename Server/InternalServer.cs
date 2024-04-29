@@ -1,8 +1,6 @@
-﻿using Block2D.Common;
-using Block2D.Server.Networking;
+﻿using Block2D.Server.Networking;
 using Block2D.Server.World;
 using Riptide;
-using System;
 using System.Threading;
 
 namespace Block2D.Server
@@ -133,6 +131,9 @@ namespace Block2D.Server
                     break;
                 case (ushort)ServerMessageID.ReceiveChatMessage:
                     MessageHandler.HandleChatMessage(e.FromConnection.Id, e.Message);
+                    break;
+                case (ushort)ServerMessageID.ReceivePlayerDisconnect:
+                    MessageHandler.HandlePlayerDisconnect(e.FromConnection.Id);
                     break;
             }
         }

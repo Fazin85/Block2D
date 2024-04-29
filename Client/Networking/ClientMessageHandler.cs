@@ -53,6 +53,12 @@ namespace Block2D.Client.Networking
             _client.Send(message);
         }
 
+        public void SendDisconnect()
+        {
+            Message message = Message.Create(MessageSendMode.Reliable, ClientMessageID.SendDisconnect);
+            _client.Send(message);
+        }
+
         public void ReceivePosition(Message message, short ping)
         {
             Vector2 position = message.GetVector2();
@@ -68,6 +74,19 @@ namespace Block2D.Client.Networking
                 player.Ping = ping;
                 player.Position = position;
             }
+        }
+
+        public void HandlePlayerDisconnect(Message message)
+        {
+            ushort id = message.GetUShort();
+
+            if (id == _client.ID)
+            {
+                return;
+            }
+
+            _client.PlayerListUI.RemovePlayer(id);
+            _client.CurrentWorld.RemovePlayer(id);
         }
 
         public void HandlePlayerSpawn(Message message, short connectionPing)
@@ -94,11 +113,12 @@ namespace Block2D.Client.Networking
 
             _client.PlayerListUI.AddPlayer(entry);
 
-            _client.PlayerListUI.Update([.. _client.CurrentWorld.Players.Values]);
+            _client.PlayerListUI.Update();
 
             if (_client.ID == id)
             {
-                _client.OnJoinWorld();
+                _client.InvokeJoinWorld();
+
                 RequestChunk(Point.Zero);
                 RequestChunk(new(64, 0));
                 RequestChunk(new(64, -64));
