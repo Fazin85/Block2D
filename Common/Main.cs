@@ -157,7 +157,7 @@ namespace Block2D.Common
 
             Client.LoadContent();
 
-            Window.ClientSizeChanged += OnClientSizeChanged();
+            Window.ClientSizeChanged += (o, s) => OnClientSizeChanged();
         }
 
         protected override void Update(GameTime gameTime)
@@ -201,7 +201,7 @@ namespace Block2D.Common
 
         #region private methods
 
-        private EventHandler<EventArgs> OnClientSizeChanged()
+        private void OnClientSizeChanged()
         {
             _windowSizeBeingChanged = !_windowSizeBeingChanged;
 
@@ -211,8 +211,6 @@ namespace Block2D.Common
                 _graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
                 _graphics.ApplyChanges();
             }
-
-            return null;
         }
 
         private void HandleGenericInput()
