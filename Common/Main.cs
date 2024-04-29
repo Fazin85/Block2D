@@ -89,6 +89,13 @@ namespace Block2D.Common
 
         #region public methods
 
+        public void StartSinglePlayer()
+        {
+            _internalServer.Start();
+
+            Client.LocalConnect();
+        }
+
         public static void SetupScript(Script script, Mod mod, bool setupLogger, ProgramSide side)
         {
             DynValue keyboardState = UserData.Create(_instance._keyboardState);
@@ -129,7 +136,7 @@ namespace Block2D.Common
 
             RegisterTypes();
 
-            Client.Initialize(Window, GraphicsDevice);
+            Client.Initialize(this, Window, GraphicsDevice);
 
             if (!SteamAPI.Init())
             {
@@ -148,7 +155,7 @@ namespace Block2D.Common
         {
             _spriteBatch = new(GraphicsDevice);
 
-            Client.LoadContent(this, _spriteBatch);
+            Client.LoadContent();
 
             Window.ClientSizeChanged += OnClientSizeChanged();
         }
@@ -216,11 +223,6 @@ namespace Block2D.Common
             )
                 ShouldExit = true;
 
-            if (_keyboardState.IsKeyDown(Keys.G) && _lastKeyboardState.IsKeyUp(Keys.G))
-            {
-                _internalServer.Start();
-            }
-
             if (_keyboardState.IsKeyDown(Keys.F11) && _lastKeyboardState.IsKeyUp(Keys.F11))
             {
                 if (_graphics.IsFullScreen)
@@ -237,14 +239,7 @@ namespace Block2D.Common
                 _graphics.IsFullScreen = !_graphics.IsFullScreen;
                 _graphics.ApplyChanges();
             }
-
-            if (_keyboardState.IsKeyDown(Keys.H))
-            {
-                Client.LocalConnect();
-            }
         }
-
-
 
         private void RegisterTypes()
         {

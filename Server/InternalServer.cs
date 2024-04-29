@@ -37,6 +37,11 @@ namespace Block2D.Server
 
         public void Start()
         {
+            if (IsRunning)
+            {
+                return;
+            }
+
             _executionThread = new(Run);
             _executionThread.Start();
         }
@@ -99,6 +104,12 @@ namespace Block2D.Server
                 return;
             }
 
+            AssetManager.LoadContent();
+
+            World = new(AssetManager, this, "DevWorld");
+
+            World.LoadContent();
+
             _server = new Riptide.Server();
 
             _server.MessageReceived += OnMessageReceived;
@@ -106,12 +117,6 @@ namespace Block2D.Server
             _server.ClientDisconnected += OnClientDisconnected;
 
             _server.Start(7777, maxClientCount, useMessageHandlers: false);
-
-            AssetManager.LoadContent();
-
-            World = new(AssetManager, this, "DevWorld");
-
-            World.LoadContent();
 
             State = ServerState.Loaded;
         }

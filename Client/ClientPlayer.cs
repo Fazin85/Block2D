@@ -2,7 +2,9 @@
 using Block2D.Common;
 using Block2D.Common.ID;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
 using System;
 
 namespace Block2D.Client
@@ -99,6 +101,22 @@ namespace Block2D.Client
 
                 HandleCollision();
             }
+        }
+
+        public void Draw(SpriteBatch spriteBatch, ClientAssetManager assets)
+        {
+            spriteBatch.Draw(assets.GetPlayerTexture(), Position, Color.White);
+
+            if (!IsLocal)
+            {
+                return;
+            }
+
+            spriteBatch.DrawRectangle(Hitbox.ToRectangleF(), Color.Red);
+
+            Rectangle nextHitbox = Hitbox;
+            nextHitbox.Location += _velocity.ToPoint();
+            spriteBatch.DrawRectangle(nextHitbox.ToRectangleF(), Color.Blue);
         }
 
         private void HandleCollision()

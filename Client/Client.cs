@@ -6,11 +6,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MLEM.Font;
-using MLEM.Misc;
-using MLEM.Ui;
-using MLEM.Ui.Elements;
-using MLEM.Ui.Style;
 using MonoGame.Extended;
 using MonoGame.Extended.ViewportAdapters;
 using Riptide;
@@ -20,8 +15,6 @@ using RectangleF = MonoGame.Extended.RectangleF;
 
 namespace Block2D.Client
 {
-    public delegate void OnJoinWorld();
-
     public class Client
     {
         #region public variables
@@ -45,12 +38,15 @@ namespace Block2D.Client
             get => _client.Id;
         }
 
+        public bool Connected
+        {
+            get => _client.IsConnected;
+        }
+
         public bool DebugMode { get; set; }
         public string Username { get; private set; }
 
         public OrthographicCamera Camera { get; private set; }
-
-        public UiSystem UI { get; private set; }
 
         public DebugMenu DebugMenu { get; private set; }
 
@@ -66,7 +62,9 @@ namespace Block2D.Client
 
         public PlayerListUI PlayerListUI { get; private set; }
 
-        public event OnJoinWorld OnJoinWorld;
+        public EventHandler OnJoinWorld;
+
+        public bool InMainMenu { get; private set; }
 
         #endregion
 
@@ -78,6 +76,7 @@ namespace Block2D.Client
         }
 
         private ClientWorld _currentWorld;
+        private MainMenu _mainMenu;
         private readonly Riptide.Client _client;
         private readonly WorldRenderer _worldRenderer;
         private const string ip = "127.0.0.1";
@@ -103,20 +102,23 @@ namespace Block2D.Client
             _client.Disconnected += OnDisconnect;
             DebugMode = false;
             OnJoinWorld += OnEnterWorld;
+            InMainMenu = true;
         }
 
         #region public methods
 
         //do all client initializing here
-        public void Initialize(GameWindow window, GraphicsDevice graphicsDevice)
+        public void Initialize(Main main, GameWindow window, GraphicsDevice graphicsDevice)
         {
             State = ClientState.Initializing;
             BoxingViewportAdapter viewportAdapter = new(window, graphicsDevice, 800, 480);
             Camera = new OrthographicCamera(viewportAdapter);
+
+            _mainMenu = new(main);
         }
 
         //do all client content loading here
-        public void LoadContent(Game game, SpriteBatch spriteBatch)
+        public void LoadContent()
         {
             State = ClientState.Loading;
 
@@ -130,19 +132,6 @@ namespace Block2D.Client
             }
 
             AssetManager.LoadContent();
-
-            MlemPlatform.Current = new MlemPlatform.DesktopGl<TextInputEventArgs>(
-                (w, c) => w.TextInput += c
-            );
-
-            var style = new UntexturedStyle(spriteBatch)
-            {
-                Font = new GenericSpriteFont(AssetManager.Font)
-            };
-
-            UI = new UiSystem(game, style);
-            var panel = new Panel(Anchor.Center, size: new(100, 100), positionOffset: Vector2.Zero);
-            UI.Add("Panel", panel);
         }
 
         public void Update(
@@ -151,6 +140,13 @@ namespace Block2D.Client
             GameTime gameTime
         )
         {
+            _client.Update();
+
+            if (InMainMenu)
+            {
+                return;
+            }
+
             _uiUpdateTime++;
 
             if (keyboard.IsKeyDown(DEBUG_KEY) && lastKeyboardState.IsKeyUp(DEBUG_KEY))
@@ -158,8 +154,6 @@ namespace Block2D.Client
                 DebugMenu.Reset();
                 DebugMode = !DebugMode;
             }
-
-            _client.Update();
 
             if (InWorld && !Chat.IsOpen)
             {
@@ -174,8 +168,6 @@ namespace Block2D.Client
                 }
             }
 
-            UI.Update(gameTime);
-
             if (DebugMode)
             {
                 DebugMenu.Update(gameTime);
@@ -184,38 +176,45 @@ namespace Block2D.Client
 
         public void Draw(SpriteBatch spriteBatch, KeyboardState keyboard)
         {
-            spriteBatch.Begin(transformMatrix: Camera.GetViewMatrix());
-
-            if (InWorld)
+            if (InMainMenu)
             {
-                RectangleF viewRect = Camera.BoundingRectangle;
-                viewRect.Inflate(CC.TILE_SIZE, CC.TILE_SIZE);
+                _mainMenu.Draw(spriteBatch, AssetManager);
+            }
+            else
+            {
+                spriteBatch.Begin(transformMatrix: Camera.GetViewMatrix());
 
-                _worldRenderer.DrawChunks(
-                    [.. _currentWorld.Chunks.Values],
-                    spriteBatch,
-                    viewRect,
-                    DebugMode
-                );
-
-                foreach (ClientPlayer currentPlayer in _currentWorld.Players.Values)
+                if (InWorld)
                 {
-                    Renderer.DrawPlayer(currentPlayer, spriteBatch, AssetManager);
+                    RectangleF viewRect = Camera.BoundingRectangle;
+                    viewRect.Inflate(CC.TILE_SIZE, CC.TILE_SIZE);
+
+                    _worldRenderer.DrawChunks(
+                        [.. _currentWorld.Chunks.Values],
+                        spriteBatch,
+                        viewRect,
+                        DebugMode
+                    );
+
+                    foreach (ClientPlayer currentPlayer in _currentWorld.Players.Values)
+                    {
+                        currentPlayer.Draw(spriteBatch, AssetManager);
+                    }
                 }
+
+                Vector2 chatDrawPosition = new(Camera.Position.X, Camera.Position.Y + Camera.BoundingRectangle.Height - 28);
+
+                Chat.Draw(spriteBatch, AssetManager, chatDrawPosition, Camera.BoundingRectangle);
+
+                PlayerListUI.Draw(spriteBatch, Camera.Position, Main.GraphicsDevice.PresentationParameters.BackBufferWidth / 2, keyboard);
+
+                if (DebugMode)
+                {
+                    DebugMenu.Draw(spriteBatch, AssetManager.Font, Camera.Position, Color.White);
+                }
+
+                spriteBatch.End();
             }
-
-            Vector2 chatDrawPosition = new(Camera.Position.X, Camera.Position.Y + Camera.BoundingRectangle.Height - 28);
-
-            Chat.Draw(spriteBatch, AssetManager, chatDrawPosition, Camera.BoundingRectangle);
-
-            PlayerListUI.Draw(spriteBatch, Camera.Position, Main.GraphicsDevice.PresentationParameters.BackBufferWidth / 2, keyboard);
-
-            if (DebugMode)
-            {
-                DebugMenu.Draw(spriteBatch, AssetManager.Font, Camera.Position, Color.White);
-            }
-
-            spriteBatch.End();
         }
 
         public void Connect(string ip, ushort port)
@@ -231,6 +230,11 @@ namespace Block2D.Client
 
         public void Disconnect()
         {
+            if (InMainMenu)
+            {
+                return;
+            }
+
             MessageHandler.SendDisconnect();
 
             _client.Disconnect();
@@ -254,16 +258,17 @@ namespace Block2D.Client
 
         public void InvokeJoinWorld()
         {
-            OnJoinWorld.Invoke();
+            OnJoinWorld.Invoke(this, EventArgs.Empty);
         }
 
         #endregion
 
         #region private methods
 
-        private void OnEnterWorld()
+        private void OnEnterWorld(object sender, EventArgs e)
         {
             InWorld = true;
+            InMainMenu = false;
         }
 
         private void OnConnect(object sender, EventArgs e)
