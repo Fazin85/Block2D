@@ -129,6 +129,7 @@ namespace Block2D.Modding
         {
             _modManager.UnloadAndRemoveAllMods();
             LoadedMods.Clear();
+            LoadedContent.Clear();
         }
 
         public void ForceQuit()

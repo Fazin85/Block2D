@@ -76,13 +76,15 @@ namespace Block2D.Client.UI
         {
             spriteBatch.Begin();
 
+            Texture2D stone = assetManager.GetTexture("Stone");
+
             for (int x = 0; x < Main.GraphicsDevice.PresentationParameters.BackBufferWidth + (CC.TILE_SIZE * 4); x += CC.TILE_SIZE)
             {
                 for (int y = 0; y < Main.GraphicsDevice.PresentationParameters.BackBufferHeight + (CC.TILE_SIZE * 4); y += CC.TILE_SIZE)
                 {
                     Vector2 position = new(x, y);
 
-                    spriteBatch.Draw(assetManager.GetTexture("Stone"), position, Color.White);
+                    spriteBatch.Draw(stone, position, Color.White);
                 }
             }
 

@@ -8,20 +8,25 @@ namespace Block2D.Common
     public abstract class AssetManager : ModLoader
     {
         protected Dictionary<string, Texture2D> Textures { get; private set; }
+        private readonly ProgramSide _side;
 
-        public AssetManager()
+        public AssetManager(ProgramSide side)
             : base()
         {
             Textures = [];
+            _side = side;
         }
 
         public virtual void LoadContent()
         {
             LoadAllMods();
 
-            foreach (ModTexture tex in LoadedContent.Textures.Values)
+            if (_side == ProgramSide.Client)
             {
-                Textures.Add(tex.Name, tex.Texture);
+                foreach (ModTexture tex in LoadedContent.Textures.Values)
+                {
+                    Textures.Add(tex.Name, tex.Texture);
+                }
             }
         }
 

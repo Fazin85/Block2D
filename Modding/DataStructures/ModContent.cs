@@ -14,5 +14,12 @@ namespace Block2D.Modding.DataStructures
             SoundEffects = [];
             Textures = [];
         }
+
+        public readonly void Clear()
+        {
+            Tiles.Clear();
+            SoundEffects.Clear();
+            Textures.Clear();
+        }
     }
 }

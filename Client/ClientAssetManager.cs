@@ -12,7 +12,7 @@ namespace Block2D.Client
         private Texture2D _playerTexture;
         private readonly ContentManager _contentManager;
 
-        public ClientAssetManager(ContentManager contentManager)
+        public ClientAssetManager(ContentManager contentManager) : base(ProgramSide.Client)
         {
             _contentManager = contentManager;
         }
