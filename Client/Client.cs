@@ -83,7 +83,7 @@ namespace Block2D.Client
         private const string ip = "127.0.0.1";
         private const ushort port = 7777;
         private const Keys DEBUG_KEY = Keys.F3;
-        private long _uiUpdateTime;
+        private byte _uiUpdateTime;
 
         #endregion
 
@@ -170,6 +170,7 @@ namespace Block2D.Client
                 if (_uiUpdateTime == 60)
                 {
                     PlayerListUI.Update();
+                    _uiUpdateTime = 0;
                 }
             }
 
@@ -181,7 +182,7 @@ namespace Block2D.Client
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch, GameWindow window, KeyboardState keyboard)
+        public void Draw(SpriteBatch spriteBatch, KeyboardState keyboard)
         {
             spriteBatch.Begin(transformMatrix: Camera.GetViewMatrix());
 
