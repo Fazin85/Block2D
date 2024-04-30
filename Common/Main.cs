@@ -19,24 +19,14 @@ namespace Block2D.Common
     {
         #region public variables
 
-        public static string AppDataDirectory
-        {
-            get => Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-        }
-
-        public static string GameAppDataDirectory
-        {
-            get => AppDataDirectory + "/" + GameName;
-        }
-
         public static string ModsDirectory
         {
-            get => GameAppDataDirectory + "/Mods";
+            get => "Mods";
         }
 
         public static string WorldsDirectory
         {
-            get => GameAppDataDirectory + "/Worlds";
+            get => "Worlds";
         }
 
         public static new GraphicsDevice GraphicsDevice

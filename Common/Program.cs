@@ -13,20 +13,15 @@ namespace Block2D.Common
 
         private static void CreateNeccesaryFiles()
         {
-            string programAppDataDirectory = Common.Main.GameAppDataDirectory;
-            if (!Directory.Exists(programAppDataDirectory))//create "Block2D" directory in %AppData% for logging and mods and stuff.
-            {
-                Directory.CreateDirectory(programAppDataDirectory);
-            }
-            if (!Directory.Exists(Common.Main.ModsDirectory))//create "Mods" directory.
+            if (!Directory.Exists(Common.Main.ModsDirectory))
             {
                 Directory.CreateDirectory(Common.Main.ModsDirectory);
             }
-            if (!Directory.Exists(programAppDataDirectory + "/Mods/Base"))
+            if (!Directory.Exists(Common.Main.ModsDirectory + "/Base"))
             {
-                Helper.CopyDirectory("Content/Base", programAppDataDirectory + "/Mods/Base", true);
+                Helper.CopyDirectory("Content/Base", Common.Main.ModsDirectory + "/Base", true);
             }
-            if (!Directory.Exists(Common.Main.WorldsDirectory))//create "Worlds" directory.
+            if (!Directory.Exists(Common.Main.WorldsDirectory))
             {
                 Directory.CreateDirectory(Common.Main.WorldsDirectory);
             }
