@@ -4,6 +4,7 @@ using Block2D.Server.World;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended.ViewportAdapters;
 using MoonSharp.Interpreter;
 using NLog;
 using NLog.Config;
@@ -57,9 +58,9 @@ namespace Block2D.Common
         private KeyboardState _lastKeyboardState;
         private SpriteBatch _spriteBatch;
         private readonly GraphicsDeviceManager _graphics;
-        private InternalServer _internalServer;
+        private readonly InternalServer _internalServer;
         private static Main _instance;
-        private bool _windowSizeBeingChanged;
+        private bool _fakeFullScreen;
 
         #endregion
 
@@ -70,11 +71,10 @@ namespace Block2D.Common
             Random = new(0);
             Client = new(Window, Content);
             _internalServer = new();
-            _windowSizeBeingChanged = false;
             Content.RootDirectory = "Content";
             OfflineMode = false;
             IsMouseVisible = true;
-            Window.AllowUserResizing = true;
+            _fakeFullScreen = false;
         }
 
         #region public methods
@@ -126,7 +126,7 @@ namespace Block2D.Common
 
             RegisterTypes();
 
-            Client.Initialize(this, Window, GraphicsDevice);
+            Client.Initialize(this, Window, GraphicsDevice, _graphics);
 
             if (!SteamAPI.Init())
             {
@@ -146,8 +146,6 @@ namespace Block2D.Common
             _spriteBatch = new(GraphicsDevice);
 
             Client.LoadContent();
-
-            Window.ClientSizeChanged += (o, s) => OnClientSizeChanged();
         }
 
         protected override void Update(GameTime gameTime)
@@ -182,24 +180,14 @@ namespace Block2D.Common
 
             _internalServer?.Exit();
 
+            Client.Settings.Save();
+
             base.OnExiting(sender, args);
         }
 
         #endregion
 
         #region private methods
-
-        private void OnClientSizeChanged()
-        {
-            _windowSizeBeingChanged = !_windowSizeBeingChanged;
-
-            if (_windowSizeBeingChanged)
-            {
-                _graphics.PreferredBackBufferWidth = Window.ClientBounds.Width;
-                _graphics.PreferredBackBufferHeight = Window.ClientBounds.Height;
-                _graphics.ApplyChanges();
-            }
-        }
 
         private void HandleGenericInput()
         {
@@ -211,19 +199,27 @@ namespace Block2D.Common
 
             if (_keyboardState.IsKeyDown(Keys.F11) && _lastKeyboardState.IsKeyUp(Keys.F11))
             {
-                if (_graphics.IsFullScreen)
+                if (_fakeFullScreen)
                 {
-                    _graphics.PreferredBackBufferWidth = 800;
-                    _graphics.PreferredBackBufferHeight = 480;
+                    _graphics.PreferredBackBufferWidth = Client.Settings.ResoloutionX;
+                    _graphics.PreferredBackBufferHeight = Client.Settings.ResoloutionY;
+
+                    Client.Settings.ResoloutionX = _graphics.PreferredBackBufferWidth;
+                    Client.Settings.ResoloutionY = _graphics.PreferredBackBufferHeight;
                 }
                 else
                 {
-                    _graphics.PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
-                    _graphics.PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+                    _graphics.PreferredBackBufferWidth = GraphicsDevice.Adapter.CurrentDisplayMode.Width;
+                    _graphics.PreferredBackBufferHeight = GraphicsDevice.Adapter.CurrentDisplayMode.Height;
                 }
 
-                _graphics.IsFullScreen = !_graphics.IsFullScreen;
+                Client.Settings.FullScreen = _fakeFullScreen = !_fakeFullScreen;
+                Client.Settings.Save();
+
                 _graphics.ApplyChanges();
+
+                BoxingViewportAdapter adapter = new(Window, GraphicsDevice, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
+                Client.Camera = new(adapter);
             }
         }
 

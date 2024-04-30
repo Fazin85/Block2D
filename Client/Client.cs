@@ -46,7 +46,7 @@ namespace Block2D.Client
         public bool DebugMode { get; set; }
         public string Username { get; private set; }
 
-        public OrthographicCamera Camera { get; private set; }
+        public OrthographicCamera Camera { get; set; }
 
         public DebugMenu DebugMenu { get; private set; }
 
@@ -63,6 +63,8 @@ namespace Block2D.Client
         public PlayerListUI PlayerListUI { get; private set; }
 
         public EventHandler OnJoinWorld;
+
+        public ClientSettings Settings { get; private set; }
 
         public bool InMainMenu
         {
@@ -105,15 +107,22 @@ namespace Block2D.Client
             _client.Disconnected += OnDisconnect;
             DebugMode = false;
             OnJoinWorld += OnEnterWorld;
+            Settings = new();
         }
 
         #region public methods
 
         //do all client initializing here
-        public void Initialize(Main main, GameWindow window, GraphicsDevice graphicsDevice)
+        public void Initialize(Main main, GameWindow window, GraphicsDevice graphicsDevice, GraphicsDeviceManager graphics)
         {
+            Settings.Load();
+
+            graphics.PreferredBackBufferWidth = Settings.ResoloutionX;
+            graphics.PreferredBackBufferHeight = Settings.ResoloutionY;
+            graphics.ApplyChanges();
+
             State = ClientState.Initializing;
-            BoxingViewportAdapter viewportAdapter = new(window, graphicsDevice, 800, 480);
+            BoxingViewportAdapter viewportAdapter = new(window, graphicsDevice, Settings.ResoloutionX, Settings.ResoloutionY);
             Camera = new OrthographicCamera(viewportAdapter);
 
             _mainMenu = new(main);
