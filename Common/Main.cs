@@ -183,8 +183,6 @@ namespace Block2D.Common
 
             Client.Draw(_spriteBatch, _keyboardState);
 
-            //Client.UI.Draw(gameTime, _spriteBatch);
-
             base.Draw(gameTime);
         }
 

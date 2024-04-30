@@ -15,8 +15,8 @@ namespace Block2D.Client.World
         private long _tickCounter;
         private readonly Client _client;
 
-        public ClientWorld(AssetManager assetManager, Client client)
-            : base(assetManager, ProgramSide.Client)
+        public ClientWorld(Client client)
+            : base(client.AssetManager, ProgramSide.Client)
         {
             Chunks = [];
             Players = [];
@@ -25,7 +25,7 @@ namespace Block2D.Client.World
             LoadTiles();
         }
 
-        public void Tick(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             foreach (ClientPlayer currentPlayer in Players.Values)
             {

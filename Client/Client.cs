@@ -161,7 +161,7 @@ namespace Block2D.Client
 
             if (InWorld && !Chat.IsOpen)
             {
-                _currentWorld.Tick(gameTime);
+                _currentWorld.Update(gameTime);
 
                 Camera.LookAt(LocalPlayer.Position);
 
@@ -276,7 +276,7 @@ namespace Block2D.Client
 
         private void OnConnect(object sender, EventArgs e)
         {
-            _currentWorld = new(AssetManager, this);
+            _currentWorld = new(this);
             DebugMenu.Reset();
             MessageHandler.PlayerJoin();
         }
@@ -287,6 +287,8 @@ namespace Block2D.Client
             InWorld = false;
             DebugMenu.Reset();
             _currentWorld = null;
+            Camera.LookAt(Vector2.Zero);
+            PlayerListUI.Reset();
         }
 
         private void OnMessageReceived(object sender, MessageReceivedEventArgs e)

@@ -42,6 +42,8 @@ namespace Block2D.Server
                 return;
             }
 
+            ShouldExit = false;
+
             _executionThread = new(Run);
             _executionThread.Start();
         }

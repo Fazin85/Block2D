@@ -35,6 +35,11 @@ namespace Block2D.Client.UI
             _playerList.Remove(_client.CurrentWorld.Players[id].Name);
         }
 
+        public void Reset()
+        {
+            _playerList.Clear();
+        }
+
         public void Draw(SpriteBatch spriteBatch, Vector2 cameraPos, int windowWidth, KeyboardState keyboard)
         {
             if (keyboard.IsKeyDown(Keys.Tab))
