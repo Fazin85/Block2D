@@ -209,8 +209,7 @@ namespace Block2D.Common
                 }
                 else
                 {
-                    _graphics.PreferredBackBufferWidth = GraphicsDevice.Adapter.CurrentDisplayMode.Width;
-                    _graphics.PreferredBackBufferHeight = GraphicsDevice.Adapter.CurrentDisplayMode.Height;
+                    EnterFullscreen(false);
                 }
 
                 Client.Settings.FullScreen = _fakeFullScreen = !_fakeFullScreen;
@@ -220,6 +219,23 @@ namespace Block2D.Common
 
                 BoxingViewportAdapter adapter = new(Window, GraphicsDevice, _graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight);
                 Client.Camera = new(adapter);
+            }
+        }
+
+        public static void EnterFullscreen(bool apply)
+        {
+            _instance._graphics.PreferredBackBufferWidth = GraphicsDevice.Adapter.CurrentDisplayMode.Width;
+            _instance._graphics.PreferredBackBufferHeight = GraphicsDevice.Adapter.CurrentDisplayMode.Height;
+
+            if (apply)
+            {
+                _instance.Client.Settings.FullScreen = _instance._fakeFullScreen = !_instance._fakeFullScreen;
+                _instance.Client.Settings.Save();
+
+                _instance._graphics.ApplyChanges();
+
+                BoxingViewportAdapter adapter = new(_instance.Window, GraphicsDevice, _instance._graphics.PreferredBackBufferWidth, _instance._graphics.PreferredBackBufferHeight);
+                _instance.Client.Camera = new(adapter);
             }
         }
 

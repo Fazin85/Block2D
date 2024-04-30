@@ -12,10 +12,20 @@ namespace Block2D.Client.UI
         private readonly Button _singlePlayerButton;
         private readonly Panel _panel;
         private readonly Desktop _desktop;
+        private readonly OptionsMenu _optionsMenu;
 
         private class OptionsMenu
         {
+            public bool InOptionsMenu
+            {
+                get => _inOptionsMenu;
+            }
+
             private readonly Button _optionsButton;
+            private readonly Button _fullscreenButton;
+            private readonly Desktop _optionsDesktop;
+            private readonly Panel _panel;
+            private bool _inOptionsMenu;
 
             public OptionsMenu(Panel panel)
             {
@@ -35,7 +45,51 @@ namespace Block2D.Client.UI
                     }
                 };
 
+                _optionsButton.Click += (o, s) =>
+                {
+                    _inOptionsMenu = true;
+                };
+
+
                 panel.Widgets.Add(_optionsButton);
+
+                _fullscreenButton = new Button()
+                {
+                    Width = 256,
+                    Height = 32,
+                    VerticalAlignment = VerticalAlignment.Bottom,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Top = -96,
+
+                    Content = new Label()
+                    {
+                        Text = "Fullscreen",
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                    }
+                };
+
+                _fullscreenButton.Click += (o, s) =>
+                {
+                    Main.EnterFullscreen(true);
+                };
+
+                _panel = new();
+
+                _panel.Widgets.Add(_fullscreenButton);
+
+                _optionsDesktop = new()
+                {
+                    Root = _panel,
+                };
+            }
+
+            public void Draw()
+            {
+                if (_inOptionsMenu)
+                {
+                    _optionsDesktop.Render();
+                }
             }
         }
 
@@ -93,7 +147,7 @@ namespace Block2D.Client.UI
 
             _panel.Widgets.Add(_singlePlayerButton);
 
-            OptionsMenu optionsMenu = new(_panel);
+            _optionsMenu = new(_panel);
 
             _desktop = new()
             {
@@ -119,7 +173,12 @@ namespace Block2D.Client.UI
 
             spriteBatch.End();
 
-            _desktop.Render();
+            if (!_optionsMenu.InOptionsMenu)
+            {
+                _desktop.Render();
+            }
+
+            _optionsMenu.Draw();
         }
     }
 }
