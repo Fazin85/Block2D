@@ -13,6 +13,32 @@ namespace Block2D.Client.UI
         private readonly Panel _panel;
         private readonly Desktop _desktop;
 
+        private class OptionsMenu
+        {
+            private readonly Button _optionsButton;
+
+            public OptionsMenu(Panel panel)
+            {
+                _optionsButton = new Button()
+                {
+                    Width = 256,
+                    Height = 32,
+                    VerticalAlignment = VerticalAlignment.Bottom,
+                    HorizontalAlignment = HorizontalAlignment.Center,
+                    Top = -96,
+
+                    Content = new Label()
+                    {
+                        Text = "Options",
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                    }
+                };
+
+                panel.Widgets.Add(_optionsButton);
+            }
+        }
+
         //+ IS DOWN
 
         public MainMenu(Main main)
@@ -48,8 +74,9 @@ namespace Block2D.Client.UI
             {
                 Width = 256,
                 Height = 32,
-                VerticalAlignment = VerticalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Bottom,
                 HorizontalAlignment = HorizontalAlignment.Center,
+                Top = -160,
 
                 Content = new Label()
                 {
@@ -65,6 +92,8 @@ namespace Block2D.Client.UI
             };
 
             _panel.Widgets.Add(_singlePlayerButton);
+
+            OptionsMenu optionsMenu = new(_panel);
 
             _desktop = new()
             {
@@ -91,10 +120,6 @@ namespace Block2D.Client.UI
             spriteBatch.End();
 
             _desktop.Render();
-        }
-
-        public void Update()
-        {
         }
     }
 }
